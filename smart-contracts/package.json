@@ -1,0 +1,15 @@
+{
+  "name": "curvex",
+  "version": "0.1.0",
+  "description": "An open source token vesting contracts developed using the bonding curve technique",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "2.0.2",
+    "hardhat": "2.14.0"
+  }
+}
