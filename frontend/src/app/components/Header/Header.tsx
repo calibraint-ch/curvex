@@ -1,23 +1,47 @@
 import "./index.scss";
-import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
+import { Logo } from "../../../assets/imageAssets";
+import Icons from "../../../assets/Icons.png";
+import { Link, useLocation } from "react-router-dom";
+import Group from "../../../assets/Group.png";
 
 const Header = () => {
-  const { connected, metaState, network, chainId, balance, walletConnect } = useMetamaskProvider();
+  const location = useLocation();
+  const walletAddress = "";
 
   return (
-    <div className="d-flex justify-content-center">
-      {connected &&
-        <div>
-          <h3>Wallet Connected</h3>
-          <h4>Address: {metaState.account}</h4>
-          <h4>chain Name: {network}</h4>
-          <h4>chain Id: {chainId}</h4>
-          <h4>balance: {balance}</h4>
-        </div>
-      }
-      {!connected &&
-        <button onClick={() => { walletConnect() }}>Connect Wallet</button>
-      }
+    <div className="header">
+      <div className="d-flex align-items-center justify-content-between">
+        <img className="logo"
+          src={Logo}
+          alt="CurveX_Logo"
+        />
+      </div>
+      <div className="nav-items">
+        {
+          location.pathname === "/" ?
+            <>
+              <div>Docs</div>
+              <div>About</div>
+              <div>
+                <Link style={{ textDecoration: 'none' }} to={'/curve-x'}>
+                  <button className="try-btn d-flex">Try the app
+                    <img className="icon"
+                      src={Icons}
+                      alt="wallet-icon"
+                    />
+                  </button>
+                </Link>
+              </div>
+            </>
+            :
+            <button className="connect-btn">
+              <img className="connect-icon"
+                src={Group}
+                alt="wallet-group"
+              />{walletAddress ? walletAddress : 'Connect Wallet'}
+            </button>
+        }
+      </div>
     </div>
   );
 };
