@@ -1,0 +1,91 @@
+.footer {
+  display: flex;
+  flex-direction: row;
+  background-color: #505050;
+  align-items: flex-start;
+  padding: 54px 100px;
+  gap: 469px;
+  height: 349px;
+  left: 0px;
+  top: 2867px;
+}
+
+.foo-content {
+  width: 363px;
+  height: 66px;
+  left: 0px;
+  top: 72px;
+  font-family: "Schibsted Grotesk";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  color: #b3b3b3;
+}
+
+.foo-sec1 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 24px;
+  width: 363px;
+  height: 241px;
+}
+
+.copy-right {
+  width: 238px;
+  height: 31px;
+  font-family: "Schibsted Grotesk";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #ffffff;
+}
+
+.foo-sec2 {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 100px;
+  color: rgba(255, 255, 255, 0.5);
+  height: 164px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  gap: 40px;
+}
+
+.app-logo {
+  width: 157px;
+  height: 31px;
+  left: 100px;
+  bottom: 3162px;
+}
+
+.title {
+  color: #ffffff;
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+li {
+  margin: 0 0 16px 0;
+}
+
+.flex-and-between {
+  display: flex;
+  justify-content: space-between;
+  width: 100px;
+}

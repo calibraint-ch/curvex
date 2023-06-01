@@ -4,6 +4,7 @@
   "description": "CurveX - Bonding curve based token issuance and management application",
   "private": false,
   "dependencies": {
+    "@ant-design/icons": "^5.1.4",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -12,6 +13,7 @@
     "@types/node": "^16.18.32",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
+    "antd": "^5.5.2",
     "bootstrap": "^5.2.3",
     "ethers": "^5.0.24",
     "react": "^18.2.0",

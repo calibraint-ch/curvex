@@ -26,7 +26,7 @@ function useMetamaskProvider() {
                 await connect?.(provider, "any");
                 setConnected(true);
             } catch (error) {
-                console.log('Failed To Connect');                
+                console.log('Failed To Connect');
             }
         } else {
             window.open('https://metamask.io/download/', 'blank')
