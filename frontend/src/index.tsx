@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { configureAppStore } from "./store/configureStore";
 import "./index.scss";
 import App from "./App";
+import { MetamaskStateProvider } from "use-metamask";
 
 import "bootstrap/dist/css/bootstrap.css";
 
@@ -13,6 +14,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <Provider store={store}>
-    <App />
+    <MetamaskStateProvider>
+      <App />
+    </MetamaskStateProvider>
   </Provider>
 );
