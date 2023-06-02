@@ -1,71 +1,71 @@
 .header {
-    background-color: #505050;
-    color: #FFFFFF;
-    height: 80px;
+  background-color: #505050;
+  color: #ffffff;
+  height: 80px;
 }
 
 .logo {
-    width: 157px;
-    height: 31px;
-    left: 100px;
-    bottom: 3162px;
-    margin: 27px 1164px 26px 100px;
+  width: 157px;
+  height: 31px;
+  left: 100px;
+  bottom: 3162px;
+  margin: 27px 1164px 26px 100px;
 }
 
 .nav-items {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 19px 100px 19px 32px;
-    gap: 70px;
-    position: absolute;
-    width: 518px;
-    height: 84px;
-    right: 0px;
-    top: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 19px 100px 19px 32px;
+  gap: 70px;
+  position: absolute;
+  width: 518px;
+  height: 84px;
+  right: 0px;
+  top: 0px;
 }
 
 .try-btn {
-    width: 135px;
-    height: 31px;
-    padding: 3px 7px 8px 8px;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 20px;
-    top: 11px;
-    left: 24px;
-    border: 1px solid blue;
-    border-radius: 10px;
-    background-color: #505050;
-    color: #FFFFFF;
+  width: 135px;
+  height: 31px;
+  padding: 3px 7px 8px 8px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  top: 11px;
+  left: 24px;
+  border: 1px solid blue;
+  border-radius: 10px;
+  background-color: #505050;
+  color: #ffffff;
 }
 
 .icon {
-    margin-left: 8px;
-    width: 24px;
-    height: 24px;
-    flex: none;
-    order: 1;
-    flex-grow: 0;
+  margin-left: 8px;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
 }
 
 .connect-btn {
-    margin-left: 183px;
-    margin-right: 46px;
-    width: 176px;
-    height: 40.02px;
-    background-color: #505050;
-    border: 1px solid #B5964D;
-    border-radius: 10px;
-    color: #FFFFFF;
-    left: 1211px;
-    top: 31px;
+  margin-left: 183px;
+  margin-right: 46px;
+  width: 176px;
+  height: 40.02px;
+  background-color: #505050;
+  border: 1px solid #b5964d;
+  border-radius: 10px;
+  color: #ffffff;
+  left: 1211px;
+  top: 31px;
 }
 
 .connect-icon {
-    margin-left: 4px;
-    margin-right: 4px;
-    width: 22px;
-    height: 14px;
+  margin-left: 4px;
+  margin-right: 4px;
+  width: 22px;
+  height: 14px;
 }

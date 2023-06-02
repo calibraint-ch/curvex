@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { message } from 'antd';
 import { useMetamask } from 'use-metamask';
 import { ethers } from 'ethers';
+import { errorMessages } from '../../utils/constants'
 
 function useMetamaskProvider() {
     const [connected, setConnected] = useState(false);
@@ -19,14 +21,15 @@ function useMetamaskProvider() {
         }
     };
 
-    const walletConnect = async () => {
-        if (metaState.isAvailable && !metaState.isConnected) {
+    const connectWallet = async () => {
+        if (metaState.isAvailable) {
             try {
-                const provider = ethers.providers.Web3Provider;
-                await connect?.(provider, "any");
-                setConnected(true);
+                if (!metaState.isConnected) {
+                    await connect?.(ethers.providers.Web3Provider, "any")
+                    setConnected(true)
+                }
             } catch (error) {
-                console.log('Failed To Connect');                
+                message.error(errorMessages.connectWalletFailed)
             }
         } else {
             window.open('https://metamask.io/download/', 'blank')
@@ -42,7 +45,7 @@ function useMetamaskProvider() {
         }
     }, [metaState.account, metaState.chain.id])
 
-    return { connected, metaState, network, chainId, balance, walletConnect }
+    return { connected, metaState, network, chainId, balance, connectWallet }
 }
 
 export default useMetamaskProvider;
