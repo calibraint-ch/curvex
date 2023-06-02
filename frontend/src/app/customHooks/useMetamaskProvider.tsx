@@ -22,11 +22,12 @@ function useMetamaskProvider() {
     };
 
     const connectWallet = async () => {
-        if (metaState.isAvailable && !metaState.isConnected) {
+        if (metaState.isAvailable) {
             try {
-                const provider = ethers.providers.Web3Provider;
-                await connect?.(provider, "any");
-                setConnected(true);
+                if (!metaState.isConnected) {
+                    await connect?.(ethers.providers.Web3Provider, "any")
+                    setConnected(true)
+                }
             } catch (error) {
                 message.error(errorMessages.connectWalletFailed)
             }

@@ -1,8 +1,6 @@
 import "./index.scss";
-import { Logo } from "../../../assets/imageAssets";
-import Icons from "../../../assets/Icons.png";
+import { Logo, Group, Icons } from "../../../assets/images/imageAssets";
 import { Link, useLocation } from "react-router-dom";
-import Group from "../../../assets/Group.png";
 
 const Header = () => {
   const location = useLocation();

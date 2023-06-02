@@ -1,26 +1,29 @@
+@import "../../../assets/styles/settings/colors";
+@import "../../../assets/styles/custom";
+
 .footer {
-  display: flex;
-  flex-direction: row;
-  background-color: #505050;
-  align-items: flex-start;
   padding: 54px 100px;
   gap: 469px;
   height: 349px;
-  left: 0px;
   top: 2867px;
+}
+
+.footer .container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
 .foo-content {
   width: 363px;
   height: 66px;
-  left: 0px;
   top: 72px;
-  font-family: "Schibsted Grotesk";
+  font-family: "SchibstedGrotesk";
   font-style: normal;
   font-weight: 400;
   font-size: 18px;
   line-height: 22px;
-  color: #b3b3b3;
+  color: var(--gray-30);
 }
 
 .foo-sec1 {
@@ -36,25 +39,24 @@
 .copy-right {
   width: 238px;
   height: 31px;
-  font-family: "Schibsted Grotesk";
+  font-family: "SchibstedGrotesk";
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
-  color: #ffffff;
+  color: var(--gray-30);
 }
 
 .foo-sec2 {
-  display: flex;
-  flex-direction: row;
   align-items: flex-start;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
   padding: 0px;
   gap: 100px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--gray-30);
   height: 164px;
-  flex: none;
-  order: 1;
-  flex-grow: 0;
 }
 
 ul {
@@ -72,8 +74,8 @@ ul {
 }
 
 .title {
-  color: #ffffff;
-  font-family: "Work Sans";
+  color: var(--black);
+  font-family: "ClashDisplay";
   font-style: normal;
   font-weight: 600;
   font-size: 20px;
@@ -82,10 +84,16 @@ ul {
 
 li {
   margin: 0 0 16px 0;
+  font-family: "SchibstedGrotesk";
 }
 
 .flex-and-between {
   display: flex;
   justify-content: space-between;
   width: 100px;
+}
+
+.social-icons {
+  color: var(--bright-pink);
+  fill: var(--bright-pink);
 }
