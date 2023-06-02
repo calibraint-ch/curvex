@@ -3,7 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 import { environment } from "./environment";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.20",
+  solidity: "0.8.18",
   defaultNetwork: "hardhat",
   networks: {
     fantom: {

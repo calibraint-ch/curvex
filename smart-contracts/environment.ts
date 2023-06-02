@@ -1,4 +1,4 @@
-import "dotenv";
+import "dotenv/config";
 
 const walletPrivateAddress: string = process.env.WALLET_PRIVATE_KEY ?? "";
 
