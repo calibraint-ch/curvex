@@ -12,11 +12,11 @@ function App() {
     <Router>
       <div className="App">
         <Header />
-        <Footer />
         <Routes>
           <Route path={routes.homepage} element={<HomePage />} />
-          <Route path={routes.appscreen} element={<AppScreen />}/>
+          <Route path={routes.appscreen} element={<AppScreen />} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );
