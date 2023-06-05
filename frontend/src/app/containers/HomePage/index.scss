@@ -1,0 +1,17 @@
+@import "../../../assets/styles/settings/colors";
+
+.hero-section {
+    background-color: var(--primary-blue);
+    height: 768px;
+}
+
+.hero-section-left {
+    height: fit-content;
+    width: 50%;
+}
+
+.hero-heading {
+    font-weight: 900;
+    color: var(--white);
+    font-size: 44px;
+}

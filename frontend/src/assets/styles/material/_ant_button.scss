@@ -1,0 +1,23 @@
+@import '../settings/colors';
+
+.ant-btn {
+    width: 150px;
+    height: 42px;
+    border-radius: 10px;
+    align-items: center;
+    padding: 19px 100px 19px 32px;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 500;
+
+    &.ant-btn-primary {
+        border-color: var(--white);
+        background-color: transparent;
+        border: 1px solid;
+
+        &:hover {
+            background-color: var(--primary-lemon);
+            border-color: var(--primary-lemon);
+        }
+    }
+}
