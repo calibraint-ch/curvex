@@ -1,17 +1,137 @@
 @import "../../../assets/styles/settings/colors";
+@import "../../../assets/styles/custom";
 
 .hero-section {
-    background-color: var(--primary-blue);
-    height: 768px;
+  background-color: var(--primary-blue);
+  height: 768px;
 }
 
 .hero-section-left {
-    height: fit-content;
-    width: 50%;
+  height: fit-content;
+  width: 50%;
 }
 
 .hero-heading {
-    font-weight: 900;
-    color: var(--white);
-    font-size: 44px;
+  font-weight: 900;
+  color: var(--white);
+  font-size: 44px;
+}
+
+.why-section {
+  display: flex;
+  justify-content: space-between;
+  margin: 0px 100px 0px;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.fantom-section {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 625px;
+  background: var(--primary-pink);
+}
+
+.why-section .title-2 {
+  font-family: "ClashDisplay-bold";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 54px;
+  line-height: 66px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.title-2 .curve {
+  font-family: "ClashDisplay-bold";
+  color: var(--primary-green);
+}
+
+.why-section .row-1 {
+  display: flex;
+  align-items: flex-start;
+  padding: 0px 50px;
+  gap: 100px;
+}
+
+.why-section .row-2 {
+  display: flex;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 80px;
+}
+
+.why-section .feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 0px 48px;
+  gap: 20px;
+}
+
+.feature-title {
+  font-family: "ClashDisplay-medium";
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 26px;
+  text-align: center;
+}
+
+.feature-last {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 0px 48px;
+  gap: 16px;
+}
+
+.why-section .sub-content {
+  font-family: "SchibstedGrotesk";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  text-align: center;
+  width: 482px;
+  color: var(--white-4);
+}
+
+.fantom-section .title {
+  width: 568px;
+  font-family: "ClashDisplay-medium";
+  font-weight: 700;
+  font-size: 54px;
+  line-height: 66px;
+  text-transform: capitalize;
+  color: var(--white);
+}
+
+.fantom-section .sub-content {
+  font-family: "SchibstedGrotesk";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 26px;
+  width: 585px;
+  text-align: left;
+  color: var(--white-2);
+}
+
+.fantom-section .fantom-section-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 162px 0px 163px 100px;
+}
+
+.fantom-section .fantom-section-right {
+  margin: 112px 126px 0px 0px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.greek {
+  height: 514px;
+  width: 377px;
 }
