@@ -7,18 +7,18 @@ import { CurveXLogo, WalletIcon } from "../../../assets/images/imageAssets";
 import { useEffect, useState } from "react";
 
 const Header = () => {
-  const location = useLocation();
   const [account, setAccount] = useState("");
+  const location = useLocation();
 
   const { metaState, connectWallet } = useMetamaskProvider();
 
   useEffect(() => {
-    setAccount(metaState.account.toString());
-  }, [metaState, connectWallet]);
+    setAccount(metaState.account[0]);
+  }, [metaState.account]);
 
   return (
     <div className="header">
-      <div className="d-flex align-items-center justify-content-between">
+      <div>
         <Link style={{ textDecoration: "none" }} to={"/"}>
           <img className="logo" src={CurveXLogo} alt="CurveX_Logo" />
         </Link>

@@ -3,9 +3,7 @@
 
 .footer {
   padding: 54px 100px;
-  gap: 469px;
   height: 349px;
-  top: 2867px;
 }
 
 .footer .container {
@@ -16,10 +14,7 @@
 
 .foo-content {
   width: 363px;
-  height: 66px;
-  top: 72px;
   font-family: "SchibstedGrotesk";
-  font-style: normal;
   font-weight: 400;
   font-size: 18px;
   line-height: 22px;
@@ -30,17 +25,11 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0px;
   gap: 24px;
-  width: 363px;
-  height: 241px;
 }
 
 .copy-right {
-  width: 238px;
-  height: 31px;
   font-family: "SchibstedGrotesk";
-  font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
@@ -49,34 +38,24 @@
 
 .foo-sec2 {
   align-items: flex-start;
-  font-style: normal;
-  font-weight: 400;
   font-size: 14px;
   line-height: 20px;
-  padding: 0px;
-  gap: 100px;
+  gap: 108px;
   color: var(--gray-30);
-  height: 164px;
 }
 
 ul {
   list-style-type: none;
-  margin: 0;
-  padding: 0;
-  gap: 40px;
 }
 
-.app-logo {
-  width: 157px;
-  height: 31px;
-  left: 100px;
-  bottom: 3162px;
+.footer-logo {
+  width: 182px;
+  height: 48px;
 }
 
-.title {
+.foo-sec2 .title {
   color: var(--black);
-  font-family: "ClashDisplay";
-  font-style: normal;
+  font-family: "ClashDisplay-bold";
   font-weight: 600;
   font-size: 20px;
   line-height: 20px;
