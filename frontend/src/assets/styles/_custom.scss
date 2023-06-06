@@ -4,8 +4,13 @@
 }
 
 @font-face {
-  font-family: "ClashDisplay";
+  font-family: "ClashDisplay-bold";
   src: url("../fonts/ClashDisplay/Fonts/WEB/fonts/ClashDisplay-Bold.woff");
+}
+
+@font-face {
+  font-family: "ClashDisplay-medium";
+  src: url("../fonts//ClashDisplay//Fonts/WEB/fonts/ClashDisplay-Medium.woff");
 }
 
 @font-face {
@@ -17,7 +22,6 @@ html {
   height: -webkit-fill-available;
   height: -moz-available;
   height: -webkit-fill-available;
-  height: fill-available;
 }
 
 body {
@@ -30,7 +34,6 @@ body {
   height: -webkit-fill-available;
   height: -moz-available;
   height: -webkit-fill-available;
-  height: fill-available;
 }
 
 html,

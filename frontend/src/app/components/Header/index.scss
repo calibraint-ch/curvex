@@ -1,47 +1,33 @@
-@import '../../../assets/styles/settings/colors';
+@import "../../../assets/styles/settings/colors";
 
 .header {
-    background-color: var(--primary-blue);
-    color: var(--white);
-    height: 80px;
-}
-
-.logo {
-    left: 100px;
-    bottom: 3162px;
-    margin: 27px 1164px 26px 100px;
+  background-color: var(--primary-blue);
+  align-items: center;
+  color: var(--white);
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .nav-items {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 19px 100px 19px 32px;
-  gap: 70px;
-  position: absolute;
-  width: 518px;
-  height: 84px;
-  right: 0px;
-  top: 0px;
+  padding-right: 30px;
+}
+.nav-items div {
+  padding: 0px 30px;
 }
 
-.icon {
-  margin-left: 8px;
-  width: 24px;
-  height: 24px;
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-}
-
-.connect-btn {
-    margin-left: 183px;
-    margin-right: 46px;
+.header .logo {
+  padding: 0px 70px;
 }
 
 .connect-icon {
-    margin-left: 4px;
-    margin-right: 4px;
-    width: 22px;
-    height: 14px;
+  width: 18px;
+  height: 14px;
+}
+
+.nav-items .connect-btn span {
+  padding-left: 10px;
 }
