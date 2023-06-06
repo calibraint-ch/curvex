@@ -10,7 +10,7 @@ import {
 const Footer = () => {
     return (
         <div className="footer">
-            <div className="container">
+            <div className="container1">
                 <div className="foo-sec1">
                     <img className="footer-logo"
                         src={FooterLogo}
