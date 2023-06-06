@@ -4,16 +4,24 @@ import { Link, useLocation } from "react-router-dom";
 import { formatWalletAddress } from "../../../utils/methods";
 import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
 import { CurveXLogo, WalletIcon } from "../../../assets/images/imageAssets";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const location = useLocation();
+  const [account, setAccount] = useState("");
 
   const { metaState, connectWallet } = useMetamaskProvider();
+
+  useEffect(() => {
+    setAccount(metaState.account.toString());
+  }, [metaState, connectWallet]);
 
   return (
     <div className="header">
       <div className="d-flex align-items-center justify-content-between">
-        <img className="logo" src={CurveXLogo} alt="CurveX_Logo" />
+        <Link style={{ textDecoration: "none" }} to={"/"}>
+          <img className="logo" src={CurveXLogo} alt="CurveX_Logo" />
+        </Link>
       </div>
       <div className="nav-items">
         {location.pathname === "/" ? (
@@ -22,18 +30,14 @@ const Header = () => {
             <div>About</div>
             <div>
               <Link style={{ textDecoration: "none" }} to={"/curve-x"}>
-                <Button className="d-flex" type="primary">
-                  Try the app
-                </Button>
+                <Button className="try-btn">Try the app</Button>
               </Link>
             </div>
           </>
         ) : (
           <Button className="connect-btn" onClick={connectWallet}>
             <img className="connect-icon" src={WalletIcon} alt="wallet-group" />
-            {metaState.account
-              ? formatWalletAddress(metaState.account.toString())
-              : "Connect Wallet"}
+            {account ? formatWalletAddress(account) : "Connect Wallet"}
           </Button>
         )}
       </div>
