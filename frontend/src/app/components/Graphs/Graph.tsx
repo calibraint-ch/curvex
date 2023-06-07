@@ -14,6 +14,7 @@ export type GraphProps = {
   type: string;
   slope?: number;
   intercept?: number;
+  legend?: boolean;
 };
 
 export enum CurveTypes {
@@ -29,7 +30,7 @@ export type dataType = {
 };
 
 const Graph = (props: GraphProps) => {
-  const { cap, increment, slope, intercept, type } = props;
+  const { cap, increment, slope, intercept, type, legend = false } = props;
   const data: dataType[] = [];
   let totalSupply = 0;
   let price = 0;
@@ -63,13 +64,13 @@ const Graph = (props: GraphProps) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="totalSupply" />
-        <YAxis />
+        <YAxis dataKey="price" />
         <Tooltip />
-        <Legend />
+        {legend ? <Legend /> : <></>}
         <Line
           type="monotone"
           dataKey="price"
-          stroke="#8884d8"
+          stroke="#6BD28E"
           activeDot={{ r: 8 }}
         />
       </LineChart>

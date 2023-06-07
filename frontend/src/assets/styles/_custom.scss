@@ -18,6 +18,16 @@
   src: url("../fonts/Schibsted_Grotesk/static/SchibstedGrotesk-Regular.ttf");
 }
 
+@font-face {
+  font-family: "SchibstedGrotesk-Bold";
+  src: url("../fonts/Schibsted_Grotesk/static/SchibstedGrotesk-Bold.ttf");
+}
+
+@font-face {
+  font-family: "ClashDisplay-SemiBold";
+  src: url("../fonts/Schibsted_Grotesk/static/SchibstedGrotesk-SemiBold.ttf");
+}
+
 html {
   height: -webkit-fill-available;
   height: -moz-available;
@@ -121,6 +131,7 @@ video {
   border: 0;
   vertical-align: baseline;
 }
+
 article,
 aside,
 details,
@@ -134,23 +145,28 @@ nav,
 section {
   display: block;
 }
+
 a {
   text-decoration: none;
   outline: none;
   cursor: pointer;
 }
+
 p {
   margin: 0;
   word-break: break-word;
 }
+
 ol,
 ul {
   list-style: none;
 }
+
 blockquote,
 q {
   quotes: none;
 }
+
 blockquote:before,
 blockquote:after,
 q:before,
@@ -158,10 +174,12 @@ q:after {
   content: "";
   content: none;
 }
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
 h1,
 h2,
 h3,
@@ -184,8 +202,9 @@ button {
   outline-color: transparent;
   appearance: none;
 }
+
 button:focus,
-button > .focus {
+button>.focus {
   outline: none;
   box-shadow: none;
   cursor: pointer;
@@ -218,6 +237,7 @@ button > .focus {
   top: 0;
   bottom: 0;
   margin: auto 0;
+
   .anticon-close-circle {
     vertical-align: unset;
   }
