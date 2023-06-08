@@ -9,3 +9,7 @@ export { default as Puzzle } from "./Puzzle.png";
 export { default as Unlock } from "./Unlock.png";
 export { default as Price } from "./Price.png";
 export { default as Greek } from "./Greek.png";
+export { default as WalletIconDashboard } from "./WalletIconDashboard.png";
+export { default as EthBalance } from "./EthBalance.png";
+export { default as UsdBalance } from "./UsdBalance.png";
+export { default as Banner } from "./Banner.png";

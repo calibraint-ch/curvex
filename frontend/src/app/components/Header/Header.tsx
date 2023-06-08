@@ -35,10 +35,17 @@ const Header = () => {
             </div>
           </>
         ) : (
-          <Button className="connect-btn" onClick={connectWallet}>
-            <img className="connect-icon" src={WalletIcon} alt="wallet-group" />
-            {account ? formatWalletAddress(account) : "Connect Wallet"}
-          </Button>
+          <div className="nav-items">
+            <Link style={{ textDecoration: "none", color: '#ffffff' }} to={"/dashboard"}>
+              <div>Dashboard</div>
+            </Link>
+            <Button className="connect-btn" onClick={connectWallet}>
+              <img className="connect-icon" src={WalletIcon} alt="wallet-group" />
+              {account
+                ? formatWalletAddress(account)
+                : "Connect Wallet"}
+            </Button>
+          </div>
         )}
       </div>
     </div>
