@@ -1,0 +1,21 @@
+.chip-card {
+    width: 400px;
+    height: 140px;
+    background-color: #4b58d2;
+    border-radius: 12px;
+    padding: 2%;
+    margin-right: 15px;
+}
+
+.card-value {
+    font-family: 'SchibstedGrotesk-Bold';
+    color: var(--white);
+    font-size: 48px;
+}
+
+.card-title {
+    font-family: 'SchibstedGrotesk-Medium';
+    font-size: 24px;
+    color: var(--white);
+    opacity: 60%;
+}

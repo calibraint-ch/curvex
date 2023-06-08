@@ -64,13 +64,17 @@ const Graph = (props: GraphProps) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="totalSupply" />
-        <YAxis dataKey="price" />
+        <YAxis
+          dataKey="price"
+          tick={{ fill: "ffffff" }}
+          // tickLine={{ stroke: "ffffff" }}
+        />
         <Tooltip />
         {legend ? <Legend /> : <></>}
         <Line
           type="monotone"
           dataKey="price"
-          stroke="#6BD28E"
+          stroke="#f3f264"
           activeDot={{ r: 8 }}
         />
       </LineChart>
