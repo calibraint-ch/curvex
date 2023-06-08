@@ -1,46 +1,45 @@
 import "./index.scss";
-import { Logo } from "../../../assets/imageAssets";
-import Icons from "../../../assets/Icons.png";
+import { Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import Group from "../../../assets/Group.png";
+import { formatWalletAddress } from "../../../utils/methods";
+import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
+import { CurveXLogo, WalletIcon } from "../../../assets/images/imageAssets";
+import { useEffect, useState } from "react";
 
 const Header = () => {
+  const [account, setAccount] = useState("");
   const location = useLocation();
-  const walletAddress = "";
+
+  const { metaState, connectWallet } = useMetamaskProvider();
+
+  useEffect(() => {
+    setAccount(metaState.account[0]);
+  }, [metaState.account]);
 
   return (
     <div className="header">
-      <div className="d-flex align-items-center justify-content-between">
-        <img className="logo"
-          src={Logo}
-          alt="CurveX_Logo"
-        />
+      <div>
+        <Link style={{ textDecoration: "none" }} to={"/"}>
+          <img className="logo" src={CurveXLogo} alt="CurveX_Logo" />
+        </Link>
       </div>
       <div className="nav-items">
-        {
-          location.pathname === "/" ?
-            <>
-              <div>Docs</div>
-              <div>About</div>
-              <div>
-                <Link style={{ textDecoration: 'none' }} to={'/curve-x'}>
-                  <button className="try-btn d-flex">Try the app
-                    <img className="icon"
-                      src={Icons}
-                      alt="wallet-icon"
-                    />
-                  </button>
-                </Link>
-              </div>
-            </>
-            :
-            <button className="connect-btn">
-              <img className="connect-icon"
-                src={Group}
-                alt="wallet-group"
-              />{walletAddress ? walletAddress : 'Connect Wallet'}
-            </button>
-        }
+        {location.pathname === "/" ? (
+          <>
+            <div>Docs</div>
+            <div>About</div>
+            <div>
+              <Link style={{ textDecoration: "none" }} to={"/curve-x"}>
+                <Button className="try-btn">Try the app</Button>
+              </Link>
+            </div>
+          </>
+        ) : (
+          <Button className="connect-btn" onClick={connectWallet}>
+            <img className="connect-icon" src={WalletIcon} alt="wallet-group" />
+            {account ? formatWalletAddress(account) : "Connect Wallet"}
+          </Button>
+        )}
       </div>
     </div>
   );

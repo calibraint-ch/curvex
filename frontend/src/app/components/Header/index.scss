@@ -1,71 +1,49 @@
-.header {
-    background-color: #505050;
-    color: #FFFFFF;
-    height: 80px;
-}
+@import "../../../assets/styles/settings/colors";
 
-.logo {
-    width: 157px;
-    height: 31px;
-    left: 100px;
-    bottom: 3162px;
-    margin: 27px 1164px 26px 100px;
+.header {
+  background-color: var(--primary-blue);
+  align-items: center;
+  color: var(--white);
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .nav-items {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 19px 100px 19px 32px;
-    gap: 70px;
-    position: absolute;
-    width: 518px;
-    height: 84px;
-    right: 0px;
-    top: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: 30px;
 }
 
-.try-btn {
-    width: 135px;
-    height: 31px;
-    padding: 3px 7px 8px 8px;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 20px;
-    top: 11px;
-    left: 24px;
-    border: 1px solid blue;
-    border-radius: 10px;
-    background-color: #505050;
-    color: #FFFFFF;
+.nav-items div {
+  padding: 0px 30px;
 }
 
-.icon {
-    margin-left: 8px;
-    width: 24px;
-    height: 24px;
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-}
-
-.connect-btn {
-    margin-left: 183px;
-    margin-right: 46px;
-    width: 176px;
-    height: 40.02px;
-    background-color: #505050;
-    border: 1px solid #B5964D;
-    border-radius: 10px;
-    color: #FFFFFF;
-    left: 1211px;
-    top: 31px;
+.header .logo {
+  padding: 0px 70px;
 }
 
 .connect-icon {
-    margin-left: 4px;
-    margin-right: 4px;
-    width: 22px;
-    height: 14px;
+  width: 18px;
+  height: 14px;
+}
+
+.nav-items .connect-btn span {
+  padding-left: 10px;
+}
+
+.try-btn {
+  width: 150px;
+  height: 42px;
+  background-color: transparent !important;
+  border: 2px solid var(--white) !important;
+  font-size: 16px;
+  color: var(--white);
+
+  &:hover {
+    color: var(--black) !important;
+    background-color: var(--primary-lemon) !important;
+    border-color: var(--primary-lemon) !important;
+  }
 }

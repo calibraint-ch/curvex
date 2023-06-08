@@ -1,0 +1,242 @@
+@import "../../../assets/styles/settings/colors";
+@import "../../../assets/styles/custom";
+
+.hero-section {
+  background-color: var(--primary-blue);
+  height: 700px;
+  padding: 100px;
+}
+
+.hero-section-left {
+  height: fit-content;
+  width: 50%;
+  margin-top: 75px;
+}
+
+.hero-image {
+  position: absolute;
+  z-index: 2;
+}
+
+.hero-section-right {
+  margin-left: 249px;
+}
+
+.hero-heading {
+  color: var(--white);
+  font-size: 54px;
+  font-family: "ClashDisplay-bold";
+  line-height: 60px;
+}
+
+.hero-sub-heading {
+  font-family: "SchibstedGrotesk-Bold";
+  font-size: 20px;
+  color: var(--white);
+}
+
+.hero-description {
+  font-family: "SchibstedGrotesk";
+  color: var(--white);
+  font-size: 20px;
+}
+
+.launch-app-btn {
+  color: var(--primary-blue);
+  font-size: 16px;
+  font-weight: 510;
+  width: 148px;
+  height: 42px;
+
+  &:hover {
+    color: var(--black) !important;
+    background-color: var(--primary-lemon) !important;
+    border-color: var(--primary-lemon) !important;
+  }
+}
+
+.connector-div {
+  margin-top: -285px;
+}
+
+.sticky-column {
+  position: sticky !important;
+  top: 0;
+  height: 870px;
+  background-color: var(--primary-lemon);
+  padding: 50px;
+  width: 50%;
+  position: relative;
+  z-index: 1;
+}
+
+.sticky-contents {
+  margin: 116px 0px 0px 138px;
+  width: 500px;
+  z-index: 2;
+  position: absolute;
+}
+
+.sticky-heading {
+  font-family: "ClashDisplay-bold";
+  font-size: 46px;
+  color: var(--gray-30);
+}
+
+.sticky-description {
+  color: var(--gray-30);
+  font-size: 24px;
+  font-family: "SchibstedGrotesk";
+}
+
+.hand-illustration {
+  margin: -50px 0px 0px 100px;
+  position: relative;
+  z-index: 1;
+}
+
+.graph-heading {
+  font-family: "ClashDisplay-SemiBold";
+  color: var(--gray-30);
+  font-size: 32px;
+}
+
+.graph-description {
+  font-family: "SchibstedGrotesk";
+  color: var(--text-3);
+  width: 450px;
+}
+
+.graph-column {
+  width: 50%;
+  background-color: var(--light-pink);
+  padding: 7%;
+}
+
+.graph {
+  padding: 65px 15px 15px 15px;
+}
+
+.hero-section-left {
+  height: fit-content;
+  width: 50%;
+}
+
+.why-section {
+  display: flex;
+  justify-content: space-between;
+  margin: 0px 100px 120px;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.fantom-section {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 625px;
+  background: var(--primary-pink);
+}
+
+.why-section .title-2 {
+  font-family: "ClashDisplay-bold";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 54px;
+  line-height: 66px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.title-2 .curve {
+  font-family: "ClashDisplay-bold";
+  color: var(--primary-green);
+}
+
+.why-section .row-1 {
+  display: flex;
+  align-items: flex-start;
+  padding: 0px 50px;
+  gap: 100px;
+}
+
+.why-section .row-2 {
+  display: flex;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 80px;
+}
+
+.why-section .feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 0px 48px;
+  gap: 20px;
+}
+
+.feature-title {
+  font-family: "ClashDisplay-medium";
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 26px;
+  text-align: center;
+}
+
+.feature-last {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 0px 48px;
+  gap: 16px;
+}
+
+.why-section .sub-content {
+  font-family: "SchibstedGrotesk";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  text-align: center;
+  width: 482px;
+  color: var(--white-4);
+}
+
+.fantom-section .title {
+  width: 568px;
+  font-family: "ClashDisplay-medium";
+  font-weight: 700;
+  font-size: 54px;
+  line-height: 66px;
+  text-transform: capitalize;
+  color: var(--white);
+}
+
+.fantom-section .sub-content {
+  font-family: "SchibstedGrotesk";
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 26px;
+  width: 585px;
+  text-align: left;
+  color: var(--white-2);
+}
+
+.fantom-section .fantom-section-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 162px 0px 163px 180px;
+}
+
+.fantom-section .fantom-section-right {
+  margin: 112px 126px 0px 0px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.greek {
+  height: 514px;
+  width: 377px;
+  margin-right: 137px;
+}
