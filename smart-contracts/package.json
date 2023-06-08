@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "description": "An open source token vesting contracts developed using the bonding curve technique",
   "scripts": {
+    "compile": "hardhat compile",
     "test": "hardhat test",
-    "compile": "hardhat compile"
+    "test:coverage": "hardhat coverage",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "test:size": "hardhat size-contracts"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +15,7 @@
     "@nomicfoundation/hardhat-toolbox": "2.0.2",
     "@openzeppelin/contracts": "4.9.0",
     "dotenv": "^16.1.1",
-    "hardhat": "2.14.0"
+    "hardhat": "2.14.0",
+    "hardhat-contract-sizer": "^2.9.0"
   }
 }
