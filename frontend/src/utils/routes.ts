@@ -1,4 +1,5 @@
 export const routes = {
   homepage: "/",
-  appscreen: "/curve-x"
+  appscreen: "/curve-x",
+  dashboard: "/dashboard",
 };

@@ -3,8 +3,8 @@ import "./App.scss";
 import HomePage from "./app/containers/HomePage";
 import { routes } from "./utils/routes";
 import Header from "./app/components/Header/Header";
-import Footer from "./app/components/Footer/Footer";
 import AppScreen from "./app/containers/AppScreen";
+import UserDashBoard from "./app/containers/UserDashboard";
 
 function App() {
   return (
@@ -14,8 +14,8 @@ function App() {
         <Routes>
           <Route path={routes.homepage} element={<HomePage />} />
           <Route path={routes.appscreen} element={<AppScreen />} />
+          <Route path={routes.dashboard} element={<UserDashBoard />} />
         </Routes>
-        <Footer />
       </div>
     </Router>
   );

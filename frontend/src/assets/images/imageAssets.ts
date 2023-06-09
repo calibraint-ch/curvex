@@ -11,3 +11,7 @@ export { default as Price } from "./Price.png";
 export { default as Greek } from "./Greek.png";
 export { default as FTMLogo } from "./FTM - Fantom.png";
 export { default as EthereumLogo } from "./ethereum-icon.png";
+export { default as WalletIconDashboard } from "./WalletIconDashboard.png";
+export { default as EthBalance } from "./EthBalance.png";
+export { default as UsdBalance } from "./UsdBalance.png";
+export { default as Banner } from "./Banner.png";
