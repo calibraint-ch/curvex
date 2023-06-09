@@ -19,6 +19,7 @@ const AppScreen = () => {
             type={CurveTypes.linear}
             slope={15}
             intercept={15}
+            previewOnly={false}
           />
         </div>
       </div>

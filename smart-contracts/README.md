@@ -1,4 +1,4 @@
-# CurveX
+# CurvX
 
 An open source token vesting contracts developed using the bonding curve technique
 

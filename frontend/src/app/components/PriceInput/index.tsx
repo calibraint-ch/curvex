@@ -3,7 +3,12 @@ import "./index.scss";
 
 const PriceInput = () => {
   return (
-    <InputNumber className="price-input" controls={false} defaultValue={0.0} />
+    <InputNumber
+      className="price-input"
+      controls={false}
+      defaultValue={0.0}
+      type="number"
+    />
   );
 };
 
