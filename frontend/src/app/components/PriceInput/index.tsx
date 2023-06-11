@@ -6,7 +6,7 @@ const PriceInput = () => {
     <InputNumber
       className="price-input"
       controls={false}
-      defaultValue={0.0}
+      defaultValue={0.}
       type="number"
     />
   );

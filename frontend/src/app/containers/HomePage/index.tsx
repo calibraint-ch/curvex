@@ -3,8 +3,14 @@ import { Button } from "antd";
 import { ConnectorDiv, HeroImage } from "../../../assets/images/imageAssets";
 import { Hand } from "../../../assets/images/imageAssets";
 import Graph from "../../components/Graphs/Graph";
-import { CurveTypes } from "../../components/Graphs/Graph";
-import { Settings, Puzzle, Unlock, Price, Greek } from "../../../assets/images/imageAssets";
+import { CurveTypes } from "../../components/Graphs/constants";
+import {
+  Settings,
+  Puzzle,
+  Unlock,
+  Price,
+  Greek,
+} from "../../../assets/images/imageAssets";
 import Footer from "../../components/Footer/Footer";
 import "./index.scss";
 
