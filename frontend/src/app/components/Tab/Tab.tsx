@@ -1,28 +1,26 @@
-import { Tabs } from 'antd';
-import { tabOptions } from './constants'
-import './index.scss'
+import { Tabs } from "antd";
+import { tabOptions } from "./constants";
+import "./index.scss";
 
-const Tab = () => {
-    return (
-        <div>
-            <Tabs
-                defaultActiveKey="1"
-                centered
-                items={tabOptions.map((Item) => {
-                    return {
-                        label: (
-                            <span>
-                                <Item.Icon />
-                                {Item.label}
-                            </span>
-                        ),
-                        key: Item.key,
-                        children: Item.children,
-                    };
-                })}
-            />
-        </div >
-    )
-}
+const Tab = ({ onTabChange }: { onTabChange: any }) => {
+  return (
+    <Tabs
+      defaultActiveKey="1"
+      centered
+      onChange={onTabChange}
+      items={tabOptions.map((Item) => {
+        return {
+          label: (
+            <span>
+              <Item.Icon />
+              {Item.label}
+            </span>
+          ),
+          key: Item.key,
+        };
+      })}
+    />
+  );
+};
 
 export default Tab;

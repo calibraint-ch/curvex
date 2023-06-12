@@ -1,3 +1,5 @@
+import { CurveTypes, GraphProps, dataType, strokeColors } from "./constants";
+import "./index.scss";
 import {
   LineChart,
   Line,
@@ -6,31 +8,19 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ReferenceArea,
 } from "recharts";
 
-export type GraphProps = {
-  cap: number;
-  increment: number;
-  type: string;
-  slope?: number;
-  intercept?: number;
-  legend?: boolean;
-};
-
-export enum CurveTypes {
-  linear = "linear",
-  polynomial = "polynomial",
-  subLinear = "subLinear",
-  sCurve = "sCurve",
-}
-
-export type dataType = {
-  totalSupply: number;
-  price: number;
-};
-
 const Graph = (props: GraphProps) => {
-  const { cap, increment, slope, intercept, type, legend = false } = props;
+  const {
+    cap,
+    increment,
+    slope,
+    intercept,
+    type,
+    legend = false,
+    previewOnly,
+  } = props;
   const data: dataType[] = [];
   let totalSupply = 0;
   let price = 0;
@@ -49,6 +39,10 @@ const Graph = (props: GraphProps) => {
     }
   }
 
+  //TODO: Add upperbounds to reference area
+  // const maxLineValue = Math.max(...data.map((entry: any) => entry.price));
+  // const referenceAreaUpperBound = maxLineValue;
+
   return (
     <div>
       <LineChart
@@ -63,15 +57,44 @@ const Graph = (props: GraphProps) => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="totalSupply" />
-        <YAxis dataKey="price" />
-        <Tooltip />
+        <XAxis
+          dataKey="totalSupply"
+          tick={{ fill: previewOnly ? strokeColors.grey : strokeColors.white }}
+          axisLine={{
+            stroke: previewOnly ? strokeColors.grey : strokeColors.white,
+          }}
+        />
+        <YAxis
+          dataKey="price"
+          tick={{ fill: previewOnly ? strokeColors.grey : strokeColors.white }}
+          axisLine={{
+            stroke: previewOnly ? strokeColors.grey : strokeColors.white,
+          }}
+        />
+        {!previewOnly ? (
+          <ReferenceArea x1={40} x2={60} color={strokeColors.lemon} />
+        ) : (
+          <></>
+        )}
+
+        <Tooltip
+          labelStyle={{ color: "#2f3ece" }}
+          itemStyle={{ color: "#2f3ece" }}
+          formatter={function (value, name) {
+            return `${value}`;
+          }}
+          labelFormatter={function (value) {
+            return `Total Supply: ${value}`;
+          }}
+        />
         {legend ? <Legend /> : <></>}
         <Line
           type="monotone"
           dataKey="price"
-          stroke="#6BD28E"
-          activeDot={{ r: 8 }}
+          stroke={previewOnly ? strokeColors.green : strokeColors.lemon}
+          activeDot={{ r: 5 }}
+          strokeWidth={3}
+          data
         />
       </LineChart>
     </div>

@@ -23,7 +23,7 @@ const Footer = () => {
                         <FacebookOutlined />
                         <LinkedinOutlined />
                     </div>
-                    <div className="copy-right">Copyright © 2023 <span style={{ color: '#000000' }}>CurveX</span></div>
+                    <div className="copy-right">Copyright © 2023 <span style={{ color: '#000000' }}>CurvX</span></div>
                 </div>
                 <div className="d-flex foo-sec2">
                     <ul>

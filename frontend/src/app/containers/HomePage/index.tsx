@@ -3,8 +3,14 @@ import { Button } from "antd";
 import { ConnectorDiv, HeroImage } from "../../../assets/images/imageAssets";
 import { Hand } from "../../../assets/images/imageAssets";
 import Graph from "../../components/Graphs/Graph";
-import { CurveTypes } from "../../components/Graphs/Graph";
-import { Settings, Puzzle, Unlock, Price, Greek } from "../../../assets/images/imageAssets";
+import { CurveTypes } from "../../components/Graphs/constants";
+import {
+  Settings,
+  Puzzle,
+  Unlock,
+  Price,
+  Greek,
+} from "../../../assets/images/imageAssets";
 import Footer from "../../components/Footer/Footer";
 import "./index.scss";
 
@@ -49,14 +55,14 @@ const HomePage = () => {
       </section>
       <section className="why-section">
         <p className="title-2">
-          Why <span className="curve">CurveX?</span>
+          Why <span className="curve">CurvX?</span>
         </p>
         <div className="row-1">
           <div className="feature">
             <img src={Settings} alt="settings"></img>
             <p className="feature-title">Customizable Token Economics</p>
             <p className="sub-content">
-              CurveX offers flexibility in designing token economics. Users can
+              CurvX offers flexibility in designing token economics. Users can
               customize the parameters of the bonding curve, such as the initial
               price, slope, and reserve ratio, to align with their desired token
               issuance dynamics.
@@ -124,6 +130,7 @@ const HomePage = () => {
             </p>
             <div className="graph">
               <Graph
+                previewOnly={true}
                 cap={100}
                 increment={10}
                 type={CurveTypes.linear}
@@ -138,6 +145,7 @@ const HomePage = () => {
             </p>
             <div className="graph">
               <Graph
+                previewOnly={true}
                 cap={100}
                 increment={10}
                 type={CurveTypes.linear}
@@ -153,6 +161,7 @@ const HomePage = () => {
             </p>
             <div className="graph">
               <Graph
+                previewOnly={true}
                 cap={100}
                 increment={10}
                 type={CurveTypes.linear}
@@ -168,6 +177,7 @@ const HomePage = () => {
             </p>
             <div className="graph">
               <Graph
+                previewOnly={true}
                 cap={100}
                 increment={10}
                 type={CurveTypes.linear}

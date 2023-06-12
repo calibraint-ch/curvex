@@ -1,7 +1,7 @@
 {
   "name": "curvex",
   "version": "0.1.0",
-  "description": "CurveX - Bonding curve based token issuance and management application",
+  "description": "CurvX - Bonding curve based token issuance and management application",
   "private": false,
   "dependencies": {
     "@ant-design/icons": "^5.1.4",

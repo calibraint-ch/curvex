@@ -24,11 +24,6 @@
   padding: 0px 70px;
 }
 
-.connect-icon {
-  width: 18px;
-  height: 14px;
-}
-
 .nav-items .connect-btn span {
   padding-left: 10px;
 }
@@ -40,6 +35,20 @@
   border: 2px solid var(--white) !important;
   font-size: 16px;
   color: var(--white);
+
+  &:hover {
+    color: var(--black) !important;
+    background-color: var(--primary-lemon) !important;
+    border-color: var(--primary-lemon) !important;
+  }
+}
+
+.connect-btn {
+  font-family: 'SchibstedGrotesk' !important;
+  font-size: 16px;
+  color: var(--primary-blue);
+  height: 40px;
+  font-weight: 600;
 
   &:hover {
     color: var(--black) !important;

@@ -1,0 +1,17 @@
+.price-card {
+    width: 617px;
+    height: 194px;
+    padding: 15px;
+    border-radius: 12px;
+    background-color: var(--white);
+    margin-bottom: 20px;
+}
+
+.price-card-group{
+    width: fit-content;
+}
+
+.balance-text {
+    font-weight: 600;
+    color: var(--text-3);
+}
