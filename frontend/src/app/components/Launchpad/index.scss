@@ -1,0 +1,54 @@
+.launchpad-section {
+    background-color: var(--primary-blue);
+    display: flex;
+    justify-content: center;
+}
+
+.launchpad-box {
+    background-color: var(--white);
+    width: 460px;
+    border-radius: 12px;
+}
+
+.description-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 412px;
+    height: 71px;
+    background: rgba(255, 253, 2, 0.1);
+    border: 1px solid rgba(193, 145, 31, 0.2);
+    border-radius: 12px;
+    padding: 2%;
+    margin: 5%;
+}
+
+.description-title {
+    font-size: 11px;
+    font-family: 'SchibstedGrotesk-Bold';
+    margin: 0px;
+}
+
+.description-content {
+    font-size: 11px;
+    font-family: 'SchibstedGrotesk';
+}
+
+.launchpad-contents {
+    margin: 5%;
+}
+
+.token-details-title {
+    font-size: 18px;
+    font-family: 'SchibstedGrotesk-Bold';
+    margin-bottom: 10px;
+}
+
+.input-description {
+    font-size: 10;
+    color: var(--text-4)
+}
+
+.ant-upload {
+    background-color: var(--white);
+}
