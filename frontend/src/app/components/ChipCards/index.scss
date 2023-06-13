@@ -1,7 +1,7 @@
 .chip-card {
   display: flex;
   width: 400px;
-  height: 140px;
+  height: 160px;
   background-color: var(--light-blue);
   border-radius: 12px;
   padding: 2%;
@@ -37,13 +37,14 @@
 .modal-props .input-box {
   width: 57px;
   height: 32px;
+  padding: 10px;
   border: 1px solid var(--text-4);
   border-radius: 24px;
   margin-right: 10px;
 }
 
 .slippage-modal {
-  margin: 65px 16px 14px 16px;
+  margin: 68px 16px 14px 7px;
 }
 
 .slipage .ant-radio-button-wrapper {
@@ -63,8 +64,17 @@
 
 .slipage
   .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-  color: #fff;
-  background: var(--primary-blue);
+  color: var(--gray-30);
+  background: rgba(47, 62, 206, 0.08);
+  border-color: var(--primary-blue);
+}
+
+.slipage
+  .ant-radio-button-wrapper-checked:not(
+    .ant-radio-button-wrapper-disabled
+  ):hover {
+  color: var(--gray-30);
+  background: rgba(47, 62, 206, 0.08);
   border-color: var(--primary-blue);
 }
 

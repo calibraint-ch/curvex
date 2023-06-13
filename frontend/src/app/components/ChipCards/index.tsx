@@ -31,7 +31,7 @@ const ChipCard = (props: Cardprops) => {
         content: 'Value must not be greater than 10',
         style: {
           marginTop: '95px',
-          marginLeft: '890px'
+          marginLeft: '750px'
         },
       });
       return;

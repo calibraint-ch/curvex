@@ -32,13 +32,15 @@ const UserDashBoard = () => {
                 </div>
             </div>
             <div className="tables">
-                <div className="table1">
-                    <p className="title">Deployed Tokens</p>
-                    <TableComponent dataSource={deployedDataSource} columns={deployedColumns} />
-                </div>
-                <div className="table2">
-                    <p className="title">Claimable Tokens</p>
-                    <TableComponent dataSource={claimableDataSource} columns={claimableColumns} />
+                <div className="row">
+                    <div className="col-8">
+                        <p className="title">Deployed Tokens</p>
+                        <TableComponent dataSource={deployedDataSource} columns={deployedColumns} />
+                    </div>
+                    <div className="col-4">
+                        <p className="title">Claimable Tokens</p>
+                        <TableComponent dataSource={claimableDataSource} columns={claimableColumns} />
+                    </div>
                 </div>
             </div>
         </div>
