@@ -24,6 +24,21 @@
   padding: 0px 70px;
 }
 
+.connect-icon {
+  width: 18px;
+  height: 14px;
+}
+
+.disconnect-icon {
+  width: 18px;
+  height: 20px;
+}
+
+.custom-icon {
+  width: 20px;
+  height: 10px;
+}
+
 .nav-items .connect-btn span {
   padding-left: 10px;
 }
@@ -44,7 +59,7 @@
 }
 
 .connect-btn {
-  font-family: 'SchibstedGrotesk' !important;
+  font-family: "SchibstedGrotesk" !important;
   font-size: 16px;
   color: var(--primary-blue);
   height: 40px;
