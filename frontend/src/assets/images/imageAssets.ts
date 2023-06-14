@@ -15,3 +15,5 @@ export { default as WalletIconDashboard } from "./WalletIconDashboard.png";
 export { default as EthBalance } from "./EthBalance.png";
 export { default as UsdBalance } from "./UsdBalance.png";
 export { default as Banner } from "./Banner.png";
+export { default as QuestionCircle } from "./QuestionCircle.png";
+export { default as BuySetting } from "./BuySetting.png";

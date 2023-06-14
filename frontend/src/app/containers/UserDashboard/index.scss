@@ -4,14 +4,6 @@
   justify-content: space-between;
 }
 
-.tables .table1 {
-  width: 800px;
-}
-
-.tables .table2 {
-  width: 300px;
-}
-
 .tables .title {
   font-family: "ClashDisplay-medium";
   font-weight: 600;
@@ -35,11 +27,11 @@
 
 .banner-section {
   display: flex;
-  margin: 50px 100px 20px 100px;
+  margin: 25px 100px 20px 100px;
 }
 
 .banner {
-  width: 1151px;
+  width: 100%;
   position: relative;
 }
 
