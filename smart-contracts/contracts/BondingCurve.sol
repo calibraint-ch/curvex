@@ -52,7 +52,7 @@ contract BondingCurve is Context {
     function buy(uint256 _amount) external payable {
         require(_amount > 0, "Invalid amount");
         uint256 tokensToMint = calculatePurchaseReturn(
-            totalSupply + _amount,
+            totalSupply,
             reserveBalance,
             reserveRatio,
             _amount,
