@@ -4,72 +4,15 @@ pragma solidity ^0.8.18;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
+import "./Interface/ICurvXErc20.sol";
+
 /**
  * @title CurveX lockable erc20 contract
  * @author @nandhabn
  * @dev A standard erc20 implementation with the required
  * functionalities for token locking feature.
  */
-contract CurveX_ERC20 is ERC20 {
-    /// @notice Thrown when token name is too short or too long
-    error TokenNameLengthOutOfRange(uint8 min, uint8 max);
-
-    /// @notice Thrown when token symbol is too short or too long
-    error TokenSymbolLengthOutOfRange(uint8 min, uint8 max);
-
-    /// @notice Supply cap amount is out of range
-    error SupplyCapOutOfRange(uint256 min, uint256 max);
-
-    /// @notice While minting total supply exceeds supply cap
-    error MintExceedsSupplyCap(uint256 amount, uint256 maximumMintable);
-
-    /// @notice When transfer amount exceeds available transferable amount
-    error InsufficientUnlockedTokens(
-        uint256 unlockedBalance,
-        uint256 minRequired
-    );
-
-    /// @notice Lock amount exceeds the transferable amount
-    error LockAmountExceedsBalance(uint256 required, uint256 balance);
-
-    /// @notice unlock called when unlockable balance is zero
-    error UnlockableBalanceZero();
-
-    /// @notice locking period is zero
-    error LockingPeriodZero();
-
-    /// @notice locking period is zero
-    error TokenManagerZero();
-
-    /**
-     * @dev stores the amount and unlock timestamp required to unlock the token
-     *
-     * Params:
-     *
-     * - `amount` - amount of tokens to lock
-     * - `unlockTimestamp` - lock period ending time(unix timestamp)
-     */
-    struct Lock {
-        uint256 amount;
-        uint256 unlockTimestamp;
-    }
-
-    /**
-     * @dev emits when tokens are locked for a account
-     *
-     * @param account account address
-     * @param amount amount of token to lock
-     */
-    event TokenLocked(address account, uint256 amount);
-
-    /**
-     * @dev emits when tokens are unlocked for a account
-     *
-     * @param account account address
-     * @param amount amount of token to lock
-     */
-    event TokenUnlocked(address account, uint256 amount);
-
+contract CurveX_ERC20 is ERC20, ICurvXErc20, AccessControl {
     /**
      * @dev list of locked balances of each accounts
      */
@@ -92,6 +35,12 @@ contract CurveX_ERC20 is ERC20 {
      */
     uint256 public immutable LOCK_PERIOD;
 
+    bytes32 public constant TOKEN_MANAGER_ROLE =
+        keccak256("TOKEN_MANAGER_ROLE");
+
+    bytes32 public constant TOKEN_MANAGER_ADMIN_ROLE =
+        keccak256("TOKEN_MANAGER_ADMIN_ROLE");
+
     /**
      * @dev initializes the token by setting the token details and role access
      *
@@ -105,14 +54,12 @@ contract CurveX_ERC20 is ERC20 {
      * @param symbol symbol of the token
      * @param supplyCap maximum mintable supply
      * @param lockPeriod default token locking period
-     * @param tokenManager address of token manager
      */
     constructor(
         string memory name,
         string memory symbol,
         uint256 supplyCap,
-        uint256 lockPeriod,
-        address tokenManager
+        uint256 lockPeriod
     ) ERC20(name, symbol) {
         if (bytes(name).length < 1 || bytes(name).length > 64)
             revert TokenNameLengthOutOfRange(1, 64);
@@ -124,7 +71,8 @@ contract CurveX_ERC20 is ERC20 {
 
         if (lockPeriod == 0) revert LockingPeriodZero();
 
-        if (tokenManager == address(0)) revert TokenManagerZero();
+        _setRoleAdmin(TOKEN_MANAGER_ROLE, TOKEN_MANAGER_ADMIN_ROLE);
+        _grantRole(TOKEN_MANAGER_ADMIN_ROLE, _msgSender());
 
         SUPPLY_CAP = supplyCap;
         LOCK_PERIOD = lockPeriod;
@@ -271,9 +219,16 @@ contract CurveX_ERC20 is ERC20 {
      *
      * @param amount amount tokens to mint and lock
      */
-    function mintAndLock(uint256 amount) public {
+    function mintAndLock(uint256 amount) public onlyRole(TOKEN_MANAGER_ROLE) {
         _mint(_msgSender(), amount);
 
         _lock(_msgSender(), amount);
+    }
+
+    function burn(
+        address account,
+        uint256 amount
+    ) public onlyRole(TOKEN_MANAGER_ROLE) {
+        _burn(account, amount);
     }
 }

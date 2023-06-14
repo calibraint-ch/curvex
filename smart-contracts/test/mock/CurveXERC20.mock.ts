@@ -1,16 +1,8 @@
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
-import { ethers, network } from "hardhat";
-
-const AddressZero = ethers.constants.AddressZero;
+import { ethers } from "hardhat";
 
 describe("Token contract", function () {
-  after(async () => {
-    await network.provider.request({
-      method: "hardhat_reset",
-    });
-  });
-
   async function deployTokenFixture() {
     const Token = await ethers.getContractFactory("CurveX_ERC20");
     const [owner, addr1, addr2] = await ethers.getSigners();
@@ -67,6 +59,7 @@ describe("Token contract", function () {
         .to.be.revertedWithCustomError(Token, "SupplyCapOutOfRange")
         .withArgs(
           1,
+          // Uin256 max value
           BigInt(
             "115792089237316195423570985008687907853269984665640564039457584007913129639935"
           )
