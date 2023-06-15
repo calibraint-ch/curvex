@@ -11,7 +11,7 @@ const Tab = ({ onTabChange }: { onTabChange: any }) => {
       items={tabOptions.map((Item) => {
         return {
           label: (
-            <span>
+            <span className="icon">
               <Item.Icon />
               {Item.label}
             </span>

@@ -1,12 +1,19 @@
+import { useState } from "react";
 import { Button } from "antd";
 import ChipCard from "../ChipCards";
 import Graph from "../Graphs/Graph";
 import { CurveTypes } from "../Graphs/constants";
 import PriceCard from "../PriceCard";
-
 import "./index.scss";
 
 const BuyTab = () => {
+  const [slippageValue, setSlippageValue] = useState<string | number>('0%');
+
+  const handleSlippageChange = (value: string | number) => {
+    const formattedValue = typeof value === 'number' ? `${value}%` : value;
+    setSlippageValue(formattedValue);
+  };
+
   return (
     <div className="main">
       <div className="buy d-flex justify-content-center">
@@ -25,9 +32,9 @@ const BuyTab = () => {
         </div>
       </div>
       <div className="price-chips d-flex justify-content-center">
-        <ChipCard title="MINUMUM TOKENS" value="50" />
-        <ChipCard title="SLIPPAGE" value="0.3 %" />
-        <ChipCard title="SLIPPAGE TOLERANCE" value="0.312" />
+        <ChipCard title="MINIMUM TOKENS" value="50" />
+        <ChipCard title="SLIPPAGE" value={slippageValue} />
+        <ChipCard title="SLIPPAGE TOLERANCE" value="0.312" handleSlippageChange={handleSlippageChange} />
       </div>
       <div className="d-flex justify-content-center">
         <Button className="buy-button"> Buy Now </Button>

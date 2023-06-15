@@ -1,5 +1,5 @@
 {
-  "name": "curvex",
+  "name": "curvx",
   "version": "0.1.0",
   "description": "CurvX - Bonding curve based token issuance and management application",
   "private": false,
@@ -16,8 +16,10 @@
     "antd": "^5.5.2",
     "antd-img-crop": "^4.12.2",
     "bootstrap": "^5.2.3",
+    "chart.js": "^4.3.0",
     "ethers": "^5.0.24",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^7.2.1",
     "react-router-dom": "^6.11.2",
