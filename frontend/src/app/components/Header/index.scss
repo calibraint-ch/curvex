@@ -6,6 +6,7 @@
   color: var(--white);
   height: 80px;
   display: flex;
+  padding: 0px 37px;
   justify-content: space-between;
 }
 
@@ -22,6 +23,7 @@
 
 .header .logo {
   padding: 0px 70px;
+  width: 250px;
 }
 
 .connect-icon {
@@ -39,6 +41,7 @@
   height: 42px;
   background-color: transparent !important;
   border: 2px solid var(--white) !important;
+  border-radius: 12px;
   font-size: 16px;
   color: var(--white);
 

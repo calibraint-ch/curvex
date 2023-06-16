@@ -16,6 +16,7 @@
 .hero-image {
   position: absolute;
   z-index: 2;
+  right: 100px;
 }
 
 .hero-section-right {
@@ -57,12 +58,15 @@
 
 .connector-div {
   margin-top: -285px;
+  object-fit: cover;
+  width: 100%;
 }
 
 .sticky-column {
   position: sticky !important;
   top: 0;
-  height: 870px;
+  height: 100%;
+  min-height: 100vh;
   background-color: var(--primary-lemon);
   padding: 50px;
   width: 50%;

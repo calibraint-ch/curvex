@@ -22,14 +22,16 @@ const BuyTab = () => {
         </div>
         <div className="buy-column-2">
           {" "}
-          <Graph
-            cap={100}
-            increment={10}
-            type={CurveTypes.linear}
-            slope={15}
-            intercept={15}
-            previewOnly={false}
-          />
+          <div className="d-flex justify-content-center align-items-center h-100 w-100 m-0">
+            <Graph
+              cap={100}
+              increment={10}
+              type={CurveTypes.linear}
+              slope={15}
+              intercept={15}
+              previewOnly={false}
+            />
+          </div>
         </div>
       </div>
       <div className="price-chips d-flex justify-content-center">

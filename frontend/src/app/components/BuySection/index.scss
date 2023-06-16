@@ -1,6 +1,8 @@
 .buy-column-2 {
     background-color: var(--light-blue);
-    height: fit-content;
+    height: 408px;
+    width: 536px;
+    border-radius: 12px;
     padding: 2%;
     margin-left: 62px;
 }
@@ -8,7 +10,7 @@
 .buy-button {
     width: 240px;
     height: 52px;
-    margin-top: 70px;
+    margin-top: 65px;
     background-color: var(--primary-lemon) !important;
     border: none;
     font-size: 20px;

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { message } from "antd";
 import { useMetamask } from "use-metamask";
 import { ethers } from "ethers";
-import { errorMessages } from "../../utils/constants";
+import { errorMessages, supportedChains } from "../../utils/constants";
 
 function useMetamaskProvider() {
   const [connected, setConnected] = useState(false);
@@ -10,7 +10,7 @@ function useMetamaskProvider() {
   const [chainId, setChainId] = useState("");
   const [balance, setBalance] = useState("");
 
-  const { connect, metaState } = useMetamask();
+  const { connect, metaState, getChain } = useMetamask();
 
   //For Future Reference
   const getBalance = useCallback(
@@ -23,6 +23,20 @@ function useMetamaskProvider() {
     },
     [metaState.isConnected, metaState.web3]
   );
+
+  const detectNetworkChange = () => {
+    window.ethereum.on('chainChanged', async () => {
+      if (getChain) {
+        let chain = await getChain();
+        if (!supportedChains.includes(chain.id)) {
+          message.error(errorMessages.unSupportedNetwork);
+        }
+      }
+    })
+    return () => window.ethereum.removeListener('chainChanged', () => {
+      window.location.reload()
+    })
+  }
 
   const connectWallet = async () => {
     if (metaState.isAvailable) {
@@ -54,7 +68,7 @@ function useMetamaskProvider() {
     metaState.isConnected,
   ]);
 
-  return { connected, metaState, network, chainId, balance, connectWallet };
+  return { connected, metaState, network, chainId, balance, connectWallet, detectNetworkChange };
 }
 
 export default useMetamaskProvider;

@@ -1,4 +1,3 @@
-export { default as CurveXLogo } from "../images/MainLogo.png";
 export { default as FooterLogo } from "../images/FooterLogo.png";
 export { default as WalletIcon } from "../images/WalletIcon.png";
 export { default as HeroImage } from "../images/HeroImage.png";
@@ -17,3 +16,5 @@ export { default as UsdBalance } from "./UsdBalance.png";
 export { default as Banner } from "./Banner.png";
 export { default as QuestionCircle } from "./QuestionCircle.png";
 export { default as BuySetting } from "./BuySetting.png";
+export { default as CurvXLogo } from "./CurvXLogo.png";
+export { default as DisconnectIcon } from "./Disconnect.png";
