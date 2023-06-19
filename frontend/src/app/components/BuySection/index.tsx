@@ -7,7 +7,7 @@ import PriceCard from "../PriceCard";
 import "./index.scss";
 
 const BuyTab = () => {
-  const [slippageValue, setSlippageValue] = useState<string | number>('0.31%');
+  const [slippageValue, setSlippageValue] = useState<string | number>('0%');
 
   const handleSlippageChange = (value: string | number) => {
     const formattedValue = typeof value === 'number' ? `${value}%` : value;
@@ -21,7 +21,6 @@ const BuyTab = () => {
           <PriceCard />
         </div>
         <div className="buy-column-2">
-          {" "}
           <Graph
             cap={100}
             increment={10}

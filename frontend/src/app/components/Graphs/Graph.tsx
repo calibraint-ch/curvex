@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
   ReferenceArea,
+  Area,
 } from "recharts";
 
 const Graph = (props: GraphProps) => {
@@ -39,9 +40,13 @@ const Graph = (props: GraphProps) => {
     }
   }
 
-  //TODO: Add upperbounds to reference area
-  // const maxLineValue = Math.max(...data.map((entry: any) => entry.price));
-  // const referenceAreaUpperBound = maxLineValue;
+  const x1 = 40;
+  const x2 = 60;
+
+  const startDataPoint = data.find((entry) => entry.totalSupply === x1);
+  const endDataPoint = data.find((entry) => entry.totalSupply === x2);
+  const startYValue = startDataPoint ? startDataPoint.price : null;
+  const endYValue = endDataPoint ? endDataPoint.price : null;
 
   return (
     <div>
@@ -71,11 +76,6 @@ const Graph = (props: GraphProps) => {
             stroke: previewOnly ? strokeColors.grey : strokeColors.white,
           }}
         />
-        {!previewOnly ? (
-          <ReferenceArea x1={40} x2={60} color={strokeColors.lemon} />
-        ) : (
-          <></>
-        )}
 
         <Tooltip
           labelStyle={{ color: "#2f3ece" }}
@@ -96,6 +96,16 @@ const Graph = (props: GraphProps) => {
           strokeWidth={3}
           data
         />
+        {!previewOnly && startYValue && endYValue && (
+          <ReferenceArea
+            x1={x1}
+            x2={x2}
+            y1={0}
+            y2={Math.max(startYValue, endYValue)}
+            fill={strokeColors.lemon}
+            fillOpacity={0.5}
+          />
+        )}
       </LineChart>
     </div>
   );
