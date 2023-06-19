@@ -2,10 +2,13 @@ import TableComponent from "../../components/Table/Table";
 import { WalletIconDashboard, UsdBalance, Banner } from '../../../assets/images/imageAssets';
 import { deployedDataSource, deployedColumns, claimableColumns, claimableDataSource } from '../../components/Table/constants';
 import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
+
 import "./index.scss";
 
 const UserDashBoard = () => {
     const { metaState } = useMetamaskProvider();
+    const walletAddress = localStorage.getItem("Account")
+    console.log(walletAddress);
 
     return (
         <div className="dashboard">

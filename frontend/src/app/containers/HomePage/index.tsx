@@ -8,10 +8,11 @@ import {
   Settings,
   Puzzle,
   Unlock,
-  Price,
   Greek,
+  Price
 } from "../../../assets/images/imageAssets";
 import Footer from "../../components/Footer/Footer";
+
 import "./index.scss";
 
 const HomePage = () => {
@@ -21,7 +22,7 @@ const HomePage = () => {
         <div className="hero-grid-sections d-flex">
           <div className="hero-section-left">
             <p className="hero-heading">
-              Dive into the Future Of <br />
+              Dive into the Future Of
               DeFi with{" "}
               <span
                 style={{ color: "yellow", fontFamily: "ClashDisplay-bold" }}

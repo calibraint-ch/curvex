@@ -9,6 +9,7 @@ function useMetamaskProvider() {
   const [network, setNetwork] = useState("");
   const [chainId, setChainId] = useState("");
   const [balance, setBalance] = useState("");
+  const [address, setAddress] = useState("");
 
   const { connect, metaState, getChain } = useMetamask();
 
@@ -27,7 +28,7 @@ function useMetamaskProvider() {
   const detectNetworkChange = () => {
     window.ethereum.on('chainChanged', async () => {
       if (getChain) {
-        let chain = await getChain();
+        const chain = await getChain();
         if (!supportedChains.includes(chain.id)) {
           message.error(errorMessages.unSupportedNetwork);
         }
@@ -58,6 +59,7 @@ function useMetamaskProvider() {
       const { name, id } = metaState.chain;
       setNetwork(name);
       setChainId(id);
+      setAddress(metaState.account[0])
       getBalance(metaState.account[0]);
     }
   }, [
@@ -68,7 +70,7 @@ function useMetamaskProvider() {
     metaState.isConnected,
   ]);
 
-  return { connected, metaState, network, chainId, balance, connectWallet, detectNetworkChange };
+  return { connected, metaState, network, address, chainId, balance, connectWallet, detectNetworkChange };
 }
 
 export default useMetamaskProvider;

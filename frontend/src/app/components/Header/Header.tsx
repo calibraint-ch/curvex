@@ -71,7 +71,7 @@ const Header = () => {
               <Link style={{ textDecoration: "none", color: '#ffffff' }} to={"/dashboard"}>
                 <div>Dashboard</div>
               </Link>}
-            {connected ? (
+            {connected && account ? (
               <Dropdown menu={{ items, onClick: handleDisconnect }} placement="bottom">
                 <Button className="connect-btn" onClick={handleConnectWallet}>
                   <img className="connect-icon" src={WalletIcon} alt="wallet-group" />

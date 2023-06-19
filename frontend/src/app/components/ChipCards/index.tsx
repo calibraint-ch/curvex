@@ -1,7 +1,8 @@
-import "./index.scss";
 import React, { useState } from "react"
 import { Modal, Radio, message, RadioChangeEvent } from 'antd';
 import { QuestionCircle, BuySetting } from "../../../assets/images/imageAssets";
+
+import "./index.scss";
 
 type Cardprops = {
   title: string;

@@ -1,11 +1,6 @@
+import { FooterLogo, Instagram, Twitter, Facebook, LinkedIn } from "../../../assets/images/imageAssets";
+
 import "./index.scss";
-import { FooterLogo } from "../../../assets/images/imageAssets";
-import {
-    TwitterOutlined,
-    GithubOutlined,
-    FacebookOutlined,
-    LinkedinOutlined,
-} from "@ant-design/icons";
 
 const Footer = () => {
     return (
@@ -16,12 +11,12 @@ const Footer = () => {
                         src={FooterLogo}
                         alt="CurveX_Logo"
                     />
-                    <div className="foo-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque at massa velit. Morbi iaculis blandit purus.</div>
-                    <div className="flex-and-between social-icons">
-                        <GithubOutlined />
-                        <TwitterOutlined />
-                        <FacebookOutlined />
-                        <LinkedinOutlined />
+                    <div className="foo-content">Join us in shaping the future of token economics and unlock boundless possibilities with our cutting-edge bonding curve technology.</div>
+                    <div className="social-icons">
+                        <img src={Instagram} alt="InstagramLogo" />
+                        <img src={Twitter} alt="TwitterLogo" />
+                        <img src={Facebook} alt="FacebookLogo" />
+                        <img src={LinkedIn} alt="LinkedInLogo" />
                     </div>
                     <div className="copy-right">Copyright © 2023 <span style={{ color: '#000000' }}>CurvX</span></div>
                 </div>
