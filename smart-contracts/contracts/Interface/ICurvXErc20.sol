@@ -92,9 +92,16 @@ interface ICurvXErc20 {
      * @dev This function lets the minter mint the tokens
      * and locks the minted token
      *
+     * @param account account address that receives minted tokens
      * @param amount amount tokens to mint and lock
      */
-    function mintAndLock(uint256 amount) external;
+    function mintAndLock(address account, uint256 amount) external;
 
+    /**
+     * @dev This function lets the minter burn the token
+     *
+     * @param account account address that burns tokens
+     * @param amount amount tokens to burn
+     */
     function burn(address account, uint256 amount) external;
 }

@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./Interface/ICurvXErc20.sol";
 import "hardhat/console.sol";
 
@@ -13,174 +14,172 @@ import "hardhat/console.sol";
  * the buy and sell functionality using the bonding curve mechanism.
  */
 contract BondingCurve is Context {
-    error InsufficientLiquidity(uint256 required, uint256 available);
+    using SafeMath for uint256;
+
+    uint256 public constant DECIMALS = 18;
+    uint256 public immutable CURVE_PRECISION;
 
     address immutable tokenA;
     address immutable tokenB;
     uint256 public reserveBalance;
-    uint256 public totalSupply;
-    uint256 public reserveRatio; // in parts per million (ppm)
-
-    /**
-     * @notice Curve type used to determine the type of bonding curve
-     *
-     * Types:
-     *  1 - Linear Curve
-     *  2 - Polynomial Curve
-     *  3 - Sub-linear Curve
-     *  4 - S-Curve
-     */
+    uint256 public scalingFactor;
     uint256 public curveType;
 
+    event Purchase(address indexed buyer, uint256 amount, uint256 cost);
+    event Sale(address indexed seller, uint256 amount, uint256 refund);
+
+    uint256 public totalSupply;
+
     constructor(
-        uint256 _reserveRatio,
+        uint256 precision,
         uint256 _curveType,
         address _tokenA,
         address _tokenB
     ) {
-        require(
-            _reserveRatio > 0 && _reserveRatio <= 1000000,
-            "Invalid reserve ratio"
-        );
-        require(_curveType >= 1 && _curveType <= 4, "Invalid curve type");
-        reserveRatio = _reserveRatio;
         curveType = _curveType;
         tokenA = _tokenA;
         tokenB = _tokenB;
+        totalSupply = 0;
+        CURVE_PRECISION = precision;
+        scalingFactor = calculateScalingFactor();
     }
 
-    function buy(uint256 _amount) external payable {
-        require(_amount > 0, "Invalid amount");
-        uint256 tokensToMint = calculatePurchaseReturn(
-            totalSupply,
-            reserveBalance,
-            reserveRatio,
-            _amount,
-            curveType
-        );
-        if (tokensToMint == 0) revert InsufficientLiquidity(tokensToMint, 0);
-        totalSupply += tokensToMint;
-        reserveBalance += _amount;
-        IERC20(tokenB).transferFrom(_msgSender(), address(this), _amount);
-        ICurvXErc20(tokenA).mintAndLock(_amount);
-    }
-
-    function sell(uint256 _amount) external {
-        require(_amount > 0, "Invalid amount");
-        require(_amount <= totalSupply, "Insufficient balance");
-        uint256 reserveAmount = calculateSaleReturn(
-            totalSupply,
-            reserveBalance,
-            reserveRatio,
-            _amount,
-            curveType
-        );
-        require(reserveAmount > 0, "Insufficient liquidity");
-        totalSupply -= _amount;
-        reserveBalance -= reserveAmount;
-
-        ICurvXErc20(tokenA).burn(_msgSender(), _amount);
-        IERC20(tokenB).transferFrom(_msgSender(), address(this), _amount);
-    }
-
-    function estimateBuy(
-        uint256 _amount
-    ) external view returns (uint256 tokensToMint) {
-        require(_amount > 0, "Invalid amount");
-        tokensToMint = calculatePurchaseReturn(
-            totalSupply,
-            reserveBalance,
-            reserveRatio,
-            _amount,
-            curveType
-        );
-    }
-
-    function estimateSell(
-        uint256 _amount
-    ) external view returns (uint256 tokensToMint) {
-        require(_amount > 0, "Invalid amount");
-        tokensToMint = calculateSaleReturn(
-            totalSupply,
-            reserveBalance,
-            reserveRatio,
-            _amount,
-            curveType
-        );
+    function calculateScalingFactor() internal pure returns (uint256) {
+        return (10 ** DECIMALS);
     }
 
     function calculatePurchaseReturn(
-        uint256 _supply,
-        uint256 _balance,
-        uint256 _ratio,
-        uint256 _amount,
-        uint256 _curveType
-    ) public pure returns (uint256) {
-        if (_curveType == 1) {
-            // Linear curve
-            uint256 newBalance = _balance + _amount;
-            uint256 price = (_supply * _amount) + _balance;
-            return (price * _supply) / newBalance - _supply;
-        } else if (_curveType == 2) {
-            // Polynomial curve
-            uint256 baseN = _balance + _amount;
-            uint256 temp1 = (_balance ** 2 + (_amount << 1)) * _balance;
-            uint256 temp2 = baseN ** (3);
-            return (_supply * temp1) / (_ratio * temp2);
-        } else if (_curveType == 3) {
-            // Sub-linear curve
-            uint256 baseN = _balance + _amount;
-            uint256 temp1 = baseN ** (2);
-            uint256 temp2 = _balance ** (2);
-            return (_supply * temp1) / (_ratio * temp2) - _supply;
-        } else if (_curveType == 4) {
-            // S-curve
-            uint256 exponent = (_amount * _supply * _ratio) /
-                (_balance * 1000000);
+        uint256 _investment
+    ) internal view returns (uint256) {
+        if (curveType == 1) {
+            // Linear Curve - (mx1^2 / 2) - (mx2^2 / 2); x1 > x2
+            // here m is 1/CURVE_PRECISION
+            uint256 newTotal = totalSupply + _investment;
+
             return
-                (_balance *
-                    (10 ** 18) *
-                    (1 - (2 ** (uint256(-int256(exponent)))))) / (10 ** 18);
+                newTotal
+                    .mul(newTotal)
+                    .mul(scalingFactor)
+                    .div(2)
+                    .div(scalingFactor)
+                    .div(scalingFactor)
+                    .div(CURVE_PRECISION)
+                    .sub(reserveBalance);
+        } else if (curveType == 2) {
+            // Sublinear Curve
+            return
+                scalingFactor
+                    .mul(
+                        (CURVE_PRECISION.mul(_investment)).div(
+                            CURVE_PRECISION.add(reserveBalance)
+                        )
+                    )
+                    .div(CURVE_PRECISION);
+        } else if (curveType == 3) {
+            // S Curve
+            uint256 temp1 = CURVE_PRECISION
+                .mul(reserveBalance.add(_investment))
+                .div(reserveBalance);
+            uint256 temp2 = CURVE_PRECISION.mul(totalSupply).div(
+                reserveBalance.add(_investment)
+            );
+            return scalingFactor.mul(temp1.sub(temp2)).div(CURVE_PRECISION);
+        } else if (curveType == 4) {
+            // Polynomial Curve
+            return
+                scalingFactor.mul(_investment.mul(_investment)).div(
+                    CURVE_PRECISION.mul(CURVE_PRECISION)
+                );
         } else {
             revert("Invalid curve type");
         }
     }
 
     function calculateSaleReturn(
-        uint256 _supply,
-        uint256 _balance,
-        uint256 _ratio,
-        uint256 _amount,
-        uint256 _curveType
-    ) public pure returns (uint256) {
-        if (_curveType == 1) {
-            // Linear curve
-            uint256 newBalance = _balance - _amount;
-            uint256 price = (_supply * _amount) + _balance;
-            return (_supply * _balance) - (price * _supply) / newBalance;
-        } else if (_curveType == 2) {
-            // Polynomial curve
-            uint256 temp1 = (_supply * (_balance ** 2)) / (_ratio * 1000000);
-            uint256 temp2 = (_balance ** (2 + 1)) -
-                ((_balance - _amount) ** (2 + 1));
-            return temp1 * temp2;
-        } else if (_curveType == 3) {
-            // Sub-linear curve
-            uint256 temp1 = (_supply * (_balance ** (2 - 1))) /
-                (_ratio * 1000000);
-            uint256 temp2 = (_balance ** (2 - 1)) -
-                ((_balance - _amount) ** (2 - 1));
-            return temp1 * temp2;
-        } else if (_curveType == 4) {
-            // S-curve
-            uint256 exponent = (_amount * _supply * _ratio) /
-                (_balance * 1000000);
+        uint256 _amount
+    ) internal view returns (uint256) {
+        if (curveType == 1) {
+            // Linear Curve - (mx1^2 / 2) - (mx2^2 / 2); x1 > x2
+            // here m is CURVE_PRECISION
+            uint256 newTotal = totalSupply.sub(_amount);
             return
-                (_balance *
-                    (10 ** 18) *
-                    (1 - (2 ** (uint256(-int256(exponent)))))) / (10 ** 18);
+                reserveBalance.sub(
+                    newTotal.mul(newTotal).div(2).div(scalingFactor).mul(
+                        CURVE_PRECISION
+                    )
+                );
+        } else if (curveType == 2) {
+            // Sublinear Curve
+            return
+                reserveBalance
+                    .mul(CURVE_PRECISION)
+                    .sub(
+                        scalingFactor
+                            .mul(reserveBalance.sub(_amount))
+                            .mul(CURVE_PRECISION)
+                            .div(
+                                CURVE_PRECISION.add(reserveBalance.sub(_amount))
+                            )
+                    )
+                    .div(CURVE_PRECISION);
+        } else if (curveType == 3) {
+            // S Curve
+            uint256 temp1 = CURVE_PRECISION
+                .mul(reserveBalance.sub(_amount))
+                .div(reserveBalance);
+            uint256 temp2 = CURVE_PRECISION.mul(totalSupply.sub(_amount)).div(
+                reserveBalance.sub(_amount)
+            );
+            return scalingFactor.mul(temp1.sub(temp2)).div(CURVE_PRECISION);
+        } else if (curveType == 4) {
+            // Polynomial Curve
+            uint256 temp1 = scalingFactor.mul(_amount).mul(
+                CURVE_PRECISION.mul(CURVE_PRECISION)
+            );
+            uint256 temp2 = scalingFactor.mul(CURVE_PRECISION);
+            return temp1.div(temp2);
         } else {
             revert("Invalid curve type");
         }
+    }
+
+    function _buy(uint256 amount) internal returns (uint256 priceForToken) {
+        priceForToken = calculatePurchaseReturn(amount);
+        ICurvXErc20(tokenA).mintAndLock(_msgSender(), amount);
+
+        emit Purchase(msg.sender, amount, priceForToken);
+    }
+
+    function buy(uint256 amount) external {
+        require(amount > 0, "Invalid investment amount");
+
+        uint256 priceOfPurchase = _buy(amount);
+
+        IERC20(tokenB).transferFrom(
+            _msgSender(),
+            address(this),
+            priceOfPurchase
+        );
+
+        totalSupply += amount;
+        reserveBalance = reserveBalance.add(priceOfPurchase);
+    }
+
+    function _sell(uint256 _amount) internal returns (uint256 refund) {
+        refund = calculateSaleReturn(_amount);
+
+        ICurvXErc20(tokenA).burn(_msgSender(), _amount);
+
+        emit Sale(msg.sender, _amount, refund);
+    }
+
+    function sell(uint256 _amount) external {
+        require(_amount > 0, "Invalid amount to sell");
+
+        uint256 refund = _sell(_amount);
+
+        IERC20(tokenB).transfer(_msgSender(), refund);
+
+        reserveBalance = reserveBalance.sub(refund);
     }
 }

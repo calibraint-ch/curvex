@@ -32,7 +32,7 @@ describe("Token Factory", function () {
         mock.tokenSymbol,
         mock.cap,
         mock.lockPeriod,
-        mock.reserveRatio,
+        mock.precision,
         mock.curveType,
         usdt.address,
         mock.salt

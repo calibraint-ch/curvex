@@ -99,11 +99,11 @@ describe("Token contract", function () {
     });
 
     it("Should revert if total supply exceeds supply cap", async function () {
-      const { curveX, CAP } = await loadFixture(deployTokenFixture);
+      const { curveX, CAP, owner } = await loadFixture(deployTokenFixture);
 
-      await expect(curveX.mintAndLock(CAP)).not.to.be.reverted;
+      await expect(curveX.mintAndLock(owner.address, CAP)).not.to.be.reverted;
 
-      await expect(curveX.mintAndLock(1))
+      await expect(curveX.mintAndLock(owner.address, 1))
         .to.be.revertedWithCustomError(curveX, "MintExceedsSupplyCap")
         .withArgs(1, 0);
     });
@@ -111,21 +111,17 @@ describe("Token contract", function () {
     it("Should mint and lock tokens", async function () {
       const { curveX, owner } = await loadFixture(deployTokenFixture);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
     });
 
     it("Should prevent locked balance being transferred", async function () {
       const { curveX, owner, addr1 } = await loadFixture(deployTokenFixture);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
       await expect(curveX.transfer(addr1.address, 50))
         .to.be.revertedWithCustomError(curveX, "InsufficientUnlockedTokens")
@@ -135,11 +131,9 @@ describe("Token contract", function () {
     it("Should unlock if unlock period is reached", async function () {
       const { curveX, owner, oneMonth } = await loadFixture(deployTokenFixture);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
       await time.increase(oneMonth);
 
@@ -155,7 +149,7 @@ describe("Token contract", function () {
         deployTokenFixture
       );
 
-      await expect(curveX.mintAndLock(50))
+      await expect(curveX.mintAndLock(owner.address, 50))
         .to.changeTokenBalances(curveX, [owner], [50])
         .to.emit(curveX, "TokenLocked")
         .withArgs(owner.address, 50);
@@ -184,33 +178,25 @@ describe("Token contract", function () {
     it("Should mint and lock tokens", async function () {
       const { curveX, owner } = await loadFixture(deployTokenFixture);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
     });
 
     it("Should prevent locked balance being transferred", async function () {
       const { curveX, owner, addr1 } = await loadFixture(deployTokenFixture);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
       await expect(curveX.transfer(addr1.address, 50))
         .to.be.revertedWithCustomError(curveX, "InsufficientUnlockedTokens")
@@ -220,17 +206,13 @@ describe("Token contract", function () {
     it("Should unlock if unlock period is reached", async function () {
       const { curveX, owner, oneMonth } = await loadFixture(deployTokenFixture);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
       await time.increase(oneMonth);
 
@@ -246,17 +228,13 @@ describe("Token contract", function () {
         deployTokenFixture
       );
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
       await time.increase(oneMonth);
 
@@ -272,15 +250,13 @@ describe("Token contract", function () {
     it("Only matured amount should be unlocked", async function () {
       const { curveX, owner, oneMonth } = await loadFixture(deployTokenFixture);
 
-      await expect(curveX.mintAndLock(50)).to.changeTokenBalances(
-        curveX,
-        [owner],
-        [50]
-      );
+      await expect(
+        curveX.mintAndLock(owner.address, 50)
+      ).to.changeTokenBalances(curveX, [owner], [50]);
 
       await time.increase(oneMonth);
 
-      await expect(curveX.mintAndLock(7)).to.changeTokenBalances(
+      await expect(curveX.mintAndLock(owner.address, 7)).to.changeTokenBalances(
         curveX,
         [owner],
         [7]

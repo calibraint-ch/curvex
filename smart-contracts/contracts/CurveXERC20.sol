@@ -219,10 +219,13 @@ contract CurveX_ERC20 is ERC20, ICurvXErc20, AccessControl {
      *
      * @param amount amount tokens to mint and lock
      */
-    function mintAndLock(uint256 amount) public onlyRole(TOKEN_MANAGER_ROLE) {
-        _mint(_msgSender(), amount);
+    function mintAndLock(
+        address account,
+        uint256 amount
+    ) public onlyRole(TOKEN_MANAGER_ROLE) {
+        _mint(account, amount);
 
-        _lock(_msgSender(), amount);
+        _lock(account, amount);
     }
 
     function burn(

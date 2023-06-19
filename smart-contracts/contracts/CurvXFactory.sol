@@ -26,7 +26,7 @@ contract CurveXFactory is Context {
         string memory symbol,
         uint256 cap,
         uint256 lockPeriod,
-        uint256 _reserveRatio,
+        uint256 precision,
         uint256 _curveType,
         address pairToken,
         uint256 salt
@@ -56,7 +56,7 @@ contract CurveXFactory is Context {
 
         bytes memory managerBytecode = abi.encodePacked(
             managerCreationCode,
-            abi.encode(_reserveRatio, _curveType, token, pairToken)
+            abi.encode(precision, _curveType, token, pairToken)
         );
 
         address tokenManager;

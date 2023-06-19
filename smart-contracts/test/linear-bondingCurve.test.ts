@@ -1,8 +1,9 @@
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers, network } from "hardhat";
-import mock from "./mock/BondingCurve.mock";
 import factoryMock from "./mock/CurvXFactory.mock";
+
+const AddZero = ethers.constants.AddressZero;
 
 describe("Token Manager - BondingCurve.sol", function () {
   after(async () => {
@@ -15,28 +16,38 @@ describe("Token Manager - BondingCurve.sol", function () {
     const Factory = await ethers.getContractFactory("CurveXFactory");
     const CurvX = await ethers.getContractFactory("CurveX_ERC20");
     const BondingCurve = await ethers.getContractFactory("BondingCurve");
-    const erc20 = await ethers.getContractFactory("ERC20");
+    const erc20 = await ethers.getContractFactory("ERC20PresetMinterPauser");
     const [owner, addr1, addr2] = await ethers.getSigners();
 
     const factory = await Factory.deploy();
     await factory.deployed();
 
     const usdt = await erc20.deploy(factoryMock.usdt, factoryMock.usdt);
+
+    const DECIMALS = ethers.utils.parseEther("1");
+
+    await usdt.mint(owner.address, DECIMALS);
+    await usdt.mint(addr1.address, DECIMALS);
+    await usdt.mint(addr2.address, DECIMALS);
+
     await factory.deployCurveX(
       factoryMock.tokenName,
       factoryMock.tokenSymbol,
       factoryMock.cap,
       factoryMock.lockPeriod,
-      factoryMock.reserveRatio,
+      factoryMock.precision,
       factoryMock.curveType,
       usdt.address,
       factoryMock.salt
     );
-    const contractAddress = factoryMock.expectedDeployedAddress;
+
+    const contractAddress = (await factory.getTokenPairList())[0];
 
     const tokenManager = BondingCurve.attach(contractAddress.tokenManager);
     const tokenA = CurvX.attach(contractAddress.tokenA);
     const tokenB = erc20.attach(contractAddress.tokenB);
+
+    const PRECISION = await tokenManager.CURVE_PRECISION();
 
     return {
       owner,
@@ -46,6 +57,8 @@ describe("Token Manager - BondingCurve.sol", function () {
       tokenB,
       tokenManager,
       contractAddress,
+      DECIMALS,
+      PRECISION,
     };
   }
 
@@ -60,9 +73,98 @@ describe("Token Manager - BondingCurve.sol", function () {
   });
 
   it("should be able to mint token from token manager", async () => {
-    const { tokenA, tokenB, contractAddress, tokenManager, addr1 } =
+    const { tokenA, tokenB, tokenManager, addr1, DECIMALS, PRECISION } =
       await loadFixture(deployTokenFixture);
 
-    await tokenManager.buy(100000000000);
+    const buyAmount = DECIMALS;
+    const spendAmount = buyAmount.pow(2).div(2).div(DECIMALS).div(PRECISION);
+
+    await expect(
+      tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
+    ).not.to.be.reverted;
+
+    await expect(tokenManager.connect(addr1).buy(buyAmount))
+      .to.emit(tokenA, "Transfer")
+      .withArgs(AddZero, addr1.address, buyAmount)
+      .to.emit(tokenB, "Transfer")
+      .withArgs(addr1.address, tokenManager.address, spendAmount);
+  });
+
+  it("should be able to sell the minted tokens after unlocking them", async () => {
+    const { tokenA, tokenB, tokenManager, addr1, DECIMALS, PRECISION } =
+      await loadFixture(deployTokenFixture);
+
+    const buyAmount = DECIMALS;
+    const spendAmount = buyAmount.pow(2).div(2).div(DECIMALS).div(PRECISION);
+
+    await expect(
+      tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
+    ).not.to.be.reverted;
+
+    await expect(tokenManager.connect(addr1).buy(buyAmount)).not.to.be.reverted;
+
+    await time.increase(factoryMock.lockPeriod + 10);
+
+    await expect(tokenA.connect(addr1).unlock()).not.to.be.reverted;
+
+    const tokenToSell = buyAmount;
+    const expectedTokenReturns = spendAmount;
+
+    await expect(tokenManager.connect(addr1).sell(tokenToSell))
+      .to.emit(tokenB, "Transfer")
+      .withArgs(tokenManager.address, addr1.address, expectedTokenReturns)
+      .to.emit(tokenA, "Transfer")
+      .withArgs(addr1.address, AddZero, tokenToSell);
+  });
+
+  it("should be able mint tokens immediately after minting", async () => {
+    const { tokenA, tokenB, tokenManager, addr1, DECIMALS } = await loadFixture(
+      deployTokenFixture
+    );
+
+    const tokensToSpend = 10;
+
+    await expect(
+      tokenB.connect(addr1).approve(tokenManager.address, tokensToSpend)
+    ).not.to.be.reverted;
+
+    await expect(tokenManager.connect(addr1).buy(tokensToSpend)).not.to.be
+      .reverted;
+
+    await expect(
+      tokenB.connect(addr1).approve(tokenManager.address, tokensToSpend)
+    ).not.to.be.reverted;
+
+    await expect(tokenManager.connect(addr1).buy(tokensToSpend)).not.to.be
+      .reverted;
+  });
+
+  it("should be able sell tokens immediately after selling", async () => {
+    const { tokenA, tokenB, tokenManager, addr1, DECIMALS, PRECISION } =
+      await loadFixture(deployTokenFixture);
+
+    const buyAmount = DECIMALS;
+    const spendAmount = buyAmount.pow(2).div(2).div(DECIMALS).div(PRECISION);
+
+    await expect(tokenB.connect(addr1).approve(tokenManager.address, buyAmount))
+      .not.to.be.reverted;
+
+    await expect(tokenManager.connect(addr1).buy(buyAmount.div(2))).not.to.be
+      .reverted;
+    await expect(tokenManager.connect(addr1).buy(buyAmount.div(2))).not.to.be
+      .reverted;
+
+    await time.increase(factoryMock.lockPeriod + 10);
+
+    await expect(tokenA.connect(addr1).unlock()).not.to.be.reverted;
+
+    const tokenToSell = buyAmount;
+    const expectedTokenReturns = spendAmount;
+
+    await expect(tokenManager.connect(addr1).sell(tokenToSell))
+      .to.emit(tokenB, "Transfer")
+      .withArgs(tokenManager.address, addr1.address, expectedTokenReturns)
+      .to.emit(tokenA, "Transfer")
+      .withArgs(addr1.address, AddZero, tokenToSell);
   });
 });
