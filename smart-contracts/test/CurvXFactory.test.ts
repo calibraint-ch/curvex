@@ -30,6 +30,7 @@ describe("Token Factory", function () {
       factory.deployCurveX(
         mock.tokenName,
         mock.tokenSymbol,
+        mock.logoUri,
         mock.cap,
         mock.lockPeriod,
         mock.precision,
@@ -48,5 +49,6 @@ describe("Token Factory", function () {
     expect(tokenList[0].tokenA).to.be.equal(expected.tokenA);
     expect(tokenList[0].tokenB).to.be.equal(expected.tokenB);
     expect(tokenList[0].tokenManager).to.be.equal(expected.tokenManager);
+    expect(tokenList[0].logoUri).to.be.equal(mock.logoUri);
   });
 });

@@ -3,6 +3,7 @@ import { ethers } from "hardhat";
 export default {
   tokenName: "CurvX",
   tokenSymbol: "CRVX",
+  logoUri: "https://www.curvx.io",
   cap: ethers.utils.parseEther("10000000000000"),
   lockPeriod: 30 * 24 * 60 * 60,
   precision: 1000,

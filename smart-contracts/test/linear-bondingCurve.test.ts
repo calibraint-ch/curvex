@@ -33,6 +33,7 @@ describe("Token Manager - BondingCurve.sol", function () {
     await factory.deployCurveX(
       factoryMock.tokenName,
       factoryMock.tokenSymbol,
+      factoryMock.logoUri,
       factoryMock.cap,
       factoryMock.lockPeriod,
       factoryMock.precision,
