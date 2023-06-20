@@ -145,12 +145,12 @@ const HomePage = () => {
             </p>
             <div className="graph">
               <Graph
+                type={CurveTypes.polynomial}
+                a={1}
+                n={2}
                 previewOnly={true}
                 cap={100}
                 increment={10}
-                type={CurveTypes.linear}
-                slope={15}
-                intercept={15}
               />
             </div>
             <p className="graph-heading">Sub-Linear Curve</p>
@@ -161,12 +161,11 @@ const HomePage = () => {
             </p>
             <div className="graph">
               <Graph
+                type={CurveTypes.subLinear}
+                n={0.7}
                 previewOnly={true}
                 cap={100}
                 increment={10}
-                type={CurveTypes.linear}
-                slope={15}
-                intercept={15}
               />
             </div>
             <p className="graph-heading">S-Curve</p>
@@ -177,12 +176,12 @@ const HomePage = () => {
             </p>
             <div className="graph">
               <Graph
+                type={CurveTypes.sCurve}
+                c1={0.2}
+                c2={10}
                 previewOnly={true}
                 cap={100}
                 increment={10}
-                type={CurveTypes.linear}
-                slope={15}
-                intercept={15}
               />
             </div>
           </div>

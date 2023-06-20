@@ -6,6 +6,10 @@ export type GraphProps = {
   slope?: number;
   intercept?: number;
   legend?: boolean;
+  a?: number;
+  n?: number;
+  c1?: number;
+  c2?: number;
 };
 
 export enum CurveTypes {
