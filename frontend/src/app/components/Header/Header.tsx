@@ -6,6 +6,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { formatWalletAddress } from "../../../utils/methods";
 import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
 import { WalletIcon, CurvXLogo, DisconnectIcon } from "../../../assets/images/imageAssets";
+import { routes } from "../../../utils/routes";
 
 import "./index.scss";
 
@@ -14,6 +15,7 @@ const Header = () => {
   const location = useLocation();
 
   const { connectWallet, metaState, detectNetworkChange, connected } = useMetamaskProvider();
+  const { dashboard, portfolio } = routes;
 
   useEffect(() => {
     setAccount(metaState.account[0]);
@@ -57,7 +59,7 @@ const Header = () => {
             <div>Docs</div>
             <div>About</div>
             <div>
-              <Link style={{ textDecoration: "none" }} to={"/dashboard"}>
+              <Link style={{ textDecoration: "none" }} to={dashboard}>
                 <Button className="try-btn">Try the app</Button>
               </Link>
             </div>
@@ -65,19 +67,17 @@ const Header = () => {
         ) : (
           <div className="nav-items">
             {location.pathname === "/dashboard" ?
-              <Link style={{ textDecoration: "none", color: '#ffffff' }} to={"/portfolio"}>
+              <Link style={{ textDecoration: "none", color: '#ffffff' }} to={portfolio}>
                 <div>Portfolio</div>
               </Link> :
-              <Link style={{ textDecoration: "none", color: '#ffffff' }} to={"/dashboard"}>
+              <Link style={{ textDecoration: "none", color: '#ffffff' }} to={dashboard}>
                 <div>Dashboard</div>
               </Link>}
             {connected && account ? (
               <Dropdown menu={{ items, onClick: handleDisconnect }} placement="bottom">
                 <Button className="connect-btn" onClick={handleConnectWallet}>
                   <img className="connect-icon" src={WalletIcon} alt="wallet-group" />
-                  {account
-                    ? formatWalletAddress(account)
-                    : "Connect Wallet"}
+                  {formatWalletAddress(account)}
                   <DownOutlined />
                 </Button>
               </Dropdown>

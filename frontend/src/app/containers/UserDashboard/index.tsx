@@ -7,8 +7,6 @@ import "./index.scss";
 
 const UserDashBoard = () => {
     const { metaState } = useMetamaskProvider();
-    const walletAddress = localStorage.getItem("Account")
-    console.log(walletAddress);
 
     return (
         <div className="dashboard">

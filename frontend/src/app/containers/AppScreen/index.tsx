@@ -9,7 +9,6 @@ import "./index.scss";
 
 const AppScreen = () => {
   const [selectedTab, setSelectedTab] = useState(tabOptions[0].key);
-  console.log(tabOptions, "Tab............")
 
   const onTabChange = (e: string) => {
     setSelectedTab(e);
