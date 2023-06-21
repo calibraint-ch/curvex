@@ -13,8 +13,8 @@ function App() {
         <Header />
         <Routes>
           <Route path={routes.homepage} element={<HomePage />} />
-          <Route path={routes.appscreen} element={<AppScreen />} />
-          <Route path={routes.dashboard} element={<UserDashBoard />} />
+          <Route path={routes.dashboard} element={<AppScreen />} />
+          <Route path={routes.portfolio} element={<UserDashBoard />} />
         </Routes>
       </div>
     </Router>

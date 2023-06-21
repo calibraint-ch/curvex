@@ -1,5 +1,6 @@
-import { Table, Empty, Button } from "antd";
+import { Table, Button, Empty } from "antd";
 import { TableComponentProps } from "./interfaces";
+
 import "./index.scss";
 
 const TableComponent = ({

@@ -11,6 +11,7 @@ import {
   claimableDataSource,
 } from "../../components/Table/constants";
 import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
+
 import "./index.scss";
 
 const UserDashBoard = () => {
