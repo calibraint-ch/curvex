@@ -1,4 +1,5 @@
 import { InputNumber } from "antd";
+
 import "./index.scss";
 
 const PriceInput = () => {

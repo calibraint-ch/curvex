@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Modal, Radio, message, RadioChangeEvent } from 'antd';
 import { QuestionCircle, BuySetting } from "../../../assets/images/imageAssets";
+
 import "./index.scss";
 
 type Cardprops = {
@@ -30,8 +31,8 @@ const ChipCard = (props: Cardprops) => {
         type: 'error',
         content: 'Value must not be greater than 10',
         style: {
-          marginTop: '95px',
-          marginLeft: '750px'
+          marginTop: '350px',
+          marginLeft: '750px',
         },
       });
       return;
@@ -61,15 +62,15 @@ const ChipCard = (props: Cardprops) => {
           <div>
             <div>
               <img src={QuestionCircle} alt="Question" />
-              <img src={BuySetting} alt="Settings" onClick={showModal} />
+              <img src={BuySetting} alt="Settings" onClick={showModal} className="image-curser"/>
             </div>
-            <Modal title="Settings" open={isModalOpen} onCancel={handleCancel} footer={null} width={386} style={{ top: 200, marginLeft: 880 }}>
+            <Modal title="Settings" open={isModalOpen} onCancel={handleCancel} footer={null} width={386} style={{ top: 460, marginLeft: 1080 }}>
               <p className="sub-title">Slippage Tolerance</p>
               <p className="label">Custom</p>
               <div className="modal-props">
                 <Radio.Group className="slipage" options={slippageOptions} onChange={handleOnChange} optionType="button" buttonStyle="solid" />
                 <div className="input-tab">
-                  <input type="number" className="input-box" onChange={handleInputChange} />
+                  <input type="number" className="input-box number-input" onChange={handleInputChange} />
                 </div>
               </div>
             </Modal>
