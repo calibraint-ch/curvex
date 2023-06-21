@@ -10,6 +10,7 @@ import { routes } from "../../../utils/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { resetWallet } from "../../slice/wallet.slice";
 import { selectNetwork, selectWallet } from "../../slice/wallet.selector";
+import { chainList } from "../../../utils/constants";
 
 import "./index.scss";
 
@@ -18,7 +19,8 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const { connectWallet, detectNetworkChange, connected } = useMetamaskProvider();
-  const { dashboard, portfolio } = routes;
+  const { dashboard, portfolio, homepage } = routes;
+  const { mainnet, testnet } = chainList;
 
   const networkId = useSelector(selectNetwork);
   const address = useSelector(selectWallet);
@@ -50,12 +52,12 @@ const Header = () => {
   return (
     <div className="header">
       <div>
-        <Link style={{ textDecoration: "none" }} to={"/"}>
+        <Link style={{ textDecoration: "none" }} to={homepage}>
           <img className="logo" src={CurvXLogo} alt="CurveX_Logo" />
         </Link>
       </div>
       <div className="nav-items">
-        {location.pathname === "/" ? (
+        {location.pathname === homepage ? (
           <>
             <div>Docs</div>
             <div>About</div>
@@ -67,14 +69,14 @@ const Header = () => {
           </>
         ) : (
           <div className="nav-items">
-            {networkId === "250" && (
+            {networkId === mainnet && (
               <div className="network">
                 <div className="dot mainnet"></div>
                 <p className="name">Mainnet</p>
               </div>
             )}
 
-            {networkId === "4002" && (
+            {networkId === testnet && (
               <div className="network">
                 <span className="dot testnet"></span>
                 <p className="name">Testnet</p>
@@ -98,9 +100,7 @@ const Header = () => {
             ) : (
               <Button className="connect-btn" onClick={handleConnectWallet}>
                 <img className="connect-icon" src={WalletIcon} alt="wallet-group" />
-                {address
-                  ? formatWalletAddress(address)
-                  : "Connect Wallet"}
+                Connect Wallet
               </Button>
             )}
           </div>
