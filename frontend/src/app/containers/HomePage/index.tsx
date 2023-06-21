@@ -1,15 +1,9 @@
 import { Link } from "react-router-dom";
 import { Button } from "antd";
-import { ConnectorDiv, HeroImage } from "../../../assets/images/imageAssets";
-import { Hand } from "../../../assets/images/imageAssets";
 import Graph from "../../components/Graphs/Graph";
 import { CurveTypes } from "../../components/Graphs/constants";
 import {
-  Settings,
-  Puzzle,
-  Unlock,
-  Greek,
-  Price
+  Settings, Puzzle, Unlock, Greek, Price, HeroImage, ConnectorDiv, Hand
 } from "../../../assets/images/imageAssets";
 import Footer from "../../components/Footer/Footer";
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button, Dropdown } from "antd";
 import type { MenuProps } from 'antd';
@@ -7,19 +7,21 @@ import { formatWalletAddress } from "../../../utils/methods";
 import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
 import { WalletIcon, CurvXLogo, DisconnectIcon } from "../../../assets/images/imageAssets";
 import { routes } from "../../../utils/routes";
+import { useDispatch, useSelector } from "react-redux";
+import { resetWallet } from "../../slice/wallet.slice";
+import { selectNetwork, selectWallet } from "../../slice/wallet.selector";
 
 import "./index.scss";
 
 const Header = () => {
-  const [account, setAccount] = useState("");
   const location = useLocation();
+  const dispatch = useDispatch();
 
-  const { connectWallet, metaState, detectNetworkChange, connected } = useMetamaskProvider();
+  const { connectWallet, detectNetworkChange, connected } = useMetamaskProvider();
   const { dashboard, portfolio } = routes;
 
-  useEffect(() => {
-    setAccount(metaState.account[0]);
-  }, [metaState.account]);
+  const networkId = useSelector(selectNetwork);
+  const address = useSelector(selectWallet);
 
   useEffect(() => {
     detectNetworkChange();
@@ -27,12 +29,11 @@ const Header = () => {
 
   const handleConnectWallet = async () => {
     connectWallet()
-    setAccount(metaState.account[0])
   }
 
   const handleDisconnect: MenuProps['onClick'] = (e) => {
     if (e.key) {
-      setAccount("");
+      dispatch(resetWallet());
     }
   }
 
@@ -66,6 +67,19 @@ const Header = () => {
           </>
         ) : (
           <div className="nav-items">
+            {networkId === "250" && (
+              <div className="network">
+                <div className="dot mainnet"></div>
+                <p className="name">Mainnet</p>
+              </div>
+            )}
+
+            {networkId === "4002" && (
+              <div className="network">
+                <span className="dot testnet"></span>
+                <p className="name">Testnet</p>
+              </div>
+            )}
             {location.pathname === "/dashboard" ?
               <Link style={{ textDecoration: "none", color: '#ffffff' }} to={portfolio}>
                 <div>Portfolio</div>
@@ -73,19 +87,19 @@ const Header = () => {
               <Link style={{ textDecoration: "none", color: '#ffffff' }} to={dashboard}>
                 <div>Dashboard</div>
               </Link>}
-            {connected && account ? (
+            {connected && address ? (
               <Dropdown menu={{ items, onClick: handleDisconnect }} placement="bottom">
                 <Button className="connect-btn" onClick={handleConnectWallet}>
                   <img className="connect-icon" src={WalletIcon} alt="wallet-group" />
-                  {formatWalletAddress(account)}
+                  {formatWalletAddress(address)}
                   <DownOutlined />
                 </Button>
               </Dropdown>
             ) : (
               <Button className="connect-btn" onClick={handleConnectWallet}>
                 <img className="connect-icon" src={WalletIcon} alt="wallet-group" />
-                {account
-                  ? formatWalletAddress(account)
+                {address
+                  ? formatWalletAddress(address)
                   : "Connect Wallet"}
               </Button>
             )}

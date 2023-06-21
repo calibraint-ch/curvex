@@ -61,8 +61,8 @@ const ChipCard = (props: Cardprops) => {
         {props.title === "SLIPPAGE TOLERANCE" &&
           <div>
             <div>
-              <img src={QuestionCircle} alt="Question" />
-              <img src={BuySetting} alt="Settings" onClick={showModal} className="image-curser"/>
+              <img className="mb-4" src={QuestionCircle} alt="Question" />
+              <img src={BuySetting} alt="Settings" onClick={showModal} className="image-curser mb-4"/>
             </div>
             <Modal title="Settings" open={isModalOpen} onCancel={handleCancel} footer={null} width={386} style={{ top: 460, marginLeft: 1080 }}>
               <p className="sub-title">Slippage Tolerance</p>
