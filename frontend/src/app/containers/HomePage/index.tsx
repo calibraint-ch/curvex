@@ -1,17 +1,12 @@
 import { Link } from "react-router-dom";
 import { Button } from "antd";
-import { ConnectorDiv, HeroImage } from "../../../assets/images/imageAssets";
-import { Hand } from "../../../assets/images/imageAssets";
 import Graph from "../../components/Graphs/Graph";
 import { CurveTypes } from "../../components/Graphs/constants";
 import {
-  Settings,
-  Puzzle,
-  Unlock,
-  Greek,
-  Price
+  Settings, Puzzle, Unlock, Greek, Price, HeroImage, ConnectorDiv, Hand
 } from "../../../assets/images/imageAssets";
 import Footer from "../../components/Footer/Footer";
+import { routes } from "../../../utils/routes";
 
 import "./index.scss";
 
@@ -38,7 +33,7 @@ const HomePage = () => {
               Empowers Dynamic Features, and Streamlines Effortless Token
               Management, all in One Place!
             </p>
-            <Link style={{ textDecoration: "none" }} to={"/curve-x"}>
+            <Link style={{ textDecoration: "none" }} to={routes.dashboard}>
               <Button className="launch-app-btn">Launch App</Button>
             </Link>
           </div>

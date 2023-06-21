@@ -28,7 +28,7 @@ const LaunchPad = () => {
         </div>
         <div className="launchpad-contents">
           <div className="details-title">Token Details</div>
-          <Form>
+          <Form layout="vertical">
             <Form.Item label="Token Name" name={"token-name"} required={true}>
               <Input className="input-box" placeholder="Eg., NAV Coin" />
               <p className="input-description">

@@ -1,11 +1,14 @@
 import DropDown from "../Dropdown";
 import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
 import PriceInput from "../PriceInput";
+import { useSelector } from "react-redux"
+import { selectWallet } from "../../slice/wallet.selector";
 
 import "./index.scss";
 
 const PriceCard = () => {
   const { balance } = useMetamaskProvider();
+  const walletAddress = useSelector(selectWallet);
 
   return (
     <div className="price-card-group">
@@ -16,7 +19,7 @@ const PriceCard = () => {
             <p className="balance-text">
               BALANCE:{" "}
               <span style={{ color: "#3f57d0" }}>
-                {balance ? Number(balance).toFixed(4) : "--"}
+                {walletAddress ? (balance ? Number(balance).toFixed(4) : "--") : "--"}
               </span>
             </p>
           </div>
