@@ -21,6 +21,10 @@ const Graph = (props: GraphProps) => {
     type,
     legend = false,
     previewOnly,
+    a,
+    n,
+    c1,
+    c2,
   } = props;
   const data: dataType[] = [];
   let totalSupply = 0;
@@ -33,8 +37,15 @@ const Graph = (props: GraphProps) => {
     });
 
     totalSupply += increment;
+
     if (type === CurveTypes.linear && slope && intercept) {
       price = slope * totalSupply + intercept;
+    } else if (type === CurveTypes.polynomial && a && n) {
+      price = Math.pow(a * totalSupply, n);
+    } else if (type === CurveTypes.subLinear && n) {
+      price = Math.pow(totalSupply, n);
+    } else if (type === CurveTypes.sCurve && c1 && c2) {
+      price = 1 / Math.exp(-c1 * (totalSupply - c2));
     } else {
       price = 0;
     }
