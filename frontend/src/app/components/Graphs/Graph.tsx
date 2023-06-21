@@ -9,7 +9,6 @@ import {
   Tooltip,
   Legend,
   ReferenceArea,
-  Area,
 } from "recharts";
 
 const Graph = (props: GraphProps) => {

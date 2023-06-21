@@ -5,6 +5,10 @@
   border-radius: 15px;
 }
 
+.ant-table-content {
+  overflow-x: auto !important;
+}
+
 .ant-table-body::-webkit-scrollbar {
   width: 8px;
   background-color: var(--white-smoke);
@@ -30,4 +34,12 @@
   font-family: "SchibstedGrotesk";
   font-size: 11px;
   text-transform: capitalize;
+}
+
+.deployed-token-table {
+  width: 1081px !important;
+}
+
+.claimable-token-table {
+  width: 529px !important;
 }

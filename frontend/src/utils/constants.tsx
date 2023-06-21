@@ -1,7 +1,7 @@
 export const errorMessages = {
-    connectWalletFailed: "Failed To Connect"
-}
+  connectWalletFailed: "Failed To Connect",
+};
 
-export const contractAddress = '0x5d1342fA9AD6cC6bB05eF05294486c0684725245';
+export const factoryContractAddress = "0x6B090ba5c45be4ba92C595a5aCd4ae482eC52280";
 
-export const defaultTokenDetails = { name: '', symbol: '', decimals: '' }
+export const defaultTokenDetails = { name: "", symbol: "", decimals: "" };

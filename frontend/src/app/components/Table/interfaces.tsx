@@ -21,4 +21,5 @@ export interface ClaimableDataProps extends Key {
 export interface TableComponentProps {
     columns: ColumnsType<DeployedDataProps | ClaimableDataProps>,
     dataSource: DeployedDataProps[] | ClaimableDataProps[]
+    classname: string;
 }
