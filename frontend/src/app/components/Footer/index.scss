@@ -65,13 +65,8 @@ ul li {
   font-family: "SchibstedGrotesk";
 }
 
-.flex-and-between {
+.social-icons {
   display: flex;
   justify-content: space-between;
-  width: 100px;
-}
-
-.social-icons {
-  color: var(--primary-pink);
-  fill: var(--primary-pink);
+  gap: 24px;
 }

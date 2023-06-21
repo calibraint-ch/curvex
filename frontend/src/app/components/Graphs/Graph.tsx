@@ -1,5 +1,4 @@
 import { CurveTypes, GraphProps, dataType, strokeColors } from "./constants";
-import "./index.scss";
 import {
   LineChart,
   Line,
@@ -9,8 +8,9 @@ import {
   Tooltip,
   Legend,
   ReferenceArea,
-  Area,
 } from "recharts";
+
+import "./index.scss";
 
 const Graph = (props: GraphProps) => {
   const {

@@ -7,7 +7,7 @@
 
 .launchpad-box {
   background-color: var(--white);
-  width: 460px;
+  width: 700px;
   border-radius: 12px;
 }
 
@@ -15,7 +15,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 412px;
+  width: 627px;
   background: rgba(255, 253, 2, 0.1);
   border: 1px solid rgba(193, 145, 31, 0.2);
   border-radius: 12px;
@@ -27,18 +27,18 @@
 }
 
 .description-title {
-  font-size: 11px;
+  font-size: 17px;
   font-family: "SchibstedGrotesk-Bold";
   margin: 0px;
 }
 
 .description-content {
-  font-size: 11px;
+  font-size: 15px;
   font-family: "SchibstedGrotesk";
 }
 
 .launchpad-contents {
-  margin: 5%;
+  padding: 20px 32px;
 }
 
 .details-title {
@@ -63,7 +63,7 @@
 }
 
 .other-details-section .input-box {
-  width: 200px;
+  width: 308px;
 }
 
 .form-fields {
@@ -88,7 +88,7 @@
 }
 
 .mint-button {
-  width: 182px;
+  width: 200px;
   justify-content: center;
   align-items: center;
   margin: 12px 12px;
@@ -107,9 +107,9 @@
 }
 
 .curve-section {
-  width: 412px;
+  width: 627px;
   margin-top: 24px;
-  height: 357px;
+  min-height: 380px;
   background: rgba(230, 230, 230, 0.32);
   border-radius: 14px;
 }
@@ -119,7 +119,6 @@
   border: 1px solid var(--white-4);
   border-radius: 12px;
   width: 130px;
-  height: 45px;
+  min-height: 45px;
   padding: 6px 7px 8px 7px;
 }
-

@@ -1,6 +1,7 @@
 import { Select } from "antd";
-import "./index.scss";
 import { EthereumLogo, FTMLogo } from "../../../assets/images/imageAssets";
+
+import "./index.scss";
 
 const DropDown = () => {
   const handleChange = (value: string) => {
