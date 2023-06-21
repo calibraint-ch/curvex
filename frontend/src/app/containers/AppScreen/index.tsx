@@ -2,8 +2,10 @@ import "./index.scss";
 import { useState } from "react";
 import Tab from "../../components/Tab/Tab";
 import { tabOptions } from "../../components/Tab/constants";
-import BuyTab from "../../components/BuySection";
+import BuyWihdraw from "../../components/Buy-Withdraw";
 import LaunchPad from "../../components/Launchpad";
+
+import "./index.scss";
 
 const AppScreen = () => {
   const [selectedTab, setSelectedTab] = useState(tabOptions[0].key);
@@ -17,7 +19,8 @@ const AppScreen = () => {
       <div className="tab">
         <Tab {...{ onTabChange }} />
       </div>
-      {selectedTab === tabOptions[0].key && <BuyTab />}
+      {selectedTab === tabOptions[0].key && <BuyWihdraw tab="Buy" />}
+      {selectedTab === tabOptions[1].key && <BuyWihdraw tab="Withdraw"/>}
       {selectedTab === tabOptions[2].key && <LaunchPad />}
     </div>
   );

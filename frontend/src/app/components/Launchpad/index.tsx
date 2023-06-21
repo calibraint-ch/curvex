@@ -23,8 +23,7 @@ const LaunchPad = () => {
         <div className="description-box mint-tokens">
           <p className="description-title">Mint Tokens</p>
           <p className="description-content">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pelleqtes
-            at mets Duis alos.
+            Minting enables the creation of new tokens to meet demand or fulfil specific requirements. It allows for the expansion of token supply as needed, ensuring liquidity and availability in the market.
           </p>
         </div>
         <div className="launchpad-contents">
@@ -47,15 +46,13 @@ const LaunchPad = () => {
             </Form.Item>
           </Form>
           <div className="description-box">
-            <p className="description-title">Token Features</p>
-            <p className="description-content">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pelleqtes
-              at mets Duis alos.
-            </p>
             <p className="description-title">Bonding Curves</p>
             <p className="description-content">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pelleqtes
-              at mets Duis alos.
+              A bonding curve is a mathematical model that governs the relationship between the price and supply of a token in a decentralized system
+            </p>
+            <p className="description-title">Token Features</p>
+            <p className="description-content">
+              In a bonding curve, as the token supply of token increases, the price typically rises, and as the token supply decreases, the price decreases.
             </p>
           </div>
           <div className="curve-section">

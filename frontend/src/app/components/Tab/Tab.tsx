@@ -1,5 +1,6 @@
 import { Tabs } from "antd";
 import { tabOptions } from "./constants";
+
 import "./index.scss";
 
 const Tab = ({ onTabChange }: { onTabChange: any }) => {

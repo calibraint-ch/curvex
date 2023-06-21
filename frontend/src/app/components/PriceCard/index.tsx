@@ -1,7 +1,8 @@
 import DropDown from "../Dropdown";
-import "./index.scss";
 import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
 import PriceInput from "../PriceInput";
+
+import "./index.scss";
 
 const PriceCard = () => {
   const { balance } = useMetamaskProvider();

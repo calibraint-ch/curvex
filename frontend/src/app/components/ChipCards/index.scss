@@ -1,7 +1,7 @@
 .chip-card {
   display: flex;
-  width: 400px;
-  height: 160px;
+  width: 358px;
+  height: 145px;
   background-color: var(--light-blue);
   border-radius: 12px;
   padding: 2%;
@@ -16,7 +16,7 @@
 
 .card-title {
   font-family: "SchibstedGrotesk-Medium";
-  font-size: 24px;
+  font-size: 19px;
   color: var(--white);
   opacity: 60%;
 }
@@ -44,7 +44,7 @@
 }
 
 .slippage-modal {
-  margin: 68px 16px 14px 7px;
+  margin: 64px 16px 15px 7px;
 }
 
 .slipage .ant-radio-button-wrapper {
@@ -89,4 +89,18 @@
   font-size: 10px;
   color: var(--white-4);
   font-family: "SchibstedGrotesk";
+}
+
+.number-input::-webkit-inner-spin-button,
+.number-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-input {
+  -moz-appearance: textfield;
+}
+
+.image-curser {
+  cursor: pointer;
 }
