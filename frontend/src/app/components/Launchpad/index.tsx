@@ -7,17 +7,17 @@ import ImageUploader from "../ImageUploader";
 import "./index.scss";
 
 const LaunchPad = () => {
-  const [curve, setCurve] = useState("linear");
+  const [curve, setCurve] = useState<string>(CurveTypes.linear);
 
   const handleChange = (value: string) => {
     setCurve(value);
   };
 
   const curveOptions = [
-    { value: 'linear', label: 'Linear' },
-    { value: 'polynomial', label: 'Polynomial' },
-    { value: 'subLinear', label: 'Sub-Linear' },
-    { value: 'sCurve', label: 'S-curve' },
+    { value: CurveTypes.linear, label: 'Linear' },
+    { value: CurveTypes.polynomial, label: 'Polynomial' },
+    { value: CurveTypes.subLinear, label: 'Sub-Linear' },
+    { value: CurveTypes.sCurve, label: 'S-curve' },
   ]
 
   return (
