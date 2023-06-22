@@ -4,7 +4,7 @@ export type DeployParams = {
   cap: string;
   lockPeriod: string;
   precision: string;
-  _curveType: string;
+  curveType: string;
   pairToken: string;
   salt: string;
 };

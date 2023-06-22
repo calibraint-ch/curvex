@@ -43,7 +43,9 @@ const UserDashBoard = () => {
               <img className="wallet-icon" src={UsdBalance} alt="UsdBalance" />
               <div>
                 <p className="address">PORTFOLIO VALUE</p>
-                <p className="value">12.12</p>
+                <p className="value">
+                  {metaState.account[0] ? metaState.account[0] : "0.00"}
+                </p>
               </div>
             </div>
           </div>

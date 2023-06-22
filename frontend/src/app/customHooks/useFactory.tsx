@@ -9,7 +9,7 @@ function useFactory() {
 
   const getContractInstance = async (contractAddress: string) => {
     return new ethers.Contract(
-      factoryContractAddress,
+      contractAddress,
       factoryContract.abi,
       metaState.web3.getSigner()
     );
@@ -18,6 +18,7 @@ function useFactory() {
   const getTokenPairList = async () => {
     const contract = await getContractInstance(factoryContractAddress);
     const tokenPairs = await contract.getTokenPairList();
+    return tokenPairs;
   };
 
   const deployToken = async ({
@@ -26,26 +27,34 @@ function useFactory() {
     cap,
     lockPeriod,
     precision,
-    _curveType,
+    curveType,
     pairToken,
     salt,
   }: DeployParams) => {
     const contract = await getContractInstance(factoryContractAddress);
-    const deployTxn = await contract.deploy(
-      name,
-      symbol,
-      cap,
-      lockPeriod,
-      precision,
-      _curveType,
-      pairToken,
-      salt
-    );
+
+    if (contract) {
+      const deployTxnResponse = await contract.deploy(
+        name,
+        symbol,
+        cap,
+        lockPeriod,
+        precision,
+        curveType,
+        pairToken,
+        salt
+      );
+
+      return { hash: deployTxnResponse.hash };
+    }
+
+    return "";
   };
 
   return {
     metaState,
     getTokenPairList,
+    deployToken,
   };
 }
 
