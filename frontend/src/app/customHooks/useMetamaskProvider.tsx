@@ -31,22 +31,23 @@ function useMetamaskProvider() {
       return chain.id;
     }
     return "";
-  }
+  };
 
   const detectNetworkChange = async () => {
-    window.ethereum.on('chainChanged', async () => {
+    window.ethereum.on("chainChanged", async () => {
       const chainId = await getCurrentNetwork();
       if (!supportedChains.includes(chainId)) {
         message.error(errorMessages.unSupportedNetwork);
         dispatch(resetWallet());
       } else {
-        dispatch(setNetwork(chainId))
+        dispatch(setNetwork(chainId));
       }
-    })
-    return () => window.ethereum.removeListener('chainChanged', () => {
-      window.location.reload()
-    })
-  }
+    });
+    return () =>
+      window.ethereum.removeListener("chainChanged", () => {
+        window.location.reload();
+      });
+  };
 
   const connectWallet = async () => {
     if (metaState.isAvailable) {
@@ -54,11 +55,11 @@ function useMetamaskProvider() {
         const chainId = await getCurrentNetwork();
         if (!supportedChains.includes(chainId)) {
           message.error(errorMessages.unSupportedNetwork);
-          dispatch(resetWallet())
+          dispatch(resetWallet());
           return;
         } else {
           dispatch(setNetwork(chainId));
-          dispatch(setWallet(metaState.account[0]))
+          dispatch(setWallet(metaState.account[0]));
         }
 
         if (!metaState.isConnected) {
@@ -75,14 +76,10 @@ function useMetamaskProvider() {
 
   useEffect(() => {
     if (metaState.isConnected) {
-      dispatch(setWallet(metaState.account[0]))
+      dispatch(setWallet(metaState.account[0]));
       getBalance(metaState.account[0]);
     }
-  }, [
-    getBalance,
-    metaState.account,
-    metaState.isConnected,
-  ]);
+  }, [dispatch, getBalance, metaState.account, metaState.isConnected]);
 
   return { connected, metaState, balance, connectWallet, detectNetworkChange };
 }

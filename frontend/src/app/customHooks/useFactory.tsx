@@ -21,7 +21,7 @@ function useFactory() {
     return tokenPairs;
   };
 
-  const deployToken = async ({
+  const deployBondingToken = async ({
     name,
     symbol,
     cap,
@@ -29,6 +29,7 @@ function useFactory() {
     precision,
     curveType,
     pairToken,
+    logoURL,
     salt,
   }: DeployParams) => {
     const contract = await getContractInstance(factoryContractAddress);
@@ -37,6 +38,7 @@ function useFactory() {
       const deployTxnResponse = await contract.deploy(
         name,
         symbol,
+        logoURL,
         cap,
         lockPeriod,
         precision,
@@ -54,7 +56,7 @@ function useFactory() {
   return {
     metaState,
     getTokenPairList,
-    deployToken,
+    deployBondingToken,
   };
 }
 

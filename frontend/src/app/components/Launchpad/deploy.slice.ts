@@ -36,7 +36,7 @@ export const deployTokenSlice = createSlice({
       state,
       _action: PayloadAction<{
         formData: LaunchFormData;
-        deployToken: DeployParams;
+        deployToken: any;
       }>
     ) => {
       state.deployToken.isLoading = true;

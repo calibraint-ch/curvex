@@ -1,10 +1,10 @@
 import { RcFile } from "antd/es/upload";
 
 export const curveOptions = [
-  { value: "linear", label: "Linear" },
-  { value: "polynomial", label: "Polynomial" },
-  { value: "sub-linear", label: "Sub-Linear" },
-  { value: "s-curve", label: "S-curve" },
+  { value: "1", label: "Linear" },
+  { value: "2", label: "Polynomial" },
+  { value: "3", label: "Sub-Linear" },
+  { value: "4", label: "S-Curve" },
 ];
 
 export const vestingPeriodOptions = [
@@ -14,8 +14,13 @@ export const vestingPeriodOptions = [
   { value: "60", label: "60 days" },
 ];
 
+export const LaunchPadInitialValues = {
+  curveType: "1",
+  vestingPeriod: "45",
+};
+
 export type CurveParams = {
-  lockPeriod: string;
+  lockPeriod: number;
   totalSupply: number;
   precision: number; //slope
 };

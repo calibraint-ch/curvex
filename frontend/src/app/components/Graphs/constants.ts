@@ -13,10 +13,10 @@ export type GraphProps = {
 };
 
 export enum CurveTypes {
-  linear = "linear",
-  polynomial = "polynomial",
-  subLinear = "subLinear",
-  sCurve = "sCurve",
+  linear = "Linear",
+  polynomial = "Polynomial",
+  subLinear = "Sub-Linear",
+  sCurve = "S-Curve",
 }
 
 export type dataType = {
