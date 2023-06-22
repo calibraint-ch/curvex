@@ -1,15 +1,18 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import "./App.scss";
+
 import HomePage from "./app/containers/HomePage";
-import { routes } from "./utils/routes";
 import Header from "./app/components/Header/Header";
 import AppScreen from "./app/containers/AppScreen";
 import UserDashBoard from "./app/containers/UserDashboard";
 import { useDeployTokenSlice } from "./app/components/Launchpad/deploy.slice";
 
-function App() {
-  useDeployTokenSlice();
+import { routes } from "./utils/routes";
+import { useWalletSlice } from "./app/slice/wallet.slice";
+import "./App.scss";
 
+function App() {
+  useWalletSlice();
+  useDeployTokenSlice();
   return (
     <Router>
       <div className="App">

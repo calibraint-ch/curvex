@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+import { selectWallet } from "../../slice/wallet.selector";
 import TableComponent from "../../components/Table/Table";
 import {
   WalletIconDashboard,
@@ -10,12 +12,11 @@ import {
   claimableColumns,
   claimableDataSource,
 } from "../../components/Table/constants";
-import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
 
 import "./index.scss";
 
 const UserDashBoard = () => {
-  const { metaState } = useMetamaskProvider();
+  const walletAddress = useSelector(selectWallet);
 
   return (
     <div className="dashboard">
@@ -31,9 +32,7 @@ const UserDashBoard = () => {
             <div>
               <p className="address">WALLET ADDRESS</p>
               <p className="value">
-                {metaState.account[0]
-                  ? metaState.account[0]
-                  : "No Wallet Address Available!"}
+                {walletAddress ? walletAddress : "No Wallet Address Available!"}
               </p>
             </div>
           </div>
@@ -43,9 +42,7 @@ const UserDashBoard = () => {
               <img className="wallet-icon" src={UsdBalance} alt="UsdBalance" />
               <div>
                 <p className="address">PORTFOLIO VALUE</p>
-                <p className="value">
-                  {metaState.account[0] ? metaState.account[0] : "0.00"}
-                </p>
+                <p className="value">12.12</p>
               </div>
             </div>
           </div>

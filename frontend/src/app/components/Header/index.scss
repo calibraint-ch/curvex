@@ -65,3 +65,28 @@
     border-color: var(--primary-lemon) !important;
   }
 }
+
+.dot {
+  border-radius: 50%;
+  height: 15px;
+  width: 15px;
+  padding: 0px !important;
+}
+
+.testnet {
+  background-color: #40ff00;
+}
+
+.mainnet {
+  background-color: #ff0040;
+}
+
+.network {
+  display: flex;
+  margin-bottom: -17px;
+}
+
+.name {
+  margin-left: 5px;
+  margin-top: -4px;
+}

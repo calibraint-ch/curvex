@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { message } from "antd";
-import { useMetamask } from "use-metamask";
 import { ethers } from "ethers";
+import { useMetamask } from "use-metamask";
 import { errorMessages, supportedChains } from "../../utils/constants";
+import { setNetwork, setWallet, resetWallet } from "../slice/wallet.slice";
 
 function useMetamaskProvider() {
   const [connected, setConnected] = useState(false);
-  const [network, setNetwork] = useState("");
-  const [chainId, setChainId] = useState("");
   const [balance, setBalance] = useState("");
-  const [address, setAddress] = useState("");
 
   const { connect, metaState, getChain } = useMetamask();
+  const dispatch = useDispatch();
 
   //For Future Reference
   const getBalance = useCallback(
@@ -25,13 +25,22 @@ function useMetamaskProvider() {
     [metaState.isConnected, metaState.web3]
   );
 
-  const detectNetworkChange = () => {
+  const getCurrentNetwork = async (): Promise<string> => {
+    if (getChain) {
+      const chain = await getChain();
+      return chain.id;
+    }
+    return "";
+  }
+
+  const detectNetworkChange = async () => {
     window.ethereum.on('chainChanged', async () => {
-      if (getChain) {
-        const chain = await getChain();
-        if (!supportedChains.includes(chain.id)) {
-          message.error(errorMessages.unSupportedNetwork);
-        }
+      const chainId = await getCurrentNetwork();
+      if (!supportedChains.includes(chainId)) {
+        message.error(errorMessages.unSupportedNetwork);
+        dispatch(resetWallet());
+      } else {
+        dispatch(setNetwork(chainId))
       }
     })
     return () => window.ethereum.removeListener('chainChanged', () => {
@@ -42,6 +51,16 @@ function useMetamaskProvider() {
   const connectWallet = async () => {
     if (metaState.isAvailable) {
       try {
+        const chainId = await getCurrentNetwork();
+        if (!supportedChains.includes(chainId)) {
+          message.error(errorMessages.unSupportedNetwork);
+          dispatch(resetWallet())
+          return;
+        } else {
+          dispatch(setNetwork(chainId));
+          dispatch(setWallet(metaState.account[0]))
+        }
+
         if (!metaState.isConnected) {
           await connect?.(ethers.providers.Web3Provider, "any");
           setConnected(true);
@@ -56,21 +75,16 @@ function useMetamaskProvider() {
 
   useEffect(() => {
     if (metaState.isConnected) {
-      const { name, id } = metaState.chain;
-      setNetwork(name);
-      setChainId(id);
-      setAddress(metaState.account[0])
+      dispatch(setWallet(metaState.account[0]))
       getBalance(metaState.account[0]);
     }
   }, [
     getBalance,
     metaState.account,
-    metaState.chain,
-    metaState.chain.id,
     metaState.isConnected,
   ]);
 
-  return { connected, metaState, network, address, chainId, balance, connectWallet, detectNetworkChange };
+  return { connected, metaState, balance, connectWallet, detectNetworkChange };
 }
 
 export default useMetamaskProvider;

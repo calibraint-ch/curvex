@@ -12,3 +12,8 @@ export const factoryContractAddress =
 export const defaultTokenDetails = { name: "", symbol: "", decimals: "" };
 
 export const supportedChains = ["250", "4002"];
+
+export const chainList = {
+    mainnet: "250",
+    testnet: "4002"
+}

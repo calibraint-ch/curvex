@@ -75,7 +75,7 @@ const LaunchPad = () => {
         </div>
         <div className="launchpad-contents">
           <div className="details-title">Token Details</div>
-          <Form onFinish={onFormSubmit}>
+          <Form onFinish={onFormSubmit} layout="vertical">
             <Form.Item label="Token Name" name="tokenName" required={true}>
               <Input className="input-box" placeholder="Eg., NAV Coin" />
               <p className="input-description">
