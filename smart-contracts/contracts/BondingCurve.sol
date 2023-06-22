@@ -14,6 +14,9 @@ import "hardhat/console.sol";
  * the buy and sell functionality using the bonding curve mechanism.
  */
 contract BondingCurve is Context {
+    error InvalidCurveType();
+    error InvalidAmount();
+
     using SafeMath for uint256;
 
     uint256 public constant DECIMALS = 18;
@@ -23,7 +26,7 @@ contract BondingCurve is Context {
     address immutable tokenB;
     uint256 public reserveBalance;
     uint256 public scalingFactor;
-    uint256 public curveType;
+    uint8 public curveType;
 
     event Purchase(address indexed buyer, uint256 amount, uint256 cost);
     event Sale(address indexed seller, uint256 amount, uint256 refund);
@@ -32,7 +35,7 @@ contract BondingCurve is Context {
 
     constructor(
         uint256 precision,
-        uint256 _curveType,
+        uint8 _curveType,
         address _tokenA,
         address _tokenB
     ) {
@@ -85,13 +88,20 @@ contract BondingCurve is Context {
             );
             return scalingFactor.mul(temp1.sub(temp2)).div(CURVE_PRECISION);
         } else if (curveType == 4) {
-            // Polynomial Curve
-            return
-                scalingFactor.mul(_investment.mul(_investment)).div(
-                    CURVE_PRECISION.mul(CURVE_PRECISION)
-                );
+            // Polynomial Curve - (mx1^2 / 2) - (mx2^2 / 2); x1 > x2
+            // here m is 1/CURVE_PRECISION
+            {
+                uint256 newTotal = totalSupply + _investment;
+                return
+                    (newTotal ** 3)
+                        .div(3)
+                        .div(scalingFactor)
+                        .div(scalingFactor)
+                        .sub(reserveBalance)
+                        .div(CURVE_PRECISION);
+            }
         } else {
-            revert("Invalid curve type");
+            revert InvalidCurveType();
         }
     }
 
@@ -132,26 +142,33 @@ contract BondingCurve is Context {
             );
             return scalingFactor.mul(temp1.sub(temp2)).div(CURVE_PRECISION);
         } else if (curveType == 4) {
-            // Polynomial Curve
-            uint256 temp1 = scalingFactor.mul(_amount).mul(
-                CURVE_PRECISION.mul(CURVE_PRECISION)
-            );
-            uint256 temp2 = scalingFactor.mul(CURVE_PRECISION);
-            return temp1.div(temp2);
+            // Polynomial Curve - (mx1^2 / 2) - (mx2^2 / 2); x1 > x2
+            // here m is CURVE_PRECISION
+            uint256 newTotal = totalSupply.sub(_amount);
+            return
+                reserveBalance.sub(
+                    (newTotal ** 3)
+                        .div(3)
+                        .div(scalingFactor)
+                        .div(scalingFactor)
+                        .div(CURVE_PRECISION)
+                );
         } else {
-            revert("Invalid curve type");
+            revert InvalidCurveType();
         }
     }
 
     function _buy(uint256 amount) internal returns (uint256 priceForToken) {
         priceForToken = calculatePurchaseReturn(amount);
+
         ICurvXErc20(tokenA).mintAndLock(_msgSender(), amount);
+        totalSupply += amount;
 
         emit Purchase(msg.sender, amount, priceForToken);
     }
 
     function buy(uint256 amount) external {
-        require(amount > 0, "Invalid investment amount");
+        if (amount == 0) revert InvalidAmount();
 
         uint256 priceOfPurchase = _buy(amount);
 
@@ -161,7 +178,6 @@ contract BondingCurve is Context {
             priceOfPurchase
         );
 
-        totalSupply += amount;
         reserveBalance = reserveBalance.add(priceOfPurchase);
     }
 
@@ -169,12 +185,13 @@ contract BondingCurve is Context {
         refund = calculateSaleReturn(_amount);
 
         ICurvXErc20(tokenA).burn(_msgSender(), _amount);
+        totalSupply -= _amount;
 
         emit Sale(msg.sender, _amount, refund);
     }
 
     function sell(uint256 _amount) external {
-        require(_amount > 0, "Invalid amount to sell");
+        if (_amount == 0) revert InvalidAmount();
 
         uint256 refund = _sell(_amount);
 

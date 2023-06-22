@@ -1,8 +1,7 @@
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers, network } from "hardhat";
-
-const AddressZero = ethers.constants.AddressZero;
+import mock from "./mock/CurveXERC20.mock";
 
 describe("Token contract", function () {
   after(async () => {
@@ -17,23 +16,34 @@ describe("Token contract", function () {
 
     const oneEther = ethers.utils.parseEther("1");
 
-    const CAP = oneEther.mul(1_000_000);
-    const oneMonth = 60 * 60 * 24 * 30;
-    const curveX = await Token.deploy("CurveX", "CVX", CAP, oneMonth);
+    const curveX = await Token.deploy(
+      mock.tokenName,
+      mock.tokenSymbol,
+      mock.cap,
+      mock.lockPeriod
+    );
 
     await curveX.deployed();
 
     await curveX.grantRole(curveX.TOKEN_MANAGER_ROLE(), owner.address);
 
-    return { Token, curveX, owner, addr1, addr2, oneEther, CAP, oneMonth };
+    return {
+      Token,
+      curveX,
+      owner,
+      addr1,
+      addr2,
+      oneEther,
+      CAP: mock.cap,
+      oneMonth: mock.lockPeriod,
+      tokenName: mock.tokenName,
+      tokenSymbol: mock.tokenSymbol,
+    };
   }
 
   describe("Deployment", function () {
-    const tokenName = "CurveX";
-    const tokenSymbol = "CVX";
-
     it("Should not deploy if name is empty or more than 64 characters", async function () {
-      const { Token, CAP, oneMonth, owner } = await loadFixture(
+      const { Token, CAP, oneMonth, tokenSymbol } = await loadFixture(
         deployTokenFixture
       );
 
@@ -47,7 +57,7 @@ describe("Token contract", function () {
     });
 
     it("Should not deploy if symbol is empty or more than 64 characters", async function () {
-      const { Token, CAP, oneMonth, owner } = await loadFixture(
+      const { Token, CAP, oneMonth, tokenName } = await loadFixture(
         deployTokenFixture
       );
 
@@ -61,7 +71,9 @@ describe("Token contract", function () {
     });
 
     it("Should not deploy if supplyCap is zero", async function () {
-      const { Token, oneMonth, owner } = await loadFixture(deployTokenFixture);
+      const { Token, oneMonth, tokenName, tokenSymbol } = await loadFixture(
+        deployTokenFixture
+      );
 
       await expect(Token.deploy(tokenName, tokenSymbol, 0, oneMonth))
         .to.be.revertedWithCustomError(Token, "SupplyCapOutOfRange")
@@ -74,7 +86,9 @@ describe("Token contract", function () {
     });
 
     it("Should not deploy if locking period is empty or 0", async function () {
-      const { Token, CAP, owner } = await loadFixture(deployTokenFixture);
+      const { Token, CAP, tokenName, tokenSymbol } = await loadFixture(
+        deployTokenFixture
+      );
 
       await expect(
         Token.deploy(tokenName, tokenSymbol, CAP, 0)

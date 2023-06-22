@@ -1,11 +1,11 @@
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers, network } from "hardhat";
-import factoryMock from "./mock/CurvXFactory.mock";
+import mock from "./mock/polynomial.mock";
 
 const AddZero = ethers.constants.AddressZero;
 
-describe("Linear curve - Token Manager - BondingCurve.sol", function () {
+describe("Polynomial - Token Manager - BondingCurve.sol", function () {
   after(async () => {
     await network.provider.request({
       method: "hardhat_reset",
@@ -22,24 +22,24 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
     const factory = await Factory.deploy();
     await factory.deployed();
 
-    const usdt = await erc20.deploy(factoryMock.usdt, factoryMock.usdt);
+    const usdt = await erc20.deploy(mock.usdt, mock.usdt);
 
     const DECIMALS = ethers.utils.parseEther("1");
 
-    await usdt.mint(owner.address, DECIMALS);
-    await usdt.mint(addr1.address, DECIMALS);
-    await usdt.mint(addr2.address, DECIMALS);
+    await usdt.mint(owner.address, mock.cap);
+    await usdt.mint(addr1.address, mock.cap);
+    await usdt.mint(addr2.address, mock.cap);
 
     await factory.deployCurveX(
-      factoryMock.tokenName,
-      factoryMock.tokenSymbol,
-      factoryMock.logoUri,
-      factoryMock.cap,
-      factoryMock.lockPeriod,
-      factoryMock.precision,
-      factoryMock.curveType,
+      mock.tokenName,
+      mock.tokenSymbol,
+      mock.logoUri,
+      mock.cap,
+      mock.lockPeriod,
+      mock.precision,
+      mock.curveType,
       usdt.address,
-      factoryMock.salt
+      mock.salt
     );
 
     const contractAddress = (await factory.getTokenPairList())[0];
@@ -77,8 +77,12 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
     const { tokenA, tokenB, tokenManager, addr1, DECIMALS, PRECISION } =
       await loadFixture(deployTokenFixture);
 
-    const buyAmount = DECIMALS;
-    const spendAmount = buyAmount.pow(2).div(2).div(DECIMALS).div(PRECISION);
+    const buyAmount = DECIMALS.mul(10000000);
+    const spendAmount = buyAmount
+      .pow(3)
+      .div(3)
+      .div(PRECISION)
+      .div(DECIMALS.pow(2));
 
     await expect(
       tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
@@ -96,7 +100,11 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
       await loadFixture(deployTokenFixture);
 
     const buyAmount = DECIMALS;
-    const spendAmount = buyAmount.pow(2).div(2).div(DECIMALS).div(PRECISION);
+    const spendAmount = buyAmount
+      .pow(3)
+      .div(3)
+      .div(PRECISION)
+      .div(DECIMALS.pow(2));
 
     await expect(
       tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
@@ -104,7 +112,7 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
 
     await expect(tokenManager.connect(addr1).buy(buyAmount)).not.to.be.reverted;
 
-    await time.increase(factoryMock.lockPeriod + 10);
+    await time.increase(mock.lockPeriod + 10);
 
     await expect(tokenA.connect(addr1).unlock()).not.to.be.reverted;
 
@@ -119,7 +127,7 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
   });
 
   it("should be able mint tokens immediately after minting", async () => {
-    const { tokenA, tokenB, tokenManager, addr1, DECIMALS } = await loadFixture(
+    const { tokenB, tokenManager, addr1 } = await loadFixture(
       deployTokenFixture
     );
 
@@ -145,28 +153,43 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
       await loadFixture(deployTokenFixture);
 
     const buyAmount = DECIMALS;
-    const spendAmount = buyAmount.pow(2).div(2).div(DECIMALS).div(PRECISION);
+    const spendAmount = buyAmount
+      .pow(3)
+      .div(3)
+      .div(PRECISION)
+      .div(DECIMALS.pow(2));
 
     await expect(
       tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(buyAmount.div(2))).not.to.be
-      .reverted;
-    await expect(tokenManager.connect(addr1).buy(buyAmount.div(2))).not.to.be
-      .reverted;
+    await expect(tokenManager.connect(addr1).buy(buyAmount)).not.to.be.reverted;
 
-    await time.increase(factoryMock.lockPeriod + 10);
+    await time.increase(mock.lockPeriod + 10);
+
+    const tokenToSell = buyAmount.div(2);
+    const tokenToSell2 = buyAmount.div(2);
+
+    const sellTotalSupplyPoolBalance = tokenToSell
+      .pow(3)
+      .div(3)
+      .div(PRECISION)
+      .div(DECIMALS.pow(2));
+    const sell1Return = spendAmount.sub(sellTotalSupplyPoolBalance);
+    const sell2Return = spendAmount.sub(sell1Return);
 
     await expect(tokenA.connect(addr1).unlock()).not.to.be.reverted;
 
-    const tokenToSell = buyAmount;
-    const expectedTokenReturns = spendAmount;
-
     await expect(tokenManager.connect(addr1).sell(tokenToSell))
       .to.emit(tokenB, "Transfer")
-      .withArgs(tokenManager.address, addr1.address, expectedTokenReturns)
+      .withArgs(tokenManager.address, addr1.address, sell1Return)
       .to.emit(tokenA, "Transfer")
       .withArgs(addr1.address, AddZero, tokenToSell);
+
+    await expect(tokenManager.connect(addr1).sell(tokenToSell2))
+      .to.emit(tokenB, "Transfer")
+      .withArgs(tokenManager.address, addr1.address, sell2Return)
+      .to.emit(tokenA, "Transfer")
+      .withArgs(addr1.address, AddZero, tokenToSell2);
   });
 });

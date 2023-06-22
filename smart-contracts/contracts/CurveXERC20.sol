@@ -228,6 +228,12 @@ contract CurveX_ERC20 is ERC20, ICurvXErc20, AccessControl {
         _lock(account, amount);
     }
 
+    /**
+     * @dev This function lets the minter burn the token
+     *
+     * @param account account address that burns tokens
+     * @param amount amount tokens to burn
+     */
     function burn(
         address account,
         uint256 amount

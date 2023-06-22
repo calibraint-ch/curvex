@@ -11,8 +11,10 @@ describe("Token Factory", function () {
   });
 
   async function deployTokenFixture() {
-    const Factory = await ethers.getContractFactory("CurveXFactory");
-    const erc20 = await ethers.getContractFactory("ERC20");
+    const [Factory, erc20] = await Promise.all([
+      ethers.getContractFactory("CurveXFactory"),
+      ethers.getContractFactory("ERC20"),
+    ]);
     const [owner, addr1, addr2] = await ethers.getSigners();
 
     const factory = await Factory.deploy();
@@ -25,6 +27,10 @@ describe("Token Factory", function () {
 
   it("should deploy token factory", async () => {
     const { factory, usdt } = await loadFixture(deployTokenFixture);
+    const [manager, CurveERC20] = await Promise.all([
+      ethers.getContractFactory("BondingCurve"),
+      ethers.getContractFactory("CurveX_ERC20"),
+    ]);
 
     await expect(
       factory.deployCurveX(
@@ -42,13 +48,13 @@ describe("Token Factory", function () {
 
     const tokenList = await factory.getTokenPairList();
 
-    const expected = mock.expectedDeployedAddress;
-
-    console.log(tokenList[0]);
-
-    expect(tokenList[0].tokenA).to.be.equal(expected.tokenA);
-    expect(tokenList[0].tokenB).to.be.equal(expected.tokenB);
-    expect(tokenList[0].tokenManager).to.be.equal(expected.tokenManager);
+    expect(await CurveERC20.attach(tokenList[0].tokenA).decimals()).to.be.equal(
+      18
+    );
+    expect(tokenList[0].tokenB).to.be.equal(usdt.address);
+    expect(
+      await manager.attach(tokenList[0].tokenManager).curveType()
+    ).to.be.equal(mock.curveType);
     expect(tokenList[0].logoUri).to.be.equal(mock.logoUri);
   });
 });

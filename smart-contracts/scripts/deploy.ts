@@ -1,15 +1,12 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const CBTFactory = await ethers.getContractFactory("CurveBondedToken");
+  const CBTFactory = await ethers.getContractFactory("CurveXFactory");
+  console.log("Deployer address: ", await CBTFactory.signer.getAddress());
 
-  const CBTDeployed = await CBTFactory.deploy(
-    "Fantom Curve Bonded Token",
-    "FCBT",
-    100
-  );
+  const CBTDeployed = await CBTFactory.deploy();
 
-  console.log(CBTDeployed.address);
+  console.log("Deployed address: ", CBTDeployed.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

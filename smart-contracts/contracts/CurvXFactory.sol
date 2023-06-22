@@ -25,6 +25,9 @@ contract CurveXFactory is Context {
         address tokenB;
         address tokenManager;
         string logoUri;
+        uint8 curveType;
+        uint256 cap;
+        uint256 precision;
     }
 
     TokenPair[] tokenPairs;
@@ -56,7 +59,7 @@ contract CurveXFactory is Context {
         uint256 cap,
         uint256 lockPeriod,
         uint256 precision,
-        uint256 _curveType,
+        uint8 _curveType,
         address pairToken,
         uint256 salt
     ) public {
@@ -110,7 +113,17 @@ contract CurveXFactory is Context {
             tokenManager
         );
 
-        tokenPairs.push(TokenPair(token, pairToken, tokenManager, logoUri));
+        tokenPairs.push(
+            TokenPair(
+                token,
+                pairToken,
+                tokenManager,
+                logoUri,
+                _curveType,
+                cap,
+                precision
+            )
+        );
 
         emit TokenCreated(address(token), address(tokenManager));
     }
