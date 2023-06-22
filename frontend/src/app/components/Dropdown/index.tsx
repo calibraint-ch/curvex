@@ -1,25 +1,16 @@
 import { Select } from "antd";
-import { EthereumLogo, FTMLogo } from "../../../assets/images/imageAssets";
+import { currencyList, tokenList, dropDownTypes } from "./constants"
 
 import "./index.scss";
 
-const DropDown = () => {
+type DropdownProps = {
+  name: string;
+};
+
+const DropDown = (props: DropdownProps) => {
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
-
-  const tokenLists = [
-    {
-      value: "eth",
-      label: "ETH",
-      icon: EthereumLogo,
-    },
-    {
-      value: "ftm",
-      label: "FTM",
-      icon: FTMLogo,
-    },
-  ];
 
   const Option = Select.Option;
 
@@ -30,14 +21,16 @@ const DropDown = () => {
     </div>
   );
 
+  const displayList = props.name === dropDownTypes.currency ? currencyList : tokenList
+
   return (
     <div className="dropdown">
       <Select
-        defaultValue={tokenLists[0].value}
+        defaultValue={displayList[0].value}
         className="select-input"
         onChange={handleChange}
       >
-        {tokenLists.map((token) => (
+        {displayList.map((token) => (
           <Option key={token.value} value={token.value}>
             <CustomOption label={token.label} icon={token.icon} />
           </Option>

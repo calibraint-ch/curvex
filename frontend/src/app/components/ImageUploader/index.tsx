@@ -22,10 +22,10 @@ const ImageUploader = () => {
   };
 
   return (
-    <div className="upload-section d-flex">
+    <div className="d-flex justify-content-between">
       <div>
         <p className="token-details-title">Upload Token Image</p>
-        <p className="input-description">
+        <p className="upload-description">
           This image will be used as the Token Icon. Image should be in the
           format of png or jpg which is less than 5 MB
         </p>

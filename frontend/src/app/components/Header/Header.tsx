@@ -14,6 +14,11 @@ import { chainList } from "../../../utils/constants";
 
 import "./index.scss";
 
+type Network = {
+  name: string;
+  className: string;
+}
+
 const Header = () => {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -49,6 +54,24 @@ const Header = () => {
     }
   ];
 
+  const network: Network = {
+    name: "",
+    className: ""
+  }
+
+  switch (networkId) {
+    case mainnet:
+      network.className = "mainnet";
+      network.name = "Mainnet"
+      break;
+    case testnet:
+      network.className = "testnet";
+      network.name = "Testnet"
+      break;
+    default:
+      break;
+  }
+
   return (
     <div className="header">
       <div>
@@ -69,20 +92,12 @@ const Header = () => {
           </>
         ) : (
           <div className="nav-items">
-            {networkId === mainnet && (
-              <div className="network">
-                <div className="dot mainnet"></div>
-                <p className="name">Mainnet</p>
-              </div>
-            )}
+            <div className="network">
+              <div className={`dot ${network.className}`}></div>
+              <p className="name">{network.name}</p>
+            </div>
 
-            {networkId === testnet && (
-              <div className="network">
-                <span className="dot testnet"></span>
-                <p className="name">Testnet</p>
-              </div>
-            )}
-            {location.pathname === "/dashboard" ?
+            {location.pathname === dashboard ?
               <Link style={{ textDecoration: "none", color: '#ffffff' }} to={portfolio}>
                 <div>Portfolio</div>
               </Link> :
