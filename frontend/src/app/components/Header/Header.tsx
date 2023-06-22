@@ -69,20 +69,18 @@ const Header = () => {
           </>
         ) : (
           <div className="nav-items">
-            {networkId === mainnet && (
+            {networkId === mainnet ? (
               <div className="network">
                 <div className="dot mainnet"></div>
                 <p className="name">Mainnet</p>
               </div>
-            )}
-
-            {networkId === testnet && (
+            ) : networkId === testnet ? (
               <div className="network">
                 <span className="dot testnet"></span>
                 <p className="name">Testnet</p>
               </div>
-            )}
-            {location.pathname === "/dashboard" ?
+            ) : ""}
+            {location.pathname === dashboard ?
               <Link style={{ textDecoration: "none", color: '#ffffff' }} to={portfolio}>
                 <div>Portfolio</div>
               </Link> :

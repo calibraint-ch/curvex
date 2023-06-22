@@ -1,20 +1,23 @@
+import { useState } from "react";
 import { Form, Input, DatePicker, Button, Select } from "antd";
-import Charts from "../Charts/Charts";
+import Graph from "../Graphs/Graph";
+import { CurveTypes } from "../Graphs/constants";
 import ImageUploader from "../ImageUploader";
 
 import "./index.scss";
 
 const LaunchPad = () => {
+  const [curve, setCurve] = useState("linear");
 
   const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
+    setCurve(value);
   };
 
   const curveOptions = [
     { value: 'linear', label: 'Linear' },
     { value: 'polynomial', label: 'Polynomial' },
-    { value: 'sub-linear', label: 'Sub-Linear' },
-    { value: 's-curve', label: 'S-curve' },
+    { value: 'subLinear', label: 'Sub-Linear' },
+    { value: 'sCurve', label: 'S-curve' },
   ]
 
   return (
@@ -62,7 +65,51 @@ const LaunchPad = () => {
               onChange={handleChange}
               options={curveOptions}
             />
-            <Charts />
+            {curve === CurveTypes.linear &&
+              <div className="graph">
+                <Graph
+                  previewOnly={true}
+                  cap={100}
+                  increment={10}
+                  type={CurveTypes.linear}
+                  slope={15}
+                  intercept={15}
+                />
+              </div>
+            }
+            {curve === CurveTypes.polynomial &&
+              <div className="graph">
+                <Graph
+                  type={CurveTypes.polynomial}
+                  a={1}
+                  n={2}
+                  previewOnly={true}
+                  cap={100}
+                  increment={10}
+                />
+              </div>}
+            {curve === CurveTypes.subLinear &&
+              <div className="graph">
+                <Graph
+                  type={CurveTypes.subLinear}
+                  n={0.7}
+                  previewOnly={true}
+                  cap={100}
+                  increment={10}
+                />
+              </div>}
+            {curve === CurveTypes.sCurve &&
+              <div className="graph">
+                <Graph
+                  type={CurveTypes.sCurve}
+                  c1={0.2}
+                  c2={10}
+                  previewOnly={true}
+                  cap={100}
+                  increment={10}
+                />
+              </div>
+            }
           </div>
           <div className="other-details-section">
             <p className="details-title">Other Details</p>
