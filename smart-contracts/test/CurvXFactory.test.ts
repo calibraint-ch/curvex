@@ -11,10 +11,8 @@ describe("Token Factory", function () {
   });
 
   async function deployTokenFixture() {
-    const [Factory, erc20] = await Promise.all([
-      ethers.getContractFactory("CurveXFactory"),
-      ethers.getContractFactory("ERC20"),
-    ]);
+    const Factory = await ethers.getContractFactory("CurveXFactory");
+    const erc20 = await ethers.getContractFactory("ERC20");
     const [owner, addr1, addr2] = await ethers.getSigners();
 
     const factory = await Factory.deploy();

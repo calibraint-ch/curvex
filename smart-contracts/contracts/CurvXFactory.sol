@@ -26,6 +26,7 @@ contract CurveXFactory is Context {
         address tokenManager;
         string logoUri;
         uint8 curveType;
+        uint256 lockPeriod;
         uint256 cap;
         uint256 precision;
     }
@@ -120,6 +121,7 @@ contract CurveXFactory is Context {
                 tokenManager,
                 logoUri,
                 _curveType,
+                lockPeriod,
                 cap,
                 precision
             )
