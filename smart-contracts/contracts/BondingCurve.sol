@@ -70,14 +70,18 @@ contract BondingCurve is Context {
                     .sub(reserveBalance);
         } else if (curveType == 2) {
             // Sublinear Curve
+            uint256 newTotal = totalSupply.add(_investment);
+
+            uint256 sqrtOfTotal = sqrt(newTotal.mul(scalingFactor));
             return
-                scalingFactor
-                    .mul(
-                        (CURVE_PRECISION.mul(_investment)).div(
-                            CURVE_PRECISION.add(reserveBalance)
-                        )
-                    )
-                    .div(CURVE_PRECISION);
+                sqrtOfTotal
+                    .mul(sqrtOfTotal)
+                    .mul(sqrtOfTotal)
+                    .mul(3)
+                    .div(2)
+                    .div(CURVE_PRECISION)
+                    .div(scalingFactor)
+                    .sub(reserveBalance);
         } else if (curveType == 3) {
             // S Curve
             uint256 temp1 = CURVE_PRECISION
@@ -120,18 +124,16 @@ contract BondingCurve is Context {
                 );
         } else if (curveType == 2) {
             // Sublinear Curve
+            uint256 newTotal = totalSupply.sub(_amount);
+
+            uint256 sqrtOfTotal = sqrt(newTotal.mul(newTotal).mul(newTotal));
+
             return
-                reserveBalance
-                    .mul(CURVE_PRECISION)
-                    .sub(
+                reserveBalance.sub(
+                    sqrtOfTotal.mul(4).mul(CURVE_PRECISION).div(2).div(
                         scalingFactor
-                            .mul(reserveBalance.sub(_amount))
-                            .mul(CURVE_PRECISION)
-                            .div(
-                                CURVE_PRECISION.add(reserveBalance.sub(_amount))
                             )
-                    )
-                    .div(CURVE_PRECISION);
+                );
         } else if (curveType == 3) {
             // S Curve
             uint256 temp1 = CURVE_PRECISION
@@ -198,5 +200,14 @@ contract BondingCurve is Context {
         IERC20(tokenB).transfer(_msgSender(), refund);
 
         reserveBalance = reserveBalance.sub(refund);
+    }
+
+    function sqrt(uint x) internal pure returns (uint y) {
+        uint z = (x + 1) / 2;
+        y = x;
+        while (z < y) {
+            y = z;
+            z = (x / z + z) / 2;
+        }
     }
 }
