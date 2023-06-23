@@ -16,9 +16,11 @@ function useFactory() {
   };
 
   const getTokenPairList = async () => {
-    const contract = await getContractInstance(factoryContractAddress);
-    const tokenPairs = await contract.getTokenPairList();
-    return tokenPairs;
+    if (factoryContractAddress) {
+      const contract = await getContractInstance(factoryContractAddress);
+      const tokenPairs = await contract.getTokenPairList();
+      return tokenPairs;
+    }
   };
 
   const deployBondingToken = async ({
@@ -32,25 +34,27 @@ function useFactory() {
     logoURL,
     salt,
   }: DeployParams) => {
-    const contract = await getContractInstance(factoryContractAddress);
+    if (factoryContractAddress) {
+      const contract = await getContractInstance(factoryContractAddress);
 
-    if (contract) {
-      const deployTxnResponse = await contract.deploy(
-        name,
-        symbol,
-        logoURL,
-        cap,
-        lockPeriod,
-        precision,
-        curveType,
-        pairToken,
-        salt
-      );
+      if (contract) {
+        const deployTxnResponse = await contract.deployCurveX(
+          name,
+          symbol,
+          logoURL,
+          cap,
+          lockPeriod,
+          precision,
+          curveType,
+          pairToken,
+          salt
+        );
 
-      return { hash: deployTxnResponse.hash };
+        return deployTxnResponse;
+      }
+
+      return "";
     }
-
-    return "";
   };
 
   return {

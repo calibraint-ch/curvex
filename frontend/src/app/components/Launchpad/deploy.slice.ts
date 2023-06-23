@@ -2,7 +2,6 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { LaunchFormData } from "./constants";
 import { useInjectReducer, useInjectSaga } from "redux-injectors";
 import { callDeployTokenSaga } from "./deploy.saga";
-import { DeployParams } from "../../customHooks/constants";
 
 export type DeployTokenState = {
   deployToken: {

@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Form, Input, Button, Select } from "antd";
-import Charts from "../Charts/Charts";
 import Graph from "../Graphs/Graph";
 import ImageUploader from "../ImageUploader";
 
@@ -15,7 +15,7 @@ import useFactory from "../../customHooks/useFactory";
 import { deployToken } from "./deploy.slice";
 
 import "./index.scss";
-import { useEffect, useState } from "react";
+import { pairTokenAddress } from "../../../utils/constants";
 
 const LaunchPad = () => {
   const [form] = Form.useForm();
@@ -29,34 +29,23 @@ const LaunchPad = () => {
     setCurve(value);
   };
 
-  // const curveOptions = [
-  //   { value: CurveTypes.linear, label: "Linear" },
-  //   { value: CurveTypes.polynomial, label: "Polynomial" },
-  //   { value: CurveTypes.subLinear, label: "Sub-Linear" },
-  //   { value: CurveTypes.sCurve, label: "S-curve" },
-  // ];
-
   const getVestingPeriod = (value: string) => {
     return Number(value) * 24 * 60 * 60;
   };
 
   const onFormSubmit = (values: any) => {
-    console.log("Values", values);
-
     const launchParams: LaunchFormData = {
       tokenName: values.tokenName,
       tokenSymbol: values.tokenSymbol,
-      tokenManager: "",
-      curveType: values.curveType,
+      pairToken: pairTokenAddress,
+      curveType: Number(values.curveType),
       logoImage: values.logoImage,
       curveParams: {
-        totalSupply: values.totalSupply,
-        precision: values.precision,
+        totalSupply: Number(values.totalSupply),
+        precision: Number(values.precision),
         lockPeriod: getVestingPeriod(values.vestingPeriod),
       },
     };
-
-    console.log("Values", launchParams);
 
     dispatch(
       deployToken({ formData: launchParams, deployToken: deployBondingToken })
@@ -185,7 +174,7 @@ const LaunchPad = () => {
               <div className="form-fields">
                 <Form.Item
                   label="Total Supply"
-                  name="totalsupply"
+                  name="totalSupply"
                   required={true}
                 >
                   <Input
@@ -206,7 +195,6 @@ const LaunchPad = () => {
                 <Form.Item label="Vesting Period" name="vestingPeriod">
                   <Select
                     className="select-period"
-                    // onChange={setVestingPeriod}
                     options={vestingPeriodOptions}
                   />
                 </Form.Item>

@@ -31,5 +31,5 @@ export type LaunchFormData = {
   curveType: number;
   logoImage: RcFile;
   curveParams: CurveParams;
-  tokenManager: string;
+  pairToken: string;
 };
