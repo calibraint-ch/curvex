@@ -9,6 +9,8 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
+import './index.scss'
+
 ChartJS.register([
   LineElement,
   CategoryScale,
@@ -21,12 +23,15 @@ ChartJS.register([
 const Charts = () => {
   const chartColors = {
     grey: "#f7f7f7",
+    white: "#ffffff",
     primaryBlue: "#2f3ece",
+    primaryYellow: "#f3f264",
+    pureYellow: "#d5ff00"
   };
 
   //TODO: Bring in dynamic datasets
   const data = [
-    { x: 10, y: 10 },
+    { x: 0, y: 0 },
     { x: 20, y: 20 },
     { x: 30, y: 30 },
     { x: 40, y: 40 },
@@ -40,14 +45,18 @@ const Charts = () => {
       {
         label: "Price",
         data: data,
-        backgroundColor: chartColors.grey,
-        borderColor: chartColors.primaryBlue,
+        backgroundColor: chartColors.white,
+        borderColor: chartColors.primaryYellow,
         tension: 0.4,
         fill: false,
       },
       {
         label: "Price Range",
         data: [
+          {
+            x: 30,
+            y: 0,
+          },
           {
             x: 40,
             y: 0,
@@ -56,13 +65,9 @@ const Charts = () => {
             x: 50,
             y: 0,
           },
-          {
-            x: 60,
-            y: 0,
-          },
         ],
-        backgroundColor: chartColors.primaryBlue,
-        borderColor: chartColors.primaryBlue,
+        backgroundColor: chartColors.pureYellow,
+        borderColor: chartColors.primaryYellow,
         borderWidth: 0,
         fill: "-1",
       },
@@ -76,14 +81,29 @@ const Charts = () => {
       filler: { propagate: false },
     },
     scales: {
-      y: { type: "linear" as const, display: true },
-      x: { type: "linear" as const, display: true },
+      y: {
+        type: "linear" as const, display: true, grid: {
+          color: chartColors.white,
+        },
+        ticks: {
+          color: chartColors.white,
+        },
+      },
+      x: {
+        type: "linear" as const, display: true, grid: {
+          color: chartColors.white,
+        },
+        ticks: {
+          color: chartColors.white,
+        },
+      },
     },
     responsive: true,
+    maintainAspectRatio: false
   };
 
   return (
-    <div>
+    <div className="charts">
       <Line data={chartData} options={options} />
     </div>
   );

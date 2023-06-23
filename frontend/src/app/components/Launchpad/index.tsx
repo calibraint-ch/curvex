@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { Form, Input, Button, Select } from "antd";
 import Charts from "../Charts/Charts";
+import Graph from "../Graphs/Graph";
 import ImageUploader from "../ImageUploader";
 
 import {
@@ -21,6 +22,19 @@ const LaunchPad = () => {
   const dispatch = useDispatch();
 
   const { deployBondingToken } = useFactory();
+
+  const [curve, setCurve] = useState<string>("1");
+
+  const handleChange = (value: string) => {
+    setCurve(value);
+  };
+
+  // const curveOptions = [
+  //   { value: CurveTypes.linear, label: "Linear" },
+  //   { value: CurveTypes.polynomial, label: "Polynomial" },
+  //   { value: CurveTypes.subLinear, label: "Sub-Linear" },
+  //   { value: CurveTypes.sCurve, label: "S-curve" },
+  // ];
 
   const getVestingPeriod = (value: string) => {
     return Number(value) * 24 * 60 * 60;
@@ -106,20 +120,68 @@ const LaunchPad = () => {
                 price decreases.
               </p>
             </div>
+            <div className="other-details-section">
+              <p className="details-title">Other Details</p>
+            </div>
             <div className="curve-section">
               <Form.Item name="curveType" required={true}>
                 <Select
                   className="select-option"
-                  // onChange={setCurveOption}
                   defaultValue={LaunchPadInitialValues.curveType}
+                  onChange={handleChange}
                   options={curveOptions}
                 />
               </Form.Item>
-              <Charts />
+              {curve === "1" && (
+                <div className="graph">
+                  <Graph
+                    previewOnly={true}
+                    cap={100}
+                    increment={10}
+                    type={CurveTypes.linear}
+                    slope={15}
+                    intercept={15}
+                  />
+                </div>
+              )}
+              {curve === "2" && (
+                <div className="graph">
+                  <Graph
+                    type={CurveTypes.polynomial}
+                    a={1}
+                    n={2}
+                    previewOnly={true}
+                    cap={100}
+                    increment={10}
+                  />
+                </div>
+              )}
+              {curve === "3" && (
+                <div className="graph">
+                  <Graph
+                    type={CurveTypes.subLinear}
+                    n={0.7}
+                    previewOnly={true}
+                    cap={100}
+                    increment={10}
+                  />
+                </div>
+              )}
+              {curve === "4" && (
+                <div className="graph">
+                  <Graph
+                    type={CurveTypes.sCurve}
+                    c1={0.2}
+                    c2={10}
+                    previewOnly={true}
+                    cap={100}
+                    increment={10}
+                  />
+                </div>
+              )}
             </div>
             <div className="other-details-section">
               <p className="details-title">Other Details</p>
-
               <div className="form-fields">
                 <Form.Item
                   label="Total Supply"

@@ -17,3 +17,8 @@ export const chainList = {
     mainnet: "250",
     testnet: "4002"
 }
+
+export const sections = {
+    buy: "Buy",
+    withdraw: "Withdraw"
+}
