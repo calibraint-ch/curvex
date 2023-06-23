@@ -57,7 +57,7 @@ contract BondingCurve is Context {
         if (curveType == 1) {
             // Linear Curve - (mx1^2 / 2) - (mx2^2 / 2); x1 > x2
             // here m is 1/CURVE_PRECISION
-            uint256 newTotal = totalSupply + _investment;
+            uint256 newTotal = totalSupply.add(_investment);
 
             return
                 newTotal
@@ -90,16 +90,14 @@ contract BondingCurve is Context {
         } else if (curveType == 4) {
             // Polynomial Curve - (mx1^2 / 2) - (mx2^2 / 2); x1 > x2
             // here m is 1/CURVE_PRECISION
-            {
-                uint256 newTotal = totalSupply + _investment;
-                return
-                    (newTotal ** 3)
-                        .div(3)
-                        .div(scalingFactor)
-                        .div(scalingFactor)
-                        .sub(reserveBalance)
-                        .div(CURVE_PRECISION);
-            }
+            uint256 newTotal = totalSupply.add(_investment);
+            return
+                (newTotal ** 3)
+                    .div(3)
+                    .div(scalingFactor)
+                    .div(scalingFactor)
+                    .sub(reserveBalance)
+                    .div(CURVE_PRECISION);
         } else {
             revert InvalidCurveType();
         }

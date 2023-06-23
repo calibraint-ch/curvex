@@ -18,7 +18,7 @@ contract CurveXFactory is Context {
     event TokenCreated(address token, address manager);
 
     /**
-     * @dev contains te details of a token pair and token manager details
+     * @dev contains the details of a token pair and token manager details
      */
     struct TokenPair {
         address tokenA;
@@ -31,7 +31,21 @@ contract CurveXFactory is Context {
         uint256 precision;
     }
 
+    /**
+     * @dev contains the token details and user balance
+     */
+    struct TokenDetails {
+        address tokenAddress;
+        string tokenName;
+        string tokenSymbol;
+        uint256 balance;
+        uint256 unlockableBalance;
+        uint256 lockedBalance;
+    }
+
     TokenPair[] tokenPairs;
+
+    TokenDetails[] balances;
 
     /**
      * @dev returns the list of TokenPairs
@@ -128,5 +142,77 @@ contract CurveXFactory is Context {
         );
 
         emit TokenCreated(address(token), address(tokenManager));
+    }
+
+    /**
+     * @dev returns the erc20 token details
+     *
+     * @param tokenAddress erc20 contract address
+     * @param walletAddress account address
+     * @return name
+     * @return symbol
+     * @return balance
+     * @return unlockableBalance
+     * @return lockedBalance
+     */
+    function tokenDetails(
+        address tokenAddress,
+        address walletAddress
+    )
+        internal
+        view
+        returns (
+            string memory name,
+            string memory symbol,
+            uint256 balance,
+            uint256 unlockableBalance,
+            uint256 lockedBalance
+        )
+    {
+        name = CurveX_ERC20(tokenAddress).name();
+        symbol = CurveX_ERC20(tokenAddress).symbol();
+
+        balance = CurveX_ERC20(tokenAddress).balanceOf(walletAddress);
+        unlockableBalance = CurveX_ERC20(tokenAddress).unlockableBalanceOf(
+            walletAddress
+        );
+        lockedBalance = CurveX_ERC20(tokenAddress).lockedBalanceOf(
+            walletAddress
+        );
+    }
+
+    /**
+     * @dev returns the list token balances of the given wallet address
+     * from all the given address
+     *
+     * Note - don't make transaction, use static calls
+     * @param walletAddress account address
+     */
+    function getAllBalanceOf(
+        address walletAddress
+    ) external returns (TokenDetails[] memory) {
+        for (uint i = 0; i < tokenPairs.length; i++) {
+            (
+                string memory name,
+                string memory symbol,
+                uint256 balance,
+                uint256 unlockableBalance,
+                uint256 lockedBalance
+            ) = tokenDetails(tokenPairs[i].tokenA, walletAddress);
+
+            if (balance > 0) {
+                TokenDetails memory details = TokenDetails(
+                    tokenPairs[i].tokenA,
+                    name,
+                    symbol,
+                    balance,
+                    unlockableBalance,
+                    lockedBalance
+                );
+                balances.push(details);
+            }
+        }
+
+        return balances;
     }
 }
