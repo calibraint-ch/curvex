@@ -1,12 +1,12 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, Upload, UploadProps } from "antd";
+import { Button, FormInstance, Upload, UploadProps } from "antd";
 import ImgCrop from "antd-img-crop";
 import { useState } from "react";
 import { PreviewImage } from "../../../assets/images/imageAssets";
 
 import "./index.scss";
 
-const ImageUploader = () => {
+const ImageUploader = ({ formInstance }: { formInstance: FormInstance }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const editCoverImage: UploadProps["onChange"] = ({
@@ -19,6 +19,8 @@ const ImageUploader = () => {
       };
       reader.readAsDataURL(newFileList[0].originFileObj);
     }
+
+    formInstance.setFieldValue("logoImage", newFileList[0].originFileObj);
   };
 
   return (
