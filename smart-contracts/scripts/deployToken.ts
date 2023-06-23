@@ -21,8 +21,10 @@ async function main() {
       100,
       1,
       "0x12f60A7880a458c101FdfA84117e49B1Ce3B4C1F",
-      1232432342,
-      { gasLimit: 3000000 }
+      ethers.utils.solidityKeccak256(
+        ["uint256"],
+        [Math.round(Math.random() * 10000)]
+      )
     )
   ).wait();
 
