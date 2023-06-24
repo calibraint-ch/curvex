@@ -9,7 +9,13 @@ const TableComponent = ({
   classname,
 }: TableComponentProps) => {
   const renderEmpty = () => (
-    <Empty description="No tokens deployed">
+    <Empty
+      description={
+        classname === "deployed-token-table"
+          ? "No tokens deployed"
+          : "No claimable tokens"
+      }
+    >
       {classname === "deployed-token-table" && (
         <Button type="primary">Deploy Now</Button>
       )}

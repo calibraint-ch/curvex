@@ -1,4 +1,5 @@
 import { RcFile } from "antd/es/upload";
+import { CurveTypes } from "../Graphs/constants";
 
 export const curveOptions = [
   { value: "1", label: "Linear" },
@@ -32,4 +33,26 @@ export type LaunchFormData = {
   logoImage: RcFile;
   curveParams: CurveParams;
   pairToken: string;
+};
+
+export const curveData = {
+  "1": {
+    type: CurveTypes.linear,
+    slope: 15,
+    intercept: 15,
+  },
+  "2": {
+    type: CurveTypes.polynomial,
+    a: 1,
+    n: 2,
+  },
+  "3": {
+    type: CurveTypes.subLinear,
+    n: 0.7,
+  },
+  "4": {
+    type: CurveTypes.sCurve,
+    c1: 0.2,
+    c2: 10,
+  },
 };

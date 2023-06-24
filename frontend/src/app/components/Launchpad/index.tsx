@@ -7,10 +7,10 @@ import ImageUploader from "../ImageUploader";
 import {
   LaunchFormData,
   LaunchPadInitialValues,
+  curveData,
   curveOptions,
   vestingPeriodOptions,
 } from "./constants";
-import { CurveTypes } from "../Graphs/constants";
 import useFactory from "../../customHooks/useFactory";
 import { deployToken } from "./deploy.slice";
 
@@ -31,6 +31,19 @@ const LaunchPad = () => {
 
   const getVestingPeriod = (value: string) => {
     return Number(value) * 24 * 60 * 60;
+  };
+
+  const precision = Form.useWatch("precision", form);
+
+  const getPriceEstimate = () => {
+    if (precision) {
+      if (curve === curveOptions[0].value) {
+        return (Math.pow(1, 2) / 2) * precision;
+      } else if (curve === curveOptions[1].value) {
+        return (Math.pow(1, 3) / 3) * precision;
+      }
+    }
+    return 0;
   };
 
   const onFormSubmit = (values: any) => {
@@ -121,50 +134,13 @@ const LaunchPad = () => {
                   options={curveOptions}
                 />
               </Form.Item>
-              {curve === "1" && (
+              {curve && (
                 <div className="graph">
                   <Graph
                     previewOnly={true}
                     cap={100}
                     increment={10}
-                    type={CurveTypes.linear}
-                    slope={15}
-                    intercept={15}
-                  />
-                </div>
-              )}
-              {curve === "2" && (
-                <div className="graph">
-                  <Graph
-                    type={CurveTypes.polynomial}
-                    a={1}
-                    n={2}
-                    previewOnly={true}
-                    cap={100}
-                    increment={10}
-                  />
-                </div>
-              )}
-              {curve === "3" && (
-                <div className="graph">
-                  <Graph
-                    type={CurveTypes.subLinear}
-                    n={0.7}
-                    previewOnly={true}
-                    cap={100}
-                    increment={10}
-                  />
-                </div>
-              )}
-              {curve === "4" && (
-                <div className="graph">
-                  <Graph
-                    type={CurveTypes.sCurve}
-                    c1={0.2}
-                    c2={10}
-                    previewOnly={true}
-                    cap={100}
-                    increment={10}
+                    {...curveData[curve as keyof typeof curveData]}
                   />
                 </div>
               )}
@@ -200,10 +176,7 @@ const LaunchPad = () => {
                 </Form.Item>
               </div>
               <p className="price-estimation price-text">
-                Price Estimation : 9.12 ETH{" "}
-                <span style={{ fontSize: 10, color: "GrayText" }}>
-                  (1810.23 USD)
-                </span>
+                Price Estimation : {getPriceEstimate() + " USD"}
               </p>
               <div className="d-flex justify-content-center">
                 <Button htmlType="submit" className="mint-button">
