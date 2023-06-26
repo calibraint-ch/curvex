@@ -4,6 +4,8 @@
     height: fit-content;
     border: none !important;
     margin-top: 20px;
+    border-color: transparent !important;
+    box-shadow: none !important;
 }
 
 .price-input:hover {
@@ -14,5 +16,8 @@
 .ant-input-number {
     .ant-input-number-input {
         height: 100% !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }

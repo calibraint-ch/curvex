@@ -1,43 +1,52 @@
-import { Select } from "antd";
-import { currencyList, tokenList, dropDownTypes } from "./constants"
+import { Form, Select } from "antd";
+import { memo } from "react";
 
 import "./index.scss";
 
-type DropdownProps = {
-  name: string;
+const Option = Select.Option;
+
+export type DropdownOptions = {
+  value: string;
+  label: string;
+  icon: string;
 };
 
-const DropDown = (props: DropdownProps) => {
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+export type DropdownProps = {
+  name: string;
+  placeholder?: string;
+  options: DropdownOptions[];
+  loading?: boolean;
+};
 
-  const Option = Select.Option;
-
-  const CustomOption = ({ label, icon }: { label: string; icon: string }) => (
+const CustomOption = memo(
+  ({ label, icon }: { label: string; icon: string }) => (
     <div>
       <img src={icon} alt={label} className="option-icon" />
       {label}
     </div>
-  );
+  )
+);
 
-  const displayList = props.name === dropDownTypes.currency ? currencyList : tokenList
+const DropDown = (props: DropdownProps) => {
+  const { name, options, placeholder, loading } = props;
 
   return (
     <div className="dropdown">
-      <Select
-        defaultValue={displayList[0].value}
-        className="select-input"
-        onChange={handleChange}
-      >
-        {displayList.map((token) => (
-          <Option key={token.value} value={token.value}>
-            <CustomOption label={token.label} icon={token.icon} />
-          </Option>
-        ))}
-      </Select>
+      <Form.Item name={name} noStyle>
+        <Select
+          className="select-input"
+          placeholder={placeholder}
+          loading={loading}
+        >
+          {options.map((token) => (
+            <Option key={token.value} value={token.value}>
+              <CustomOption label={token.label} icon={token.icon} />
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
     </div>
   );
 };
 
-export default DropDown;
+export default memo(DropDown);

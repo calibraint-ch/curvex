@@ -57,7 +57,7 @@ contract BondingCurve is Context {
         if (curveType == 1) {
             // Linear Curve - (mx1^2 / 2) - (mx2^2 / 2); x1 > x2
             // here m is 1/CURVE_PRECISION
-            uint256 newTotal = totalSupply + _investment;
+            uint256 newTotal = totalSupply.add(_investment);
 
             return
                 newTotal
@@ -68,38 +68,17 @@ contract BondingCurve is Context {
                     .div(scalingFactor)
                     .div(CURVE_PRECISION)
                     .sub(reserveBalance);
-        } else if (curveType == 2) {
-            // Sublinear Curve
-            return
-                scalingFactor
-                    .mul(
-                        (CURVE_PRECISION.mul(_investment)).div(
-                            CURVE_PRECISION.add(reserveBalance)
-                        )
-                    )
-                    .div(CURVE_PRECISION);
-        } else if (curveType == 3) {
-            // S Curve
-            uint256 temp1 = CURVE_PRECISION
-                .mul(reserveBalance.add(_investment))
-                .div(reserveBalance);
-            uint256 temp2 = CURVE_PRECISION.mul(totalSupply).div(
-                reserveBalance.add(_investment)
-            );
-            return scalingFactor.mul(temp1.sub(temp2)).div(CURVE_PRECISION);
         } else if (curveType == 4) {
             // Polynomial Curve - (mx1^2 / 2) - (mx2^2 / 2); x1 > x2
             // here m is 1/CURVE_PRECISION
-            {
-                uint256 newTotal = totalSupply + _investment;
-                return
-                    (newTotal ** 3)
-                        .div(3)
-                        .div(scalingFactor)
-                        .div(scalingFactor)
-                        .sub(reserveBalance)
-                        .div(CURVE_PRECISION);
-            }
+            uint256 newTotal = totalSupply.add(_investment);
+            return
+                (newTotal ** 3)
+                    .div(3)
+                    .div(scalingFactor)
+                    .div(scalingFactor)
+                    .sub(reserveBalance)
+                    .div(CURVE_PRECISION);
         } else {
             revert InvalidCurveType();
         }
@@ -118,29 +97,6 @@ contract BondingCurve is Context {
                         CURVE_PRECISION
                     )
                 );
-        } else if (curveType == 2) {
-            // Sublinear Curve
-            return
-                reserveBalance
-                    .mul(CURVE_PRECISION)
-                    .sub(
-                        scalingFactor
-                            .mul(reserveBalance.sub(_amount))
-                            .mul(CURVE_PRECISION)
-                            .div(
-                                CURVE_PRECISION.add(reserveBalance.sub(_amount))
-                            )
-                    )
-                    .div(CURVE_PRECISION);
-        } else if (curveType == 3) {
-            // S Curve
-            uint256 temp1 = CURVE_PRECISION
-                .mul(reserveBalance.sub(_amount))
-                .div(reserveBalance);
-            uint256 temp2 = CURVE_PRECISION.mul(totalSupply.sub(_amount)).div(
-                reserveBalance.sub(_amount)
-            );
-            return scalingFactor.mul(temp1.sub(temp2)).div(CURVE_PRECISION);
         } else if (curveType == 4) {
             // Polynomial Curve - (mx1^2 / 2) - (mx2^2 / 2); x1 > x2
             // here m is CURVE_PRECISION

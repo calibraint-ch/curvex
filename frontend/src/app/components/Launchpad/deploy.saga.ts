@@ -1,12 +1,13 @@
-import { PayloadAction } from "@reduxjs/toolkit";
-import { LaunchFormData } from "./constants";
-import { call, put, takeLatest } from "redux-saga/effects";
-import { uploadFileIpfs } from "./nftStorageService";
-import { deployToken, setdeployTokenSuccess } from "./deploy.slice";
-import { DeployParams } from "../../customHooks/constants";
-import { ethers } from "ethers";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
+import { PayloadAction } from "@reduxjs/toolkit";
+import { ethers } from "ethers";
+import { call, put, takeLatest } from "redux-saga/effects";
+
 import { responseMessages } from "../../../utils/constants";
+import { DeployParams } from "../../customHooks/constants";
+import { LaunchFormData } from "./constants";
+import { deployToken, setDeployTokenSuccess } from "./deploy.slice";
+import { uploadFileIpfs } from "./nftStorageService";
 
 export type DeploySagaPayload = PayloadAction<{
   formData: LaunchFormData;
@@ -37,9 +38,9 @@ export function* deployTokenSaga({ payload }: DeploySagaPayload) {
   });
 
   if (result.hash) {
-    yield put(setdeployTokenSuccess(responseMessages.txnSuccess));
+    yield put(setDeployTokenSuccess(responseMessages.txnSuccess));
   } else {
-    yield put(setdeployTokenSuccess(responseMessages.txnFailed));
+    yield put(setDeployTokenSuccess(responseMessages.txnFailed));
   }
 }
 

@@ -1,10 +1,16 @@
-import { ethers } from "hardhat";
+import { ethers, run } from "hardhat";
 
 async function main() {
   const CBTFactory = await ethers.getContractFactory("CurveXFactory");
   console.log("Deployer address: ", await CBTFactory.signer.getAddress());
 
   const CBTDeployed = await CBTFactory.deploy();
+
+  await CBTDeployed.deployed();
+
+  await run("verify:verify", {
+    address: CBTDeployed.address,
+  });
 
   console.log("Deployed address: ", CBTDeployed.address);
 }

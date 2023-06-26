@@ -1,9 +1,12 @@
+import { Button, Form, Input, Select, message } from "antd";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Form, Input, Button, Select } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+
+import { errorMessages, pairTokenAddress } from "../../../utils/constants";
+import useFactory from "../../customHooks/useFactory";
+import { selectWalletConnected } from "../../slice/wallet.selector";
 import Graph from "../Graphs/Graph";
 import ImageUploader from "../ImageUploader";
-
 import {
   LaunchFormData,
   LaunchPadInitialValues,
@@ -11,15 +14,14 @@ import {
   curveOptions,
   vestingPeriodOptions,
 } from "./constants";
-import useFactory from "../../customHooks/useFactory";
 import { deployToken } from "./deploy.slice";
 
 import "./index.scss";
-import { pairTokenAddress } from "../../../utils/constants";
 
 const LaunchPad = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const walletConnected = useSelector(selectWalletConnected);
 
   const { deployBondingToken } = useFactory();
 
@@ -38,15 +40,20 @@ const LaunchPad = () => {
   const getPriceEstimate = () => {
     if (precision) {
       if (curve === curveOptions[0].value) {
-        return (Math.pow(1, 2) / 2) * precision;
+        return ((Math.pow(1, 2) / 2) * precision).toFixed(4);
       } else if (curve === curveOptions[1].value) {
-        return (Math.pow(1, 3) / 3) * precision;
+        return ((Math.pow(1, 3) / 3) * precision).toFixed(4);
       }
     }
     return 0;
   };
 
   const onFormSubmit = (values: any) => {
+    if (!walletConnected) {
+      message.error(errorMessages.walletConnectionRequired);
+      return;
+    }
+
     const launchParams: LaunchFormData = {
       tokenName: values.tokenName,
       tokenSymbol: values.tokenSymbol,
@@ -129,7 +136,6 @@ const LaunchPad = () => {
               <Form.Item name="curveType" required={true}>
                 <Select
                   className="select-option"
-                  defaultValue={LaunchPadInitialValues.curveType}
                   onChange={handleChange}
                   options={curveOptions}
                 />

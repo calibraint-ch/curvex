@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { LaunchFormData } from "./constants";
 import { useInjectReducer, useInjectSaga } from "redux-injectors";
+import { LaunchFormData } from "./constants";
 import { callDeployTokenSaga } from "./deploy.saga";
 
 export type DeployTokenState = {
@@ -40,16 +40,16 @@ export const deployTokenSlice = createSlice({
     ) => {
       state.deployToken.isLoading = true;
     },
-    setdeployTokenSuccess: (state, action: PayloadAction<string>) => {
+    setDeployTokenSuccess: (state, action: PayloadAction<string>) => {
       state.deployToken.success.message = action.payload;
     },
-    setdeployTokenError: (state, action: PayloadAction<string>) => {
+    setDeployTokenError: (state, action: PayloadAction<string>) => {
       state.deployToken.error.message = action.payload;
     },
   },
 });
 
-export const { deployToken, setdeployTokenError, setdeployTokenSuccess } =
+export const { deployToken, setDeployTokenError, setDeployTokenSuccess } =
   deployTokenSlice.actions;
 
 export const deployTokenReducer = deployTokenSlice.reducer;

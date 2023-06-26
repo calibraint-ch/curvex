@@ -7,3 +7,8 @@ export const formatWalletAddress = (
 
   return "";
 };
+
+export const formatBalance = (balance?: string) => {
+  if (!balance) return "--";
+  return Number(balance).toFixed(4);
+};

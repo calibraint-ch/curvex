@@ -10,7 +10,7 @@ const client = new NFTStorage({
 
 function getImageBlob(data: LaunchFormData): File | Blob {
   const toFile = (file: RcFile) => {
-    const [_type, extension] = file.type.split("/");
+    const [, extension] = file.type.split("/");
 
     return new File([data?.logoImage], `image.${extension}`, {
       type: data.logoImage.type,
@@ -21,12 +21,7 @@ function getImageBlob(data: LaunchFormData): File | Blob {
 }
 
 export async function uploadFileIpfs(payload: LaunchFormData) {
-  let metaData: TokenInput;
+  const cid = await client.storeBlob(getImageBlob(payload));
 
-  metaData = {
-    name: payload.tokenName,
-    image: getImageBlob(payload),
-    description: "Bonding curve token issued by CurvX",
-  };
-  return client.store(metaData);
+  return `https://cloudflare-ipfs.com/ipfs/${cid}`;
 }

@@ -1,4 +1,4 @@
-import { CurveTypes, GraphProps, dataType, strokeColors } from "./constants";
+import { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -10,52 +10,19 @@ import {
   ReferenceArea,
 } from "recharts";
 
+import { GraphProps, strokeColors } from "./constants";
+import { getCurveData } from "./services";
+
 import "./index.scss";
 
 const Graph = (props: GraphProps) => {
-  const {
-    cap,
-    increment,
-    slope,
-    intercept,
-    type,
-    legend = false,
-    previewOnly,
-    a,
-    n,
-    c1,
-    c2,
-  } = props;
-  const data: dataType[] = [];
-  let totalSupply = 0;
-  let price = 0;
+  const { legend = false, previewOnly } = props;
 
-  while (totalSupply <= cap) {
-    data.push({
-      totalSupply,
-      price,
-    });
+  const { data, endDataPoint, startDataPoint, x1, x2 } = useMemo(
+    () => getCurveData(props),
+    [props]
+  );
 
-    totalSupply += increment;
-
-    if (type === CurveTypes.linear && slope && intercept) {
-      price = slope * totalSupply + intercept;
-    } else if (type === CurveTypes.polynomial && a && n) {
-      price = Math.pow(a * totalSupply, n);
-    } else if (type === CurveTypes.subLinear && n) {
-      price = Math.pow(totalSupply, n);
-    } else if (type === CurveTypes.sCurve && c1 && c2) {
-      price = 1 / Math.exp(-c1 * (totalSupply - c2));
-    } else {
-      price = 0;
-    }
-  }
-
-  const x1 = 40;
-  const x2 = 60;
-
-  const startDataPoint = data.find((entry) => entry.totalSupply === x1);
-  const endDataPoint = data.find((entry) => entry.totalSupply === x2);
   const startYValue = startDataPoint ? startDataPoint.price : null;
   const endYValue = endDataPoint ? endDataPoint.price : null;
 
