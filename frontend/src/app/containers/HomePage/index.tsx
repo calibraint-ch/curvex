@@ -1,9 +1,16 @@
 import { Link } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Tag } from "antd";
 import Graph from "../../components/Graphs/Graph";
 import { CurveTypes } from "../../components/Graphs/constants";
 import {
-  Settings, Puzzle, Unlock, Greek, Price, HeroImage, ConnectorDiv, Hand
+  Settings,
+  Puzzle,
+  Unlock,
+  Greek,
+  Price,
+  HeroImage,
+  ConnectorDiv,
+  Hand,
 } from "../../../assets/images/imageAssets";
 import Footer from "../../components/Footer/Footer";
 import { routes } from "../../../utils/routes";
@@ -17,8 +24,7 @@ const HomePage = () => {
         <div className="hero-grid-sections d-flex">
           <div className="hero-section-left">
             <p className="hero-heading">
-              Dive into the Future Of
-              DeFi with{" "}
+              Dive into the Future Of DeFi with{" "}
               <span
                 style={{ color: "yellow", fontFamily: "ClashDisplay-bold" }}
               >
@@ -149,7 +155,12 @@ const HomePage = () => {
                 increment={10}
               />
             </div>
-            <p className="graph-heading">Sub-Linear Curve</p>
+            <div className="d-flex">
+              <p className="graph-heading">Sub-Linear Curve</p>{" "}
+              <Tag className="coming-soon-tag" color="green">
+                Coming Soon
+              </Tag>
+            </div>
             <p className="graph-description">
               Harness the power of logarithmic growth, where the token price
               increases at a decreasing rate as the token supply grows. This
@@ -164,7 +175,12 @@ const HomePage = () => {
                 increment={10}
               />
             </div>
-            <p className="graph-heading">S-Curve</p>
+            <div className="d-flex">
+              <p className="graph-heading">S-Curve</p>
+              <Tag className="coming-soon-tag" color="green">
+                Coming Soon
+              </Tag>
+            </div>
             <p className="graph-description">
               Experience the exhilaration of an S-Curve, where the token price
               starts slowly, gathers momentum, and reaches a state of
