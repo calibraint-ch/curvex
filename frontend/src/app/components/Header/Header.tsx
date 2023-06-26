@@ -24,6 +24,7 @@ type Network = {
 };
 
 const Header = () => {
+
   const location = useLocation();
   const dispatch = useDispatch();
 
@@ -94,22 +95,13 @@ const Header = () => {
               <div className={`dot ${network.className}`}></div>
               <p className="name">{network.name}</p>
             </div>
-
-            {location.pathname === dashboard ? (
-              <Link
-                style={{ textDecoration: "none", color: "#ffffff" }}
-                to={portfolio}
-              >
-                <div>Portfolio</div>
-              </Link>
-            ) : (
-              <Link
-                style={{ textDecoration: "none", color: "#ffffff" }}
-                to={dashboard}
-              >
+            {location.pathname === dashboard ?
+              <Link style={{ textDecoration: "none", color: '#ffffff' }} to={portfolio}>
+                <div>{connected ? "Portfolio" : ""}</div>
+              </Link> :
+              <Link style={{ textDecoration: "none", color: '#ffffff' }} to={dashboard}>
                 <div>Dashboard</div>
-              </Link>
-            )}
+              </Link>}
             {connected && address ? (
               <Dropdown
                 menu={{ items, onClick: handleDisconnect }}

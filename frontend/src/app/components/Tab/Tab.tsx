@@ -6,7 +6,7 @@ import "./index.scss";
 const Tab = ({ onTabChange }: { onTabChange: any }) => {
   return (
     <Tabs
-      defaultActiveKey="1"
+      defaultActiveKey="launchpad"
       centered
       onChange={onTabChange}
       items={tabOptions.map((Item) => {

@@ -41,17 +41,20 @@ const UserDashBoard = () => {
   const { deployedTokenList } = useFactory();
 
   const getPairs = useCallback(async () => {
-    const parsedData = deployedTokenList
-      .filter((e) => e.owner.toLowerCase() === walletAddress?.toLowerCase())
-      .map(parseDeployedTokenList);
-    let filteredDetails: DeployedTokensList[] = [];
-    if (parsedData.length) {
-      const getErc20Name = getTokenName(
-        await getContractInstance(ethers.constants.AddressZero)
-      );
-      filteredDetails = await getErc20Name(parsedData);
+    const contract =
+      await getContractInstance(ethers.constants.AddressZero);
+    if (contract) {
+
+      const parsedData = deployedTokenList
+        .filter((e) => e.owner.toLowerCase() === walletAddress?.toLowerCase())
+        .map(parseDeployedTokenList);
+      let filteredDetails: DeployedTokensList[] = [];
+      if (parsedData.length) {
+        const getErc20Name = getTokenName(contract);
+        filteredDetails = await getErc20Name(parsedData);
+      }
+      setTokenDetails(filteredDetails);
     }
-    setTokenDetails(filteredDetails);
   }, [deployedTokenList, getContractInstance, walletAddress]);
 
   useEffect(() => {

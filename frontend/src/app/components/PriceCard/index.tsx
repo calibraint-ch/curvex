@@ -55,12 +55,15 @@ const PriceCard = (props: SectionProps) => {
 
   const fetchTokens = useCallback(async () => {
     setTokensLoading(true);
-    const { tokens } = await splitTokenPair(
-      deployedTokenList,
-      await getContractInstance(ethers.constants.AddressZero, true),
-      walletAddress
-    );
-    setTokens(tokens);
+    const contract = await getContractInstance(ethers.constants.AddressZero, true);
+    if (contract) {
+      const { tokens } = await splitTokenPair(
+        deployedTokenList,
+        contract,
+        walletAddress
+      );
+      setTokens(tokens);
+    }
     setTokensLoading(false);
   }, [deployedTokenList, getContractInstance, walletAddress]);
 
