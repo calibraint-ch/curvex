@@ -11,3 +11,7 @@ export const selectWallet = createSelector([stateValue], (state) => {
 export const selectNetwork = createSelector([stateValue], (state) => {
   return state.network;
 });
+
+export const selectWalletConnected = createSelector([stateValue], (state) => {
+  return state.isConnected;
+});

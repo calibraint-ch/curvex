@@ -77,12 +77,7 @@ describe("Token contract", function () {
 
       await expect(Token.deploy(tokenName, tokenSymbol, 0, oneMonth))
         .to.be.revertedWithCustomError(Token, "SupplyCapOutOfRange")
-        .withArgs(
-          1,
-          BigInt(
-            "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-          )
-        );
+        .withArgs(1, ethers.constants.MaxUint256);
     });
 
     it("Should not deploy if locking period is empty or 0", async function () {

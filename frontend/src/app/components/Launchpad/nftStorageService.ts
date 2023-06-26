@@ -10,7 +10,7 @@ const client = new NFTStorage({
 
 function getImageBlob(data: LaunchFormData): File | Blob {
   const toFile = (file: RcFile) => {
-    const [_type, extension] = file.type.split("/");
+    const [, extension] = file.type.split("/");
 
     return new File([data?.logoImage], `image.${extension}`, {
       type: data.logoImage.type,

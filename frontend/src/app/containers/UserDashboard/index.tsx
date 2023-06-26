@@ -1,66 +1,66 @@
+import { ethers } from "ethers";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { selectWallet } from "../../slice/wallet.selector";
-import TableComponent from "../../components/Table/Table";
 import {
-  WalletIconDashboard,
-  UsdBalance,
   Banner,
+  UsdBalance,
+  WalletIconDashboard,
 } from "../../../assets/images/imageAssets";
 import {
-  deployedColumns,
+  getTokenName,
+  parseDeployedTokenList,
+} from "../../components/PriceCard/service";
+import TableComponent from "../../components/Table/Table";
+import {
   claimableColumns,
-  claimableDataSource,
+  deployedColumns,
 } from "../../components/Table/constants";
+import useErc20 from "../../customHooks/useErc20";
+import useFactory from "../../customHooks/useFactory";
+import {
+  selectFactoryLoaded,
+  selectFactoryLoading,
+} from "../../slice/factory/factory.selector";
+import {
+  selectWallet,
+  selectWalletConnected,
+} from "../../slice/wallet.selector";
+import { DeployedTokensList } from "./types";
 
 import "./index.scss";
-import { useEffect, useState } from "react";
-import useFactory from "../../customHooks/useFactory";
-import { CurveTypes } from "../../components/Graphs/constants";
 
 const UserDashBoard = () => {
+  const [tokenDetails, setTokenDetails] = useState<DeployedTokensList[]>([]);
+
   const walletAddress = useSelector(selectWallet);
-  const [tokenDetails, setTokenDetails] = useState([]);
+  const walletConnected = useSelector(selectWalletConnected);
+  const factoryLoading = useSelector(selectFactoryLoading);
+  const factoryLoaded = useSelector(selectFactoryLoaded);
 
-  const { getTokenPairList } = useFactory();
+  const { getContractInstance } = useErc20();
+  const { deployedTokenList } = useFactory();
 
-  const getCurveType = (type: number): CurveTypes | string => {
-    switch (type) {
-      case 1:
-        return CurveTypes.linear;
-      case 2:
-        return CurveTypes.polynomial;
-      default:
-        return "--";
+  const getPairs = useCallback(async () => {
+    const parsedData = deployedTokenList
+      .filter((e) => e.owner.toLowerCase() === walletAddress?.toLowerCase())
+      .map(parseDeployedTokenList);
+    let filteredDetails: DeployedTokensList[] = [];
+    if (parsedData.length) {
+      const getErc20Name = getTokenName(
+        await getContractInstance(ethers.constants.AddressZero)
+      );
+      filteredDetails = await getErc20Name(parsedData);
     }
-  };
-
-  const getPairs = async () => {
-    const currentDate = new Date();
-    const tokenPairs = await getTokenPairList();
-    const filteredDetails = tokenPairs
-      .filter((e: any) => e.owner.toLowerCase() === walletAddress.toLowerCase())
-      .map((e: any, index: number) => ({
-        key: index + 1,
-        // TODO: Replace with actual name
-        token: "CurvX Token(CRRXV)",
-        totalSupply: (Number(e.cap._hex) / 10 ** 18).toLocaleString(),
-        curveType: getCurveType(e.curveType),
-        //TODO: Check time
-        vestingPeriod:
-          Math.ceil(
-            Math.abs(
-              new Date(Number(e.lockPeriod._hex)).getTime() -
-                currentDate.getTime()
-            ) /
-              (1000 * 3600 * 24)
-          ) + " days",
-      }));
     setTokenDetails(filteredDetails);
-  };
+  }, [deployedTokenList, getContractInstance, walletAddress]);
 
   useEffect(() => {
-    getPairs();
-  }, [walletAddress]);
+    if (walletConnected && factoryLoaded) getPairs();
+  }, [factoryLoaded, getPairs, walletConnected]);
+
+  if (factoryLoading && walletConnected) {
+    return <div>Loading</div>;
+  }
 
   return (
     <div className="dashboard">

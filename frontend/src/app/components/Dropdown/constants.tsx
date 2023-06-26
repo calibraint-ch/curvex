@@ -25,8 +25,3 @@ export const tokenList = [
         icon: TokenLogo,
     },
 ];
-
-export const dropDownTypes = {
-    currency: "currency",
-    token: "token"
-}

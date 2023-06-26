@@ -1,18 +1,37 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-import HomePage from "./app/containers/HomePage";
 import Header from "./app/components/Header/Header";
-import AppScreen from "./app/containers/AppScreen";
-import UserDashBoard from "./app/containers/UserDashboard";
 import { useDeployTokenSlice } from "./app/components/Launchpad/deploy.slice";
-
-import { routes } from "./utils/routes";
+import AppScreen from "./app/containers/AppScreen";
+import HomePage from "./app/containers/HomePage";
+import UserDashBoard from "./app/containers/UserDashboard";
+import useMetamaskProvider from "./app/customHooks/useMetamaskProvider";
+import {
+  resetFactory,
+  useFactorySlice,
+} from "./app/slice/factory/factory.slice";
 import { useWalletSlice } from "./app/slice/wallet.slice";
+import { routes } from "./utils/routes";
+
 import "./App.scss";
 
 function App() {
   useWalletSlice();
+  useFactorySlice();
   useDeployTokenSlice();
+
+  const { detectNetworkChange } = useMetamaskProvider();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const removeListener = detectNetworkChange();
+    dispatch(resetFactory());
+
+    return removeListener;
+  }, [detectNetworkChange, dispatch]);
+
   return (
     <Router>
       <div className="App">

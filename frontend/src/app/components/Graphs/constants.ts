@@ -19,7 +19,7 @@ export enum CurveTypes {
   sCurve = "S-Curve",
 }
 
-export type dataType = {
+export type GraphData = {
   totalSupply: number;
   price: number;
 };
