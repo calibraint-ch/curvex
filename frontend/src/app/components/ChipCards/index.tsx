@@ -70,7 +70,7 @@ const ChipCard = (props: Cardprops) => {
               <div className="modal-props">
                 <Radio.Group className="slipage" options={slippageOptions} onChange={handleOnChange} optionType="button" buttonStyle="solid" />
                 <div className="input-tab">
-                  <input type="number" className="input-box number-input" onChange={handleInputChange} />
+                  <input type="number" className="input-box" onChange={handleInputChange} />
                 </div>
               </div>
             </Modal>

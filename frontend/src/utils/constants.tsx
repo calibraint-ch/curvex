@@ -28,6 +28,8 @@ export const sections = {
 export const responseMessages = {
   txnSuccess: "Transaction Success",
   txnFailed: "Transaction Failed",
+  txnRejected: "Transaction Rejected",
+  txnUnsuccessful: "Transaction Unsuccessful, Try Again"
 };
 
 export const priceCardItems = {

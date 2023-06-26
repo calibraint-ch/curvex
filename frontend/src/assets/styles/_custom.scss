@@ -209,7 +209,7 @@ button {
 }
 
 button:focus,
-button>.focus {
+button > .focus {
   outline: none;
   box-shadow: none;
   cursor: pointer;
@@ -246,4 +246,15 @@ button>.focus {
   .anticon-close-circle {
     vertical-align: unset;
   }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }

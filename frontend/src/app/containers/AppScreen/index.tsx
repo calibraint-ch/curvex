@@ -1,4 +1,3 @@
-import "./index.scss";
 import { useState } from "react";
 import Tab from "../../components/Tab/Tab";
 import { tabOptions } from "../../components/Tab/constants";
@@ -19,9 +18,9 @@ const AppScreen = () => {
       <div className="tab">
         <Tab {...{ onTabChange }} />
       </div>
-      {selectedTab === tabOptions[0].key && <BuyWihdraw tab="Buy" />}
-      {selectedTab === tabOptions[1].key && <BuyWihdraw tab="Withdraw"/>}
-      {selectedTab === tabOptions[2].key && <LaunchPad />}
+      {selectedTab === tabOptions[0].key && <LaunchPad />}
+      {selectedTab === tabOptions[1].key && <BuyWihdraw tab="Buy" />}
+      {selectedTab === tabOptions[2].key && <BuyWihdraw tab="Withdraw" />}
     </div>
   );
 };

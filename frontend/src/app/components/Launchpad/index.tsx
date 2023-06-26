@@ -1,10 +1,9 @@
-import { Button, Form, Input, Select, message } from "antd";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-import { errorMessages, pairTokenAddress } from "../../../utils/constants";
 import useFactory from "../../customHooks/useFactory";
 import { selectWalletConnected } from "../../slice/wallet.selector";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Form, Input, Button, Select, Modal, Spin, message } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 import Graph from "../Graphs/Graph";
 import ImageUploader from "../ImageUploader";
 import {
@@ -14,11 +13,13 @@ import {
   curveOptions,
   vestingPeriodOptions,
 } from "./constants";
-import { deployToken } from "./deploy.slice";
-
+import { deployToken, setDeployTokenError, setDeployTokenSuccess } from "./deploy.slice";
+import { pairTokenAddress, responseMessages, errorMessages } from "../../../utils/constants";
+import { selectTokenSuccess, selectTokenError } from "./deploy.selector";
 import "./index.scss";
 
 const LaunchPad = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const walletConnected = useSelector(selectWalletConnected);
@@ -27,9 +28,39 @@ const LaunchPad = () => {
 
   const [curve, setCurve] = useState<string>("1");
 
+  const successMessage = useSelector(selectTokenSuccess);
+  const errorMessage = useSelector(selectTokenError);
+  console.log(errorMessage, "ERROR FROM SAGA....")
+
+  useEffect(() => {
+    if (successMessage === responseMessages.txnSuccess) {
+      console.log(successMessage, "SUCCESS......................")
+      message.success(successMessage)
+      setIsModalOpen(false);
+      dispatch(setDeployTokenSuccess(""));
+    }
+    if (errorMessage === responseMessages.txnFailed || errorMessage === responseMessages.txnRejected) {
+      message.error(errorMessage);
+      console.log("Failed......")
+      setIsModalOpen(false);
+      dispatch(setDeployTokenError(""));
+    }
+
+  }, [successMessage, errorMessage])
+
   const handleChange = (value: string) => {
     setCurve(value);
   };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const loader = <LoadingOutlined style={{ fontSize: 22, marginLeft: 15, marginTop: 32 }} spin />;
 
   const getVestingPeriod = (value: string) => {
     return Number(value) * 24 * 60 * 60;
@@ -54,6 +85,7 @@ const LaunchPad = () => {
       return;
     }
 
+    showModal();
     const launchParams: LaunchFormData = {
       tokenName: values.tokenName,
       tokenSymbol: values.tokenSymbol,
@@ -91,7 +123,8 @@ const LaunchPad = () => {
             onFinish={onFormSubmit}
             layout="vertical"
           >
-            <Form.Item label="Token Name" name="tokenName" required={true}>
+            <Form.Item label="Token Name" name="tokenName" rules={[{ required: true, message: 'Please input Token Name!' }]}
+            >
               <Input
                 className="input-box"
                 name="tokenName"
@@ -101,7 +134,7 @@ const LaunchPad = () => {
             <p className="input-description">
               This name will also be used a a contract name
             </p>
-            <Form.Item label="Token Symbol" name="tokenSymbol" required={true}>
+            <Form.Item label="Token Symbol" name="tokenSymbol" rules={[{ required: true, message: 'Please input Token Symbol!' }, { min: 3, max: 5, message: 'Symbol must be 3-5 characters long' }]}>
               <Input
                 className="input-box"
                 name="tokenName"
@@ -111,7 +144,7 @@ const LaunchPad = () => {
             <p className="input-description">
               Choose a symbol for your token ( usually 3-5 Characters )
             </p>
-            <Form.Item name="logoImage">
+            <Form.Item name="logoImage" rules={[{ required: true, message: 'Please Upload Token Image!' }]}>
               <ImageUploader formInstance={form} />
             </Form.Item>
 
@@ -129,11 +162,8 @@ const LaunchPad = () => {
                 price decreases.
               </p>
             </div>
-            <div className="other-details-section">
-              <p className="details-title">Other Details</p>
-            </div>
             <div className="curve-section">
-              <Form.Item name="curveType" required={true}>
+              <Form.Item name="curveType" rules={[{ required: true, message: 'Please select Curve Type!' }]}>
                 <Select
                   className="select-option"
                   onChange={handleChange}
@@ -157,7 +187,7 @@ const LaunchPad = () => {
                 <Form.Item
                   label="Total Supply"
                   name="totalSupply"
-                  required={true}
+                  rules={[{ required: true, message: 'Please enter Total Supply' }]}
                 >
                   <Input
                     className="input-box"
@@ -165,18 +195,16 @@ const LaunchPad = () => {
                     placeholder="Total Supply"
                   />
                 </Form.Item>
-                <Form.Item label="Precision" name="precision">
+                <Form.Item label="Precision" name="precision" rules={[{ required: true, message: 'Please input Precision!' }]}>
                   <Input
                     className="input-box"
                     type="number"
                     placeholder="Precision"
                   />
                 </Form.Item>
-              </div>
-              <div className="form-fields">
-                <Form.Item label="Vesting Period" name="vestingPeriod">
+                <Form.Item label="Vesting Period" name="vestingPeriod" rules={[{ required: true, message: 'Please input Vesting Period!' }]}>
                   <Select
-                    className="select-period"
+                    className="vesting-option input-box"
                     options={vestingPeriodOptions}
                   />
                 </Form.Item>
@@ -188,6 +216,15 @@ const LaunchPad = () => {
                 <Button htmlType="submit" className="mint-button">
                   Mint Token
                 </Button>
+                <Modal title="Unlock Token" className="approve-modal" open={isModalOpen} closable={false} maskClosable={false} onCancel={handleCancel} footer={null}>
+                  <div className="modal-content">
+                    <div className="d-flex">
+                      <p className="modal-title">Go to your Wallet</p>
+                      <Spin indicator={loader} />
+                    </div>
+                    <p className="modal-title modal-description">You’ll be asked to approve this transaction from your wallet. You only need to sign each transaction once to deploy your tokens</p>
+                  </div>
+                </Modal>
               </div>
             </div>
           </Form>

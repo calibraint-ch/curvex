@@ -30,7 +30,7 @@ function useFactory() {
 
   const getContractInstance = useCallback(
     async (contractAddress: string, readOnly?: boolean) => {
-      if (readOnly && metaState.web3) {
+      if (readOnly && !metaState.web3) {
         const provider = new ethers.providers.JsonRpcProvider(defaultPublicRpc);
         return new ethers.Contract(
           contractAddress,
@@ -47,7 +47,6 @@ function useFactory() {
         );
       } catch (e: any) {
         message.error(errorMessages.walletConnectionRequired);
-        throw new Error(errorMessages.walletConnectionRequired);
       }
     },
     [metaState.web3]
@@ -90,6 +89,7 @@ function useFactory() {
   const getTokenPairList = useCallback(async () => {
     if (factoryContractAddress) {
       const contract = await getContractInstance(factoryContractAddress, true);
+      if (!contract) return [];
       const tokenPairs: TokenPairStruct[] = await contract.getTokenPairList();
       return tokenPairs ?? [];
     }

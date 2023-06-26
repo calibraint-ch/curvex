@@ -91,16 +91,10 @@
   font-family: "SchibstedGrotesk";
 }
 
-.number-input::-webkit-inner-spin-button,
-.number-input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.number-input {
-  -moz-appearance: textfield;
-}
-
 .image-curser {
   cursor: pointer;
+}
+
+input:focus {
+  outline: none;
 }

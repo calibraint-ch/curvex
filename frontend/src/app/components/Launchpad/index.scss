@@ -38,7 +38,7 @@
 }
 
 .launchpad-contents {
-  padding: 20px 32px;
+  padding: 0px 32px;
 }
 
 .details-title {
@@ -59,11 +59,11 @@
 .other-details-section {
   display: flex;
   flex-direction: column;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .other-details-section .input-box {
-  width: 308px;
+  width: 203px;
 }
 
 .form-fields {
@@ -109,6 +109,7 @@
 .curve-section {
   width: 627px;
   margin-top: 24px;
+  margin: 24px 0px -50px 0px;
   min-height: 380px;
   background: rgba(230, 230, 230, 0.32);
   border-radius: 14px;
@@ -118,13 +119,7 @@
   margin: 14px 0px 0px 14px;
   border: 1px solid var(--white-4);
   border-radius: 12px;
-  width: 130px;
-  min-height: 40px;
   padding: 6px 7px 8px 7px;
-}
-
-.select-period {
-  width: 310px !important;
 }
 
 .ant-select-focused .ant-select-selector,
@@ -133,4 +128,54 @@
 .ant-select-open .ant-select-selector {
   border: none;
   box-shadow: none !important;
+}
+
+.vesting-option {
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+}
+
+.modal-title {
+  margin-top: 35px;
+  margin-left: 11px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #3d3d3d;
+  font-family: "SchibstedGrotesk";
+}
+
+.modal-description {
+  margin-top: 10px;
+}
+
+.approve-modal.ant-modal .ant-modal-content {
+  background: var(--primary-blue);
+}
+
+.approve-modal.ant-modal .ant-modal-title {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.approve-modal.ant-modal .ant-modal-content .modal-content {
+  width: 480px;
+  height: 150px;
+  background: var(--white);
+  border-radius: 16px;
+}
+
+.approve-modal.ant-modal .ant-modal-close-x {
+  color: var(--white);
+  border: 1px solid var(--white);
+  border-radius: 5px;
+}
+
+.select-option.ant-select.ant-select-in-form-item {
+  width: 150px;
+}
+
+.curve-section .graph {
+  padding: 14px 50px;
 }

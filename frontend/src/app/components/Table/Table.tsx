@@ -1,5 +1,7 @@
+import { Link } from "react-router-dom";
 import { Table, Button, Empty } from "antd";
 import { TableComponentProps } from "./interfaces";
+import { routes } from "../../../utils/routes"
 
 import "./index.scss";
 
@@ -17,7 +19,9 @@ const TableComponent = ({
       }
     >
       {classname === "deployed-token-table" && (
-        <Button type="primary">Deploy Now</Button>
+        <Link to={routes.dashboard}>
+          <Button type="primary">Deploy Now</Button>
+        </Link>
       )}
     </Empty>
   );

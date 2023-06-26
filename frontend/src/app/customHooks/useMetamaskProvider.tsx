@@ -60,6 +60,7 @@ function useMetamaskProvider() {
         if (!supportedChains.includes(chainId)) {
           message.error(errorMessages.unSupportedNetwork);
           dispatch(resetWallet());
+          setConnected(false);
           return;
         } else {
           dispatch(setNetwork(chainId));
@@ -83,7 +84,7 @@ function useMetamaskProvider() {
       dispatch(setWallet(metaState.account[0]));
       getBalance(metaState.account[0]);
     }
-  }, [dispatch, getBalance, metaState.account, metaState.isConnected]);
+  }, [getBalance, metaState.account, metaState.isConnected, dispatch]);
 
   return { connected, metaState, balance, connectWallet, detectNetworkChange };
 }

@@ -6,6 +6,11 @@ import {
 
 export const tabOptions = [
   {
+    key: "launchpad",
+    label: "LaunchPad",
+    Icon: RocketOutlined,
+  },
+  {
     key: "buy",
     label: "Buy",
     Icon: ShoppingOutlined,
@@ -14,10 +19,5 @@ export const tabOptions = [
     key: "withdraw",
     label: "Withdraw",
     Icon: MoneyCollectOutlined,
-  },
-  {
-    key: "launchpad",
-    label: "LaunchPad",
-    Icon: RocketOutlined,
   },
 ];
