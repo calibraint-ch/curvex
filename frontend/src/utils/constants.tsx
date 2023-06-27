@@ -5,7 +5,7 @@ export const errorMessages = {
   walletConnectionRequired: "Please connect wallet",
 };
 
-export const NftStorageToken = process.env.REACT_APP_NFT_STORAGE_PRIVATE_KEY;
+export const NftStorageToken = process.env.REACT_APP_NFT_STORAGE_API_TOKEN;
 export const factoryContractAddress = process.env.REACT_APP_FACTORY_CONTRACT;
 export const defaultPublicRpc = process.env.REACT_APP_DEFAULT_PUBLIC_RPC;
 

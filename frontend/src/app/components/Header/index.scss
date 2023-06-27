@@ -1,13 +1,17 @@
 @import "../../../assets/styles/settings/colors";
 
 .header {
-  background-color: var(--primary-blue);
+  background-color: var(--header-color);
   align-items: center;
   color: var(--white);
   height: 80px;
   display: flex;
   padding: 0px 37px;
   justify-content: space-between;
+}
+
+.header-landing-page{
+  background-color: var(--primary-blue);
 }
 
 .nav-items {

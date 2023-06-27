@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Modal, Radio, message, RadioChangeEvent } from 'antd';
+import React, { useState } from "react";
+import { Modal, Radio, message, RadioChangeEvent } from "antd";
 import { QuestionCircle, BuySetting } from "../../../assets/images/imageAssets";
 
 import "./index.scss";
@@ -7,7 +7,7 @@ import "./index.scss";
 type Cardprops = {
   title: string;
   value: string | number;
-  handleSlippageChange?: (value: string | number) => void
+  handleSlippageChange?: (value: string | number) => void;
 };
 
 const ChipCard = (props: Cardprops) => {
@@ -16,23 +16,23 @@ const ChipCard = (props: Cardprops) => {
 
   const { title, value, handleSlippageChange } = props;
 
-  const slippageOptions = ['0.1%', '0.5%', '1.0%'];
+  const slippageOptions = ["0.1%", "0.5%", "1.0%"];
 
   const handleOnChange = (e: RadioChangeEvent) => {
     if (handleSlippageChange) {
       handleSlippageChange(e.target.value);
     }
-  }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (value > 10) {
       messageApi.open({
-        type: 'error',
-        content: 'Value must not be greater than 10',
+        type: "error",
+        content: "Value must not be greater than 10",
         style: {
-          marginTop: '350px',
-          marginLeft: '750px',
+          marginTop: "350px",
+          marginLeft: "750px",
         },
       });
       return;
@@ -40,7 +40,7 @@ const ChipCard = (props: Cardprops) => {
     if (handleSlippageChange) {
       handleSlippageChange(value);
     }
-  }
+  };
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -53,29 +53,51 @@ const ChipCard = (props: Cardprops) => {
   return (
     <div className="chip-card">
       {contextHolder}
-      <div>
+      <div className="d-flex flex-column w-100">
         <p className="card-title">{title}</p>
         <p className="card-value">{value}</p>
       </div>
-      <div className="slippage-modal">
-        {props.title === "SLIPPAGE TOLERANCE" &&
+      <div className="slippage-modal d-flex align-items-end mr-2">
+        {props.title === "SLIPPAGE TOLERANCE" && (
           <div>
-            <div>
-              <img className="mb-4" src={QuestionCircle} alt="Question" />
-              <img src={BuySetting} alt="Settings" onClick={showModal} className="image-curser mb-4"/>
+            <div className="d-flex image-size">
+              <img src={QuestionCircle} alt="Question" />
+              <img
+                src={BuySetting}
+                alt="Settings"
+                onClick={showModal}
+                className="image-curser image-size"
+              />
             </div>
-            <Modal title="Settings" open={isModalOpen} onCancel={handleCancel} footer={null} width={386} style={{ top: 460, marginLeft: 1080 }}>
+            <Modal
+              title="Settings"
+              open={isModalOpen}
+              onCancel={handleCancel}
+              footer={null}
+              width={386}
+              style={{ top: 460 }}
+            >
               <p className="sub-title">Slippage Tolerance</p>
               <p className="label">Custom</p>
               <div className="modal-props">
-                <Radio.Group className="slipage" options={slippageOptions} onChange={handleOnChange} optionType="button" buttonStyle="solid" />
+                <Radio.Group
+                  className="slipage"
+                  options={slippageOptions}
+                  onChange={handleOnChange}
+                  optionType="button"
+                  buttonStyle="solid"
+                />
                 <div className="input-tab">
-                  <input type="number" className="input-box" onChange={handleInputChange} />
+                  <input
+                    type="number"
+                    className="input-box"
+                    onChange={handleInputChange}
+                  />
                 </div>
               </div>
             </Modal>
           </div>
-        }
+        )}
       </div>
     </div>
   );

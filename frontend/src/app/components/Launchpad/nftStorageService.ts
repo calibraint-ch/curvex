@@ -1,6 +1,5 @@
 import { RcFile } from "antd/lib/upload";
 import { NFTStorage } from "nft.storage";
-import { TokenInput } from "nft.storage/dist/src/token";
 import { NftStorageToken } from "../../../utils/constants";
 import { LaunchFormData } from "./constants";
 

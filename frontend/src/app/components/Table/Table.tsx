@@ -28,7 +28,7 @@ const TableComponent = ({
 
   return (
     <div>
-      {dataSource.length ? (
+      {dataSource && dataSource.length ? (
         <Table
           dataSource={dataSource}
           columns={columns}

@@ -1,6 +1,6 @@
 .buy-column-2 {
   background-color: var(--light-blue);
-  height: 408px;
+  height: 336px;
   width: 536px;
   border-radius: 12px;
   padding: 2%;
@@ -23,4 +23,8 @@
     background-color: var(--white) !important;
     border-color: var(--white) !important;
   }
+}
+
+.price-chips{
+  margin-top: 10px;
 }
