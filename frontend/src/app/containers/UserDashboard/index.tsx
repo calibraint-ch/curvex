@@ -1,11 +1,8 @@
-import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  Banner,
-  UsdBalance,
-  WalletIconDashboard,
-} from "../../../assets/images/imageAssets";
+import { Spin } from "antd";
+import { ethers } from "ethers";
+
 import {
   getTokenName,
   parseDeployedTokenList,
@@ -15,8 +12,16 @@ import {
   claimableColumns,
   deployedColumns,
 } from "../../components/Table/constants";
+
 import useErc20 from "../../customHooks/useErc20";
 import useFactory from "../../customHooks/useFactory";
+
+import {
+  Banner,
+  UsdBalance,
+  WalletIconDashboard,
+} from "../../../assets/images/imageAssets";
+
 import {
   selectFactoryLoaded,
   selectFactoryLoading,
@@ -41,10 +46,8 @@ const UserDashBoard = () => {
   const { deployedTokenList } = useFactory();
 
   const getPairs = useCallback(async () => {
-    const contract =
-      await getContractInstance(ethers.constants.AddressZero);
+    const contract = await getContractInstance(ethers.constants.AddressZero);
     if (contract) {
-
       const parsedData = deployedTokenList
         .filter((e) => e.owner.toLowerCase() === walletAddress?.toLowerCase())
         .map(parseDeployedTokenList);
@@ -61,8 +64,16 @@ const UserDashBoard = () => {
     if (walletConnected && factoryLoaded) getPairs();
   }, [factoryLoaded, getPairs, walletConnected]);
 
+  console.log("factoryLoading", factoryLoading);
+
   if (factoryLoading && walletConnected) {
-    return <div>Loading</div>;
+    return (
+      <div className="dashboard-loading">
+        <Spin tip="Loading" size="large">
+          <div className="content" />
+        </Spin>
+      </div>
+    );
   }
 
   return (
