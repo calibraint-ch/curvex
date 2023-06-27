@@ -25,7 +25,6 @@ type Network = {
 };
 
 const Header = () => {
-
   const location = useLocation();
   const dispatch = useDispatch();
 
@@ -73,7 +72,11 @@ const Header = () => {
   }
 
   return (
-    <div className="header">
+    <div
+      className={`header ${
+        location.pathname === homepage ? "header-landing-page" : ""
+      }`}
+    >
       <div>
         <Link style={{ textDecoration: "none" }} to={homepage}>
           <img className="logo" src={CurvXLogo} alt="CurveX_Logo" />
@@ -96,13 +99,21 @@ const Header = () => {
               <div className={`dot ${network.className}`}></div>
               <p className="name">{network.name}</p>
             </div>
-            {location.pathname === dashboard ?
-              <Link style={{ textDecoration: "none", color: '#ffffff' }} to={portfolio}>
+            {location.pathname === dashboard ? (
+              <Link
+                style={{ textDecoration: "none", color: "#ffffff" }}
+                to={portfolio}
+              >
                 <div>{connected ? "Portfolio" : ""}</div>
-              </Link> :
-              <Link style={{ textDecoration: "none", color: '#ffffff' }} to={dashboard}>
+              </Link>
+            ) : (
+              <Link
+                style={{ textDecoration: "none", color: "#ffffff" }}
+                to={dashboard}
+              >
                 <div>Dashboard</div>
-              </Link>}
+              </Link>
+            )}
             {connected && address ? (
               <Dropdown
                 menu={{ items, onClick: handleDisconnect }}

@@ -39,7 +39,7 @@ const BuyWithdraw = (props: props) => {
           <ChipCard title="SLIPPAGE" value={slippageValue} />
           <ChipCard
             title="SLIPPAGE TOLERANCE"
-            value="0.312"
+            value="0.0"
             handleSlippageChange={handleSlippageChange}
           />
         </div>
@@ -49,7 +49,7 @@ const BuyWithdraw = (props: props) => {
           </div>
         ) : (
           <div className="d-flex justify-content-center">
-            <Button className="buy-button"> Withdraw Now </Button>
+            <Button className="buy-button"> Withdraw </Button>
           </div>
         )}
       </div>
