@@ -12,7 +12,6 @@ import {
   setDeployTokenSuccess,
 } from "./deploy.slice";
 import { uploadFileIpfs } from "./nftStorageService";
-import { message } from "antd";
 
 export type DeploySagaPayload = PayloadAction<{
   formData: LaunchFormData;
@@ -43,8 +42,15 @@ export function* deployTokenSaga({ payload }: DeploySagaPayload) {
       ),
     });
 
+    yield call(result.wait, 2);
+
     if (result.hash) {
-      yield put(setDeployTokenSuccess(responseMessages.txnSuccess));
+      yield put(
+        setDeployTokenSuccess({
+          message: responseMessages.txnSuccess,
+          hash: result.hash,
+        })
+      );
     }
   } catch (err: any) {
     const code = err?.code;

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Spin } from "antd";
 import { ethers } from "ethers";
 
@@ -26,6 +26,7 @@ import {
   selectFactoryLoaded,
   selectFactoryLoading,
 } from "../../slice/factory/factory.selector";
+import { resetFactory } from "../../slice/factory/factory.slice";
 import {
   selectWallet,
   selectWalletConnected,
@@ -36,6 +37,8 @@ import "./index.scss";
 
 const UserDashBoard = () => {
   const [tokenDetails, setTokenDetails] = useState<DeployedTokensList[]>([]);
+
+  const dispatch = useDispatch();
 
   const walletAddress = useSelector(selectWallet);
   const walletConnected = useSelector(selectWalletConnected);
@@ -64,7 +67,9 @@ const UserDashBoard = () => {
     if (walletConnected && factoryLoaded) getPairs();
   }, [factoryLoaded, getPairs, walletConnected]);
 
-  console.log("factoryLoading", factoryLoading);
+  useEffect(() => {
+    dispatch(resetFactory())
+  }, [dispatch])
 
   if (factoryLoading && walletConnected) {
     return (
