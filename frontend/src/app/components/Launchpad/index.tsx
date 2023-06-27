@@ -30,23 +30,20 @@ const LaunchPad = () => {
 
   const successMessage = useSelector(selectTokenSuccess);
   const errorMessage = useSelector(selectTokenError);
-  console.log(errorMessage, "ERROR FROM SAGA....")
 
   useEffect(() => {
     if (successMessage === responseMessages.txnSuccess) {
-      console.log(successMessage, "SUCCESS......................")
       message.success(successMessage)
       setIsModalOpen(false);
       dispatch(setDeployTokenSuccess(""));
     }
     if (errorMessage === responseMessages.txnFailed || errorMessage === responseMessages.txnRejected) {
       message.error(errorMessage);
-      console.log("Failed......")
       setIsModalOpen(false);
       dispatch(setDeployTokenError(""));
     }
 
-  }, [successMessage, errorMessage])
+  }, [successMessage, errorMessage, dispatch])
 
   const handleChange = (value: string) => {
     setCurve(value);

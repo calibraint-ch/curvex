@@ -1,6 +1,5 @@
 import { RcFile } from "antd/lib/upload";
 import { NFTStorage } from "nft.storage";
-import { TokenInput } from "nft.storage/dist/src/token";
 import { NftStorageToken } from "../../../utils/constants";
 import { LaunchFormData } from "./constants";
 
@@ -10,7 +9,7 @@ const client = new NFTStorage({
 
 function getImageBlob(data: LaunchFormData): File | Blob {
   const toFile = (file: RcFile) => {
-    const [, extension] = file.type.split("/");
+    const [extension] = file.type.split("/");
 
     return new File([data?.logoImage], `image.${extension}`, {
       type: data.logoImage.type,
