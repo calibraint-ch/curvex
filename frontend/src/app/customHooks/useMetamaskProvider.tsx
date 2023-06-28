@@ -36,7 +36,7 @@ function useMetamaskProvider() {
   }, [getChain]);
 
   const detectNetworkChange = useCallback(() => {
-    window.ethereum.on("chainChanged", async () => {
+    window.ethereum?.on("chainChanged", async () => {
       const chainId = await getCurrentNetwork();
       if (chainId && chainId === network) return;
 
@@ -48,7 +48,7 @@ function useMetamaskProvider() {
       }
     });
     return () =>
-      window.ethereum.removeListener("chainChanged", () => {
+      window.ethereum?.removeListener("chainChanged", () => {
         window.location.reload();
       });
   }, [dispatch, getCurrentNetwork, network]);

@@ -20,6 +20,11 @@ export const chainList = {
   testnet: "4002",
 };
 
+export const explorerList = {
+  mainnetUrl: "https://ftmscan.com/tx/",
+  testnetUrl: "https://testnet.ftmscan.com/tx/"
+}
+
 export const sections = {
   buy: "Buy",
   withdraw: "Withdraw",
