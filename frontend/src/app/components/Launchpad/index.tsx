@@ -1,11 +1,17 @@
-import useFactory from "../../customHooks/useFactory";
-import { selectWalletConnected } from "../../slice/wallet.selector";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, Select, Spin, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Form, Input, Button, Select, Modal, Spin, message } from "antd";
-import { LoadingOutlined } from '@ant-design/icons';
+import {
+  errorMessages,
+  pairTokenAddress,
+  responseMessages,
+} from "../../../utils/constants";
+import useFactory from "../../customHooks/useFactory";
+import { selectWalletConnected } from "../../slice/wallet.selector";
 import Graph from "../Graphs/Graph";
 import ImageUploader from "../ImageUploader";
+import { getLaunchpadPriceEstimate } from "../PriceCard/service";
 import {
   LaunchFormData,
   LaunchPadInitialValues,
@@ -13,9 +19,12 @@ import {
   curveOptions,
   vestingPeriodOptions,
 } from "./constants";
-import { deployToken, setDeployTokenError, setDeployTokenSuccess } from "./deploy.slice";
-import { pairTokenAddress, responseMessages, errorMessages } from "../../../utils/constants";
-import { selectTokenSuccess, selectTokenError } from "./deploy.selector";
+import { selectTokenError, selectTokenSuccess } from "./deploy.selector";
+import {
+  deployToken,
+  setDeployTokenError,
+  setDeployTokenSuccess,
+} from "./deploy.slice";
 import "./index.scss";
 
 const LaunchPad = () => {
@@ -33,17 +42,19 @@ const LaunchPad = () => {
 
   useEffect(() => {
     if (successMessage === responseMessages.txnSuccess) {
-      message.success(successMessage)
+      message.success(successMessage);
       setIsModalOpen(false);
       dispatch(setDeployTokenSuccess(""));
     }
-    if (errorMessage === responseMessages.txnFailed || errorMessage === responseMessages.txnRejected) {
+    if (
+      errorMessage === responseMessages.txnFailed ||
+      errorMessage === responseMessages.txnRejected
+    ) {
       message.error(errorMessage);
       setIsModalOpen(false);
       dispatch(setDeployTokenError(""));
     }
-
-  }, [successMessage, errorMessage, dispatch])
+  }, [successMessage, errorMessage, dispatch]);
 
   const handleChange = (value: string) => {
     setCurve(value);
@@ -57,24 +68,18 @@ const LaunchPad = () => {
     setIsModalOpen(false);
   };
 
-  const loader = <LoadingOutlined style={{ fontSize: 22, marginLeft: 15, marginTop: 32 }} spin />;
+  const loader = (
+    <LoadingOutlined
+      style={{ fontSize: 22, marginLeft: 15, marginTop: 32 }}
+      spin
+    />
+  );
 
   const getVestingPeriod = (value: string) => {
     return Number(value) * 24 * 60 * 60;
   };
 
   const precision = Form.useWatch("precision", form);
-
-  const getPriceEstimate = () => {
-    if (precision) {
-      if (curve === curveOptions[0].value) {
-        return ((Math.pow(1, 2) / 2) * precision).toFixed(4);
-      } else if (curve === curveOptions[1].value) {
-        return ((Math.pow(1, 3) / 3) * precision).toFixed(4);
-      }
-    }
-    return 0;
-  };
 
   const onFormSubmit = (values: any) => {
     if (!walletConnected) {
@@ -120,7 +125,10 @@ const LaunchPad = () => {
             onFinish={onFormSubmit}
             layout="vertical"
           >
-            <Form.Item label="Token Name" name="tokenName" rules={[{ required: true, message: 'Please input Token Name!' }]}
+            <Form.Item
+              label="Token Name"
+              name="tokenName"
+              rules={[{ required: true, message: "Please input Token Name!" }]}
             >
               <Input
                 className="input-box"
@@ -131,7 +139,18 @@ const LaunchPad = () => {
             <p className="input-description">
               This name will also be used a a contract name
             </p>
-            <Form.Item label="Token Symbol" name="tokenSymbol" rules={[{ required: true, message: 'Please input Token Symbol!' }, { min: 3, max: 5, message: 'Symbol must be 3-5 characters long' }]}>
+            <Form.Item
+              label="Token Symbol"
+              name="tokenSymbol"
+              rules={[
+                { required: true, message: "Please input Token Symbol!" },
+                {
+                  min: 3,
+                  max: 5,
+                  message: "Symbol must be 3-5 characters long",
+                },
+              ]}
+            >
               <Input
                 className="input-box"
                 name="tokenName"
@@ -141,7 +160,12 @@ const LaunchPad = () => {
             <p className="input-description">
               Choose a symbol for your token ( usually 3-5 Characters )
             </p>
-            <Form.Item name="logoImage" rules={[{ required: true, message: 'Please Upload Token Image!' }]}>
+            <Form.Item
+              name="logoImage"
+              rules={[
+                { required: true, message: "Please Upload Token Image!" },
+              ]}
+            >
               <ImageUploader formInstance={form} />
             </Form.Item>
 
@@ -160,7 +184,12 @@ const LaunchPad = () => {
               </p>
             </div>
             <div className="curve-section">
-              <Form.Item name="curveType" rules={[{ required: true, message: 'Please select Curve Type!' }]}>
+              <Form.Item
+                name="curveType"
+                rules={[
+                  { required: true, message: "Please select Curve Type!" },
+                ]}
+              >
                 <Select
                   className="select-option"
                   onChange={handleChange}
@@ -184,7 +213,9 @@ const LaunchPad = () => {
                 <Form.Item
                   label="Total Supply"
                   name="totalSupply"
-                  rules={[{ required: true, message: 'Please enter Total Supply' }]}
+                  rules={[
+                    { required: true, message: "Please enter Total Supply" },
+                  ]}
                 >
                   <Input
                     className="input-box"
@@ -192,14 +223,36 @@ const LaunchPad = () => {
                     placeholder="Total Supply"
                   />
                 </Form.Item>
-                <Form.Item label="Precision" name="precision" rules={[{ required: true, message: 'Please input Precision!' }]}>
+                <Form.Item
+                  label="Precision"
+                  name="precision"
+                  rules={[
+                    {
+                      required: true,
+                      message: errorMessages.precisionRequired,
+                    },
+                    // {
+                    //   validator: (_, value: number) => {
+                    //     if (!(value > 0)) {
+                    //       return Promise.reject(errorMessages.precisionZero);
+                    //     }
+                    //   },
+                    // },
+                  ]}
+                >
                   <Input
                     className="input-box"
                     type="number"
                     placeholder="Precision"
                   />
                 </Form.Item>
-                <Form.Item label="Vesting Period" name="vestingPeriod" rules={[{ required: true, message: 'Please input Vesting Period!' }]}>
+                <Form.Item
+                  label="Vesting Period"
+                  name="vestingPeriod"
+                  rules={[
+                    { required: true, message: "Please input Vesting Period!" },
+                  ]}
+                >
                   <Select
                     className="vesting-option input-box"
                     options={vestingPeriodOptions}
@@ -207,19 +260,32 @@ const LaunchPad = () => {
                 </Form.Item>
               </div>
               <p className="price-estimation price-text">
-                Price Estimation : {getPriceEstimate() + " USD"}
+                Price Estimation :{" "}
+                {getLaunchpadPriceEstimate(precision, curve) + " USD"}
               </p>
               <div className="d-flex justify-content-center">
                 <Button htmlType="submit" className="mint-button">
                   Mint Token
                 </Button>
-                <Modal title="Unlock Token" className="approve-modal" open={isModalOpen} closable={false} maskClosable={false} onCancel={handleCancel} footer={null}>
+                <Modal
+                  title="Unlock Token"
+                  className="approve-modal"
+                  open={isModalOpen}
+                  closable={false}
+                  maskClosable={false}
+                  onCancel={handleCancel}
+                  footer={null}
+                >
                   <div className="modal-content">
                     <div className="d-flex">
                       <p className="modal-title">Go to your Wallet</p>
                       <Spin indicator={loader} />
                     </div>
-                    <p className="modal-title modal-description">You’ll be asked to approve this transaction from your wallet. You only need to sign each transaction once to deploy your tokens</p>
+                    <p className="modal-title modal-description">
+                      You’ll be asked to approve this transaction from your
+                      wallet. You only need to sign each transaction once to
+                      deploy your tokens
+                    </p>
                   </div>
                 </Modal>
               </div>

@@ -12,7 +12,6 @@ import {
   setDeployTokenSuccess,
 } from "./deploy.slice";
 import { uploadFileIpfs } from "./nftStorageService";
-import { message } from "antd";
 
 export type DeploySagaPayload = PayloadAction<{
   formData: LaunchFormData;

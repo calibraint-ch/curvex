@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { ethers } from "ethers";
 import { useCallback } from "react";
 import { curvxErc20 } from "../../contracts/curvxErc20";
@@ -8,7 +9,6 @@ import {
 } from "../../utils/constants";
 import { DeployParams } from "./constants";
 import useMetamaskProvider from "./useMetamaskProvider";
-import { message } from "antd";
 
 function useErc20() {
   const { metaState } = useMetamaskProvider();

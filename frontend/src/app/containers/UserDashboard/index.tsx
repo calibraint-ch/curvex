@@ -41,10 +41,8 @@ const UserDashBoard = () => {
   const { deployedTokenList } = useFactory();
 
   const getPairs = useCallback(async () => {
-    const contract =
-      await getContractInstance(ethers.constants.AddressZero);
+    const contract = await getContractInstance(ethers.constants.AddressZero);
     if (contract) {
-
       const parsedData = deployedTokenList
         .filter((e) => e.owner.toLowerCase() === walletAddress?.toLowerCase())
         .map(parseDeployedTokenList);

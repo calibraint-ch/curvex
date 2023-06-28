@@ -11,3 +11,19 @@ export type DeployParams = {
   logoURL: string;
   salt: string;
 };
+
+export type BuyTokens = {
+  tokenA: string;
+  tokenB: string;
+  tokenManager: string;
+  amount: BigNumberish;
+  estimatedPrice: BigNumberish;
+};
+
+export type SellTokens = {
+  tokenA: string;
+  tokenB: string;
+  tokenManager: string;
+  amount: BigNumberish;
+  estimatedPrice: BigNumberish;
+};

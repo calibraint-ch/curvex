@@ -3,6 +3,11 @@ export const errorMessages = {
   unSupportedNetwork:
     "Unsupported Network, Kindly Connect To Supported Network",
   walletConnectionRequired: "Please connect wallet",
+  insufficientBalance: "Insufficient balance to make transaction",
+  transferTransfer: "Transaction failed with unknown error",
+
+  precisionZero: "Precision should be greater than 0",
+  precisionRequired: "Please input Precision!",
 };
 
 export const NftStorageToken = process.env.REACT_APP_NFT_STORAGE_API_TOKEN;
@@ -29,7 +34,7 @@ export const responseMessages = {
   txnSuccess: "Transaction Success",
   txnFailed: "Transaction Failed",
   txnRejected: "Transaction Rejected",
-  txnUnsuccessful: "Transaction Unsuccessful, Try Again"
+  txnUnsuccessful: "Transaction Unsuccessful, Try Again",
 };
 
 export const priceCardItems = {
@@ -37,6 +42,10 @@ export const priceCardItems = {
   tokenB: "tokenB",
   tokenAAmount: "tokenAAmount",
   tokenBAmount: "tokenBAmount",
+  bondingCurveContract: "bondingCurveContract",
 };
 
 export const tokenInputPlaceholders = "Select Token";
+
+export const UsdtLogoUrl =
+  "https://cloudflare-ipfs.com/ipfs/bafkreia54sis5pb6ntttq6zwkd5xs4si2uzt32wtsf7jkbadivnyclhyom";

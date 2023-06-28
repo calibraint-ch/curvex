@@ -1,9 +1,11 @@
-import { BigNumberish, ethers } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
+import { UsdtLogoUrl } from "../../../utils/constants";
+import { formatEtherBalance } from "../../../utils/methods";
 import { DeployedTokensList } from "../../containers/UserDashboard/types";
 import { TokenPairStruct } from "../../slice/factory/factory.slice";
 import { DropdownOptions } from "../Dropdown";
 import { CurveTypes } from "../Graphs/constants";
-import { formatBalance } from "../../../utils/methods";
+import { curveOptions } from "../Launchpad/constants";
 
 export type TokenDetails = {
   name: string;
@@ -11,6 +13,11 @@ export type TokenDetails = {
   decimals: BigNumberish;
   balance: BigNumberish;
   address: string;
+  totalSupply: BigNumberish;
+  curveType?: number;
+  cap?: BigNumberish;
+  precision?: BigNumber;
+  manager?: string;
 };
 
 export type TokenPairDropdown = {
@@ -20,24 +27,72 @@ export type TokenPairDropdown = {
 
 export type AllTokenDetails = Map<string, TokenDetails>;
 
-export const getTokenDetails = (
+export const getCurvXDetails = (
   contract: ethers.Contract,
   walletAddress?: string
 ) => {
-  return async (tokenAddress: string): Promise<TokenDetails> => {
+  return async (
+    tokenAddress: string,
+    tokenPair: TokenPairStruct
+  ): Promise<TokenDetails> => {
     const tokenContract = contract.attach(tokenAddress);
-    const [name, symbol, decimals, balance]: [
+    const [name, symbol, decimals, balance, totalSupply]: [
       string,
       string,
-      BigNumberish,
-      BigNumberish
+      BigNumber,
+      BigNumber,
+      BigNumber
     ] = await Promise.all([
       tokenContract.name(),
       tokenContract.symbol(),
       tokenContract.decimals(),
-      walletAddress ? formatBalance(tokenContract.balanceOf(walletAddress)) : 0,
+      walletAddress ? tokenContract.balanceOf(walletAddress) : 0,
+      tokenContract.totalSupply(),
     ]);
-    return { name, address: tokenAddress, balance, decimals, symbol };
+    return {
+      name,
+      address: tokenAddress,
+      balance: formatEtherBalance(balance, decimals),
+      decimals,
+      symbol,
+      totalSupply,
+      cap: tokenPair.cap,
+      precision: tokenPair.precision,
+      curveType: tokenPair.curveType,
+      manager: tokenPair.tokenManager,
+    };
+  };
+};
+
+export const getErc20Details = (
+  contract: ethers.Contract,
+  walletAddress?: string
+) => {
+  return async (
+    tokenAddress: string
+  ): Promise<Omit<TokenDetails, "cap" | "curveType" | "precision">> => {
+    const tokenContract = contract.attach(tokenAddress);
+    const [name, symbol, decimals, balance, totalSupply]: [
+      string,
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ] = await Promise.all([
+      tokenContract.name(),
+      tokenContract.symbol(),
+      tokenContract.decimals(),
+      walletAddress ? tokenContract.balanceOf(walletAddress) : 0,
+      tokenContract.totalSupply(),
+    ]);
+    return {
+      name,
+      address: tokenAddress,
+      balance: formatEtherBalance(balance, decimals),
+      decimals,
+      symbol,
+      totalSupply,
+    };
   };
 };
 
@@ -46,12 +101,13 @@ export const splitTokenPair = async (
   contract: ethers.Contract,
   walletAddress?: string
 ) => {
-  const tokenDetailsOf = getTokenDetails(contract, walletAddress);
+  const curvXDetailsOf = getCurvXDetails(contract, walletAddress);
+  const tokenDetailsOf = getErc20Details(contract, walletAddress);
   const allTokenDetails = new Map<string, TokenDetails>();
 
   await Promise.all(
     deployedTokenList.map(async (pair) => {
-      allTokenDetails.set(pair.tokenA, await tokenDetailsOf(pair.tokenA));
+      allTokenDetails.set(pair.tokenA, await curvXDetailsOf(pair.tokenA, pair));
       allTokenDetails.set(pair.tokenB, await tokenDetailsOf(pair.tokenB));
     })
   );
@@ -64,13 +120,14 @@ export const splitTokenPair = async (
             ...prev.tokenListA,
             {
               value: curr.tokenA,
-              label: tokenA?.name ?? curr.tokenA,
+              label: tokenA?.symbol ?? curr.tokenA,
               icon: curr.logoUri,
               ...curr,
             },
           ],
           tokenListB: [] as TokenPairDropdown["tokenListB"],
         };
+
         const hasTokenB =
           prev.tokenListB.findIndex(({ value }) => value === curr.tokenB) !==
           -1;
@@ -85,8 +142,8 @@ export const splitTokenPair = async (
             ...prev.tokenListB,
             {
               value: curr.tokenB,
-              label: tokenB?.name ?? curr.tokenB,
-              icon: curr.logoUri,
+              label: tokenB?.symbol ?? curr.tokenB,
+              icon: UsdtLogoUrl,
               ...curr,
             },
           ],
@@ -139,4 +196,108 @@ export const getTokenName = (contract: ethers.Contract) => {
       })
     );
   };
+};
+
+export const getLaunchpadPriceEstimate = (
+  precision: number,
+  curveType: string
+) => {
+  if (Number(precision)) {
+    if (curveType === curveOptions[0].value) {
+      return ethers.utils.formatEther(
+        BigNumber.from(10).pow(18).div(2).div(precision)
+      );
+    } else if (curveType === curveOptions[1].value) {
+      return ethers.utils.formatEther(
+        BigNumber.from(10).pow(18).div(3).div(precision)
+      );
+    }
+  }
+  return 0;
+};
+
+export const getEstimationByCurveType = (
+  tokenDetails: TokenDetails,
+  amount: BigNumber,
+  isBuy: boolean
+) => {
+  if (!tokenDetails.curveType) return 0;
+  const curveType = getCurveType(tokenDetails.curveType);
+  const totalSupply = BigNumber.from(tokenDetails.totalSupply);
+  const precision = BigNumber.from(tokenDetails.precision);
+
+  if (
+    !totalSupply ||
+    !precision ||
+    precision.isZero() ||
+    (!isBuy && totalSupply.isZero())
+  ) {
+    return 0;
+  }
+
+  if (isBuy) {
+    console.log(isBuy);
+    if (curveType === CurveTypes.linear) {
+      return totalSupply
+        .add(amount)
+        .pow(2)
+        .div(2)
+        .div(BigNumber.from(10).pow(18))
+        .div(precision)
+        .sub(
+          totalSupply
+            .pow(2)
+            .div(2)
+            .div(BigNumber.from(10).pow(18))
+            .div(precision)
+        );
+    } else if (curveType === CurveTypes.polynomial) {
+      return totalSupply
+        .add(amount)
+        .pow(3)
+        .div(3)
+        .div(precision)
+        .div(BigNumber.from(10).pow(18))
+        .div(BigNumber.from(10).pow(18))
+        .sub(
+          totalSupply
+            .pow(2)
+            .div(precision)
+            .div(BigNumber.from(10).pow(18))
+            .div(BigNumber.from(10).pow(18))
+            .div(2)
+        );
+    }
+  } else {
+    if (curveType === CurveTypes.linear) {
+      return totalSupply
+        .pow(2)
+        .div(2)
+        .div(BigNumber.from(10).pow(18))
+        .div(precision)
+        .sub(
+          BigNumber.from(totalSupply.sub(amount))
+            .pow(2)
+            .div(2)
+            .div(BigNumber.from(10).pow(18))
+            .div(precision)
+        );
+    } else if (curveType === CurveTypes.polynomial) {
+      return totalSupply
+        .pow(3)
+        .div(3)
+        .div(BigNumber.from(10).pow(18))
+        .div(BigNumber.from(10).pow(18))
+        .div(precision)
+        .sub(
+          totalSupply
+            .sub(amount)
+            .pow(2)
+            .div(precision)
+            .div(BigNumber.from(10).pow(18))
+            .div(BigNumber.from(10).pow(18))
+            .div(2)
+        );
+    }
+  }
 };

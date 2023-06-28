@@ -1,4 +1,4 @@
-import { Form } from "antd";
+import { Form, Input } from "antd";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -8,14 +8,22 @@ import {
   sections,
   tokenInputPlaceholders,
 } from "../../../utils/constants";
-import { formatBalance } from "../../../utils/methods";
+import { formatBalance, formatEtherBalance } from "../../../utils/methods";
 import useErc20 from "../../customHooks/useErc20";
 import useFactory from "../../customHooks/useFactory";
-import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
+import {
+  selectFactoryLoaded,
+  selectFactoryLoading,
+} from "../../slice/factory/factory.selector";
 import { selectWallet } from "../../slice/wallet.selector";
 import DropDown from "../Dropdown";
 import PriceInput from "../PriceInput";
-import { TokenPairDropdown, splitTokenPair } from "./service";
+import {
+  AllTokenDetails,
+  TokenPairDropdown,
+  getEstimationByCurveType,
+  splitTokenPair,
+} from "./service";
 
 import "./index.scss";
 
@@ -24,47 +32,46 @@ type SectionProps = {
 };
 
 const PriceCard = (props: SectionProps) => {
-  const { balance } = useMetamaskProvider();
-  const { deployedTokenList } = useFactory();
-  const { getContractInstance } = useErc20();
-  const [tokens, setTokens] = useState<TokenPairDropdown>({
-    tokenListA: [],
-    tokenListB: [],
-  });
-  const [tokensLoading, setTokensLoading] = useState(true);
-
-  const walletAddress = useSelector(selectWallet);
+  const { section } = props;
 
   const form = useFormInstance();
+  const { deployedTokenList } = useFactory();
+  const { getContractInstance } = useErc20();
+
+  const [{ tokenListA = [], tokenListB = [] }, setTokens] =
+    useState<TokenPairDropdown>({ tokenListA: [], tokenListB: [] });
+
+  const [tokensLoading, setTokensLoading] = useState(true);
+  const [allTokensDetails, setAllTokensDetails] = useState<AllTokenDetails>(
+    new Map()
+  );
+
+  const walletAddress = useSelector(selectWallet);
+  const factoryLoaded = useSelector(selectFactoryLoaded);
+  const factoryLoading = useSelector(selectFactoryLoading);
 
   const cardAToken = Form.useWatch(priceCardItems.tokenA);
   const cardBToken = Form.useWatch(priceCardItems.tokenB);
+  const cardATokenAmount = Form.useWatch(priceCardItems.tokenAAmount);
 
-  const { section } = props;
-  const { buy } = sections;
-
-  const isBuy = section === buy;
-
-  const { tokenListA = [], tokenListB = [] } = useMemo(
-    () =>
-      isBuy
-        ? { tokenListA: tokens.tokenListB, tokenListB: tokens.tokenListA }
-        : tokens,
-    [isBuy, tokens]
-  );
+  const isBuy = section === sections.buy;
 
   const fetchTokens = useCallback(async () => {
     setTokensLoading(true);
-    const contract = await getContractInstance(ethers.constants.AddressZero, true);
+    const contract = await getContractInstance(
+      ethers.constants.AddressZero,
+      true
+    );
     if (contract) {
-      const { tokens } = await splitTokenPair(
+      const { tokens, allTokenDetails } = await splitTokenPair(
         deployedTokenList,
         contract,
         walletAddress
       );
       setTokens(tokens);
+      setTokensLoading(false);
+      setAllTokensDetails(allTokenDetails);
     }
-    setTokensLoading(false);
   }, [deployedTokenList, getContractInstance, walletAddress]);
 
   useEffect(() => {
@@ -77,7 +84,42 @@ const PriceCard = (props: SectionProps) => {
 
     if (!cardBToken && tokenListB.length)
       form.setFieldValue(priceCardItems.tokenB, tokenListB[0].value);
-  }, [cardAToken, cardBToken, form, tokenListA, tokenListB]);
+
+    form.setFieldValue(
+      priceCardItems.bondingCurveContract,
+      allTokensDetails.get(cardAToken)?.manager
+    );
+  }, [allTokensDetails, cardAToken, cardBToken, form, tokenListA, tokenListB]);
+
+  const balance = useMemo(
+    () => allTokensDetails.get(cardAToken)?.balance,
+    [allTokensDetails, cardAToken]
+  );
+
+  const tokenBBalance = useMemo(
+    () => allTokensDetails.get(cardBToken)?.balance,
+    [allTokensDetails, cardBToken]
+  );
+
+  const estimation = useMemo(() => {
+    const tokenADetails = allTokensDetails.get(cardAToken);
+
+    if (!tokenADetails || !cardATokenAmount) {
+      return 0;
+    }
+    const value = getEstimationByCurveType(
+      tokenADetails,
+      ethers.utils.parseEther(cardATokenAmount.toString()),
+      isBuy
+    );
+    return value
+      ? Number(formatEtherBalance(value, tokenADetails.decimals))
+      : 0;
+  }, [allTokensDetails, cardAToken, cardATokenAmount, isBuy]);
+
+  useEffect(() => {
+    form.setFieldValue(priceCardItems.tokenBAmount, estimation);
+  }, [estimation, form]);
 
   return (
     <div className="price-card-group">
@@ -88,26 +130,35 @@ const PriceCard = (props: SectionProps) => {
               name={priceCardItems.tokenA}
               options={tokenListA}
               placeholder={tokenInputPlaceholders}
-              loading={tokensLoading}
+              loading={tokensLoading || !factoryLoaded || factoryLoading}
             />
             <p className="balance-text">
-              BALANCE: <span>{formatBalance(balance)}</span>
+              BALANCE: <span>{formatBalance(balance?.toString())}</span>
             </p>
           </div>
+          {/* this is an auto modified value and not shown in UI */}
+          <Form.Item name={priceCardItems.bondingCurveContract} noStyle>
+            <Input type="hidden"></Input>
+          </Form.Item>
           <Form.Item name={priceCardItems.tokenAAmount}>
             <PriceInput />
           </Form.Item>
         </div>
       </div>
       <div className="price-card">
-        <DropDown
-          name={priceCardItems.tokenB}
-          options={tokenListB}
-          placeholder={tokenInputPlaceholders}
-          loading={tokensLoading}
-        />
+        <div className="d-flex justify-content-between">
+          <DropDown
+            name={priceCardItems.tokenB}
+            options={tokenListB}
+            placeholder={tokenInputPlaceholders}
+            loading={tokensLoading || !factoryLoaded || factoryLoading}
+          />
+          <p className="balance-text">
+            BALANCE: <span>{formatBalance(tokenBBalance?.toString())}</span>
+          </p>
+        </div>
         <Form.Item name={priceCardItems.tokenBAmount}>
-          <PriceInput disabled />
+          <PriceInput disabled value={estimation} />
         </Form.Item>
       </div>
     </div>
