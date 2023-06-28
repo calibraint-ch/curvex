@@ -6,7 +6,7 @@ const stateValue = (state: RootState) =>
   state?.deployToken || deployTokenInitialState;
 
 export const selectTokenSuccess = createSelector([stateValue], (state) => {
-  return state.deployToken.success.message;
+  return state.deployToken.success;
 });
 
 export const selectTokenError = createSelector([stateValue], (state) => {

@@ -3,12 +3,17 @@ import { Button, Form, Input, Modal, Select, Spin, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  chainList,
   errorMessages,
+  explorerList,
   pairTokenAddress,
   responseMessages,
 } from "../../../utils/constants";
 import useFactory from "../../customHooks/useFactory";
-import { selectWalletConnected } from "../../slice/wallet.selector";
+import {
+  selectNetwork,
+  selectWalletConnected,
+} from "../../slice/wallet.selector";
 import Graph from "../Graphs/Graph";
 import ImageUploader from "../ImageUploader";
 import { getLaunchpadPriceEstimate } from "../PriceCard/service";
@@ -22,13 +27,20 @@ import {
 import { selectTokenError, selectTokenSuccess } from "./deploy.selector";
 import {
   deployToken,
+  resetTransactionState,
   setDeployTokenError,
-  setDeployTokenSuccess,
 } from "./deploy.slice";
+
 import "./index.scss";
 
 const LaunchPad = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClosable, setIsClosable] = useState(false);
+  const [hash, setHash] = useState("");
+
+  const { mainnet, testnet } = chainList;
+  const { mainnetUrl, testnetUrl } = explorerList;
+
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const walletConnected = useSelector(selectWalletConnected);
@@ -39,12 +51,14 @@ const LaunchPad = () => {
 
   const successMessage = useSelector(selectTokenSuccess);
   const errorMessage = useSelector(selectTokenError);
+  const networkId = useSelector(selectNetwork);
 
   useEffect(() => {
-    if (successMessage === responseMessages.txnSuccess) {
-      message.success(successMessage);
-      setIsModalOpen(false);
-      dispatch(setDeployTokenSuccess(""));
+    if (successMessage.message === responseMessages.txnSuccess) {
+      message.success(successMessage.message);
+      setHash(successMessage.hash);
+      setIsClosable(true);
+      dispatch(resetTransactionState());
     }
     if (
       errorMessage === responseMessages.txnFailed ||
@@ -66,7 +80,16 @@ const LaunchPad = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setHash("");
+    setIsClosable(false);
   };
+
+  const url =
+    networkId === mainnet
+      ? `${mainnetUrl}${hash}`
+      : networkId === testnet
+      ? `${testnetUrl}${hash}`
+      : "";
 
   const loader = (
     <LoadingOutlined
@@ -100,7 +123,6 @@ const LaunchPad = () => {
         lockPeriod: getVestingPeriod(values.vestingPeriod),
       },
     };
-
     dispatch(
       deployToken({ formData: launchParams, deployToken: deployBondingToken })
     );
@@ -231,13 +253,6 @@ const LaunchPad = () => {
                       required: true,
                       message: errorMessages.precisionRequired,
                     },
-                    // {
-                    //   validator: (_, value: number) => {
-                    //     if (!(value > 0)) {
-                    //       return Promise.reject(errorMessages.precisionZero);
-                    //     }
-                    //   },
-                    // },
                   ]}
                 >
                   <Input
@@ -271,21 +286,37 @@ const LaunchPad = () => {
                   title="Unlock Token"
                   className="approve-modal"
                   open={isModalOpen}
-                  closable={false}
+                  closable={isClosable}
                   maskClosable={false}
                   onCancel={handleCancel}
                   footer={null}
                 >
                   <div className="modal-content">
-                    <div className="d-flex">
-                      <p className="modal-title">Go to your Wallet</p>
-                      <Spin indicator={loader} />
-                    </div>
-                    <p className="modal-title modal-description">
-                      You’ll be asked to approve this transaction from your
-                      wallet. You only need to sign each transaction once to
-                      deploy your tokens
-                    </p>
+                    {!hash ? (
+                      <>
+                        <div className="d-flex">
+                          <p className="modal-title">Go to your Wallet</p>
+                          <Spin indicator={loader} />
+                        </div>
+                        <p className="modal-title modal-description">
+                          You’ll be asked to approve this transaction from your
+                          wallet. You only need to sign each transaction once to
+                          deploy your tokens
+                        </p>
+                      </>
+                    ) : (
+                      <div>
+                        <p className="modal-title">
+                          Transaction Completed Successfully!
+                        </p>
+                        <p className="modal-title modal-description">
+                          Transaction Hash
+                        </p>
+                        <a href={url} target="_blank" rel="noreferrer">
+                          <p className="hash">{hash}</p>
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </Modal>
               </div>
