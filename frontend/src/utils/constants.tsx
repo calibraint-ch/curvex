@@ -42,6 +42,11 @@ export const responseMessages = {
   txnUnsuccessful: "Transaction Unsuccessful, Try Again",
 };
 
+export const messages = {
+  buyGraph : 'The Graph will be changed with respect to the selected token for purchase.',
+  withdrawGraph : 'The Graph will be changed with respect to the selected token for withdrawal.'
+}
+
 export const priceCardItems = {
   tokenA: "tokenA",
   tokenB: "tokenB",
