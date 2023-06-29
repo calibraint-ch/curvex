@@ -251,7 +251,6 @@ export const getEstimationByCurveType = (
   }
 
   if (isBuy) {
-    console.log(isBuy);
     if (curveType === CurveTypes.linear) {
       return totalSupply
         .add(amount)

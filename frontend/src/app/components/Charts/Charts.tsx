@@ -1,13 +1,18 @@
+import { Spin } from 'antd';
 import {
-  Chart as ChartJS,
-  LineElement,
   CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  LineElement,
   LinearScale,
   PointElement,
-  Tooltip,
-  Filler,
+  Tooltip
 } from "chart.js";
+import { BigNumber, ethers } from "ethers";
+import { useCallback, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { useSelector } from "react-redux";
+import { selectCurrentTokenDetails } from "../../slice/factory/factory.selector";
 
 import "./index.scss";
 
@@ -20,7 +25,16 @@ ChartJS.register([
   Filler,
 ]);
 
+type chartData = {
+  x: number;
+  y: number;
+}
+
+
 const Charts = () => {
+  const [chartDataSet, setChartDataSet] = useState<chartData[]>([]);
+  const [referenceArea, /**setReferenceArea*/] = useState<chartData[]>([]);
+
   const chartColors = {
     grey: "#f7f7f7",
     white: "#ffffff",
@@ -29,22 +43,71 @@ const Charts = () => {
     pureYellow: "#d5ff00",
   };
 
-  //TODO: Bring in dynamic datasets
-  const data = [
-    { x: 0, y: 0 },
-    { x: 20, y: 20 },
-    { x: 30, y: 30 },
-    { x: 40, y: 40 },
-    { x: 50, y: 50 },
-    { x: 60, y: 60 },
-    { x: 70, y: 70 },
-  ];
+  const tokenDetails = useSelector(selectCurrentTokenDetails);
+
+  const setChartData = useCallback(() => {
+    if (tokenDetails) {
+      const cap = BigNumber.from(tokenDetails.cap).div(1);
+      let totalSupply = BigNumber.from(0);
+      const precision = BigNumber.from(tokenDetails.precision);
+      const curveType = tokenDetails.curveType;
+      const data: chartData[] = [];
+      let price = 0;
+      const increment = cap.div(10);
+
+      while (totalSupply.lte(cap)) {
+        if (curveType === 1) {
+          price = Number(ethers.utils.formatEther(totalSupply.div(precision)));
+        } else if (curveType === 2) {
+          price = Number(ethers.utils.formatEther(totalSupply.pow(2).div(BigNumber.from(10).pow(18)).div(precision)));
+        } else {
+          price = 0;
+        }
+        data.push({ x: Number(ethers.utils.formatEther(totalSupply)), y: price })
+
+        totalSupply = totalSupply.add(increment);
+      }
+      console.log(data, curveType);
+      setChartDataSet(data);
+    }
+  }, [tokenDetails])
+
+  useEffect(() => {
+    setChartData();
+  }, [tokenDetails, setChartData])
+
+  /**
+   *const getReferenceArea = useCallback(async () => {
+    let totalSupply = BigNumber.from(40);
+    const tokenAmount = BigNumber.from(tokenAAmount);
+    const data: chartData[] = [];
+    const x = 0;
+
+    while (x < 2) {
+      data.push({ x: totalSupply.toNumber(), y: 0 })
+      totalSupply = totalSupply.add(tokenAmount);
+    }
+    setReferenceArea(data);
+  }, [tokenAAmount])
+   */
+
+
+  /**
+   * TODO: Shade Reference Area
+   *  useEffect(() => {
+    if (tokenAAmount) {
+      getReferenceArea();
+    }
+  }, [getReferenceArea, tokenAAmount])
+   */
+
+
 
   const chartData = {
     datasets: [
       {
         label: "Price",
-        data: data,
+        data: chartDataSet,
         backgroundColor: chartColors.white,
         borderColor: chartColors.primaryYellow,
         tension: 0.4,
@@ -52,20 +115,7 @@ const Charts = () => {
       },
       {
         label: "Price Range",
-        data: [
-          {
-            x: 30,
-            y: 0,
-          },
-          {
-            x: 40,
-            y: 0,
-          },
-          {
-            x: 50,
-            y: 0,
-          },
-        ],
+        data: referenceArea,
         backgroundColor: chartColors.primaryYellow,
         borderColor: chartColors.primaryYellow,
         borderWidth: 0,
@@ -92,7 +142,7 @@ const Charts = () => {
         },
         title: {
           display: true,
-          text: "Price",
+          text: 'Price',
           color: chartColors.white,
         },
       },
@@ -107,7 +157,7 @@ const Charts = () => {
         },
         title: {
           display: true,
-          text: "Total Supply",
+          text: 'Total Supply',
           color: chartColors.white,
         },
       },
@@ -118,7 +168,7 @@ const Charts = () => {
 
   return (
     <div className="charts">
-      <Line data={chartData} options={options} />
+      {chartDataSet.length === 0 ? <div className="d-flex justify-content-center align-items-center h-100"><Spin /></div> : <Line data={chartData} options={options} />}
     </div>
   );
 };
