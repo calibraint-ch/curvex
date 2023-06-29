@@ -4,6 +4,7 @@ import {
   Facebook,
   LinkedIn,
 } from "../../../assets/images/imageAssets";
+import { googleFormsLink } from "../../../utils/constants";
 
 import "./index.scss";
 
@@ -36,7 +37,7 @@ const Footer = () => {
             <li>
               <a
                 rel="noreferrer"
-                href="https://forms.gle/x1epaYFko3PG7eiTA"
+                href={googleFormsLink}
                 target="_blank"
               >
                 Contact us
