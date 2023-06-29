@@ -73,9 +73,8 @@ const Header = () => {
 
   return (
     <div
-      className={`header ${
-        location.pathname === homepage ? "header-landing-page" : ""
-      }`}
+      className={`header ${location.pathname === homepage ? "header-landing-page" : ""
+        }`}
     >
       <div>
         <Link style={{ textDecoration: "none" }} to={homepage}>
@@ -85,7 +84,7 @@ const Header = () => {
       <div className="nav-items">
         {location.pathname === homepage ? (
           <>
-            <div>Docs</div>
+            <a href="https://docs.curvx.io/" target="blank" style={{ textDecoration: "none", color: "#ffffff" }} rel="noreferrer">Docs</a>
             <div>About</div>
             <div>
               <Link style={{ textDecoration: "none" }} to={dashboard}>
