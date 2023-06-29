@@ -16,6 +16,7 @@ export type DropdownProps = {
   placeholder?: string;
   options: DropdownOptions[];
   loading?: boolean;
+  disabled: boolean;
 };
 
 const CustomOption = memo(
@@ -28,7 +29,7 @@ const CustomOption = memo(
 );
 
 const DropDown = (props: DropdownProps) => {
-  const { name, options, placeholder, loading } = props;
+  const { name, options, placeholder, loading, disabled } = props;
 
   return (
     <div className="dropdown">
@@ -37,6 +38,7 @@ const DropDown = (props: DropdownProps) => {
           className="select-input"
           placeholder={placeholder}
           loading={loading}
+          disabled={disabled}
         >
           {options.map((token) => (
             <Option key={token.value} value={token.value}>

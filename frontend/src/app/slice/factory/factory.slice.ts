@@ -1,18 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BigNumber } from "ethers";
 import { useInjectReducer } from "redux-injectors";
-
-export type TokenPairStruct = {
-  tokenA: string;
-  tokenB: string;
-  tokenManager: string;
-  owner: string;
-  logoUri: string;
-  curveType: number;
-  lockPeriod: BigNumber;
-  cap: BigNumber;
-  precision: BigNumber;
-};
+import { TokenPairStruct } from "../../../utils/types";
 
 export type FactoryState = {
   loading: boolean;

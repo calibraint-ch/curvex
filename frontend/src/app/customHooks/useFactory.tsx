@@ -2,26 +2,24 @@ import { message } from "antd";
 import { BigNumber, ethers } from "ethers";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { bondingCurve } from "../../contracts/bondingCurve";
 import { factoryContract } from "../../contracts/factoryContract";
 import {
   defaultPublicRpc,
   errorMessages,
   factoryContractAddress,
+  responseMessages,
 } from "../../utils/constants";
+import { TokenPairStruct } from "../../utils/types";
 import {
   selectFactoryLoaded,
   selectFactoryLoading,
   selectFactoryTokenList,
 } from "../slice/factory/factory.selector";
-import {
-  TokenPairStruct,
-  setLoadingList,
-  setTokenList,
-} from "../slice/factory/factory.slice";
+import { setLoadingList, setTokenList } from "../slice/factory/factory.slice";
 import { BuyTokens, DeployParams, SellTokens } from "./constants";
-import useMetamaskProvider from "./useMetamaskProvider";
 import useErc20 from "./useErc20";
-import { bondingCurve } from "../../contracts/bondingCurve";
+import useMetamaskProvider from "./useMetamaskProvider";
 
 function useFactory() {
   const { metaState } = useMetamaskProvider();
@@ -160,8 +158,13 @@ function useFactory() {
         return buyTx.hash;
       }
       return "";
-    } catch {
-      message.error(errorMessages.transferTransfer);
+    } catch (e: any) {
+      const code = e?.code;
+      if (code === 4001 || code === "ACTION_REJECTED") {
+        message.error(responseMessages.txnRejected);
+      } else {
+        message.error(responseMessages.txnUnsuccessful);
+      }
     }
   };
 
@@ -194,14 +197,21 @@ function useFactory() {
       }
 
       return "";
-    } catch (e) {
-      message.error(errorMessages.transferTransfer);
+    } catch (e: any) {
+      const code = e?.code;
+      if (code === 4001 || code === "ACTION_REJECTED") {
+        message.error(responseMessages.txnRejected);
+      } else {
+        message.error(responseMessages.txnUnsuccessful);
+      }
     }
   };
 
   return {
     deployedTokenList,
     metaState,
+    getContractInstance,
+    getBondingCurveInstance,
     getTokenPairList,
     deployBondingToken,
     buyTokens,

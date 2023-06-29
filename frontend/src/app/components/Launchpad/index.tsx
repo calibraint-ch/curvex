@@ -10,6 +10,7 @@ import {
   responseMessages,
 } from "../../../utils/constants";
 import useFactory from "../../customHooks/useFactory";
+import { resetFactory } from "../../slice/factory/factory.slice";
 import {
   selectNetwork,
   selectWalletConnected,
@@ -126,6 +127,7 @@ const LaunchPad = () => {
     dispatch(
       deployToken({ formData: launchParams, deployToken: deployBondingToken })
     );
+    dispatch(resetFactory());
   };
 
   return (

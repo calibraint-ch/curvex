@@ -66,7 +66,7 @@ const Charts = () => {
             y: 0,
           },
         ],
-        backgroundColor: chartColors.pureYellow,
+        backgroundColor: chartColors.primaryYellow,
         borderColor: chartColors.primaryYellow,
         borderWidth: 0,
         fill: "-1",
@@ -90,6 +90,11 @@ const Charts = () => {
         ticks: {
           color: chartColors.white,
         },
+        title: {
+          display: true,
+          text: "Price",
+          color: chartColors.white,
+        },
       },
       x: {
         type: "linear" as const,
@@ -98,6 +103,11 @@ const Charts = () => {
           color: chartColors.white,
         },
         ticks: {
+          color: chartColors.white,
+        },
+        title: {
+          display: true,
+          text: "Total Supply",
           color: chartColors.white,
         },
       },

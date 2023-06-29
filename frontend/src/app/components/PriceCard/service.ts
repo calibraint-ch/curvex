@@ -1,8 +1,8 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { UsdtLogoUrl } from "../../../utils/constants";
 import { formatEtherBalance } from "../../../utils/methods";
+import { AllBalanceType, TokenPairStruct } from "../../../utils/types";
 import { DeployedTokensList } from "../../containers/UserDashboard/types";
-import { TokenPairStruct } from "../../slice/factory/factory.slice";
 import { DropdownOptions } from "../Dropdown";
 import { CurveTypes } from "../Graphs/constants";
 import { curveOptions } from "../Launchpad/constants";
@@ -179,7 +179,7 @@ export const parseDeployedTokenList = (
 ): ParseDeployedTokenListResult => ({
   key: index + 1,
   tokenAddress: e.tokenA,
-  totalSupply: ethers.utils.formatEther(e.cap),
+  totalSupply: formatEtherBalance(e.cap).toString(),
   curveType: getCurveType(e.curveType),
   vestingPeriod: e.lockPeriod.div(3600 * 24) + " days",
 });
@@ -215,9 +215,24 @@ export const getLaunchpadPriceEstimate = (
   }
   return 0;
 };
+export type TokenDetail = {
+  name: string;
+  symbol: string;
+  decimals: BigNumberish;
+  balance: BigNumberish;
+  address: string;
+  totalSupply: BigNumberish;
+  curveType?: number;
+  cap?: BigNumberish;
+  precision?: BigNumber;
+  manager?: string;
+};
 
 export const getEstimationByCurveType = (
-  tokenDetails: TokenDetails,
+  tokenDetails: Omit<
+    TokenDetails,
+    "name" | "symbol" | "decimals" | "address" | "balance"
+  >,
   amount: BigNumber,
   isBuy: boolean
 ) => {
@@ -300,4 +315,62 @@ export const getEstimationByCurveType = (
         );
     }
   }
+};
+
+export const getBalanceList = async (
+  contract: ethers.Contract,
+  bcContract: ethers.Contract,
+  deployedTokenList: TokenPairStruct[]
+) => {
+  const wallet = await contract.signer.getAddress();
+  const tokenMap = new Map();
+
+  deployedTokenList.forEach((token) => {
+    tokenMap.set(token.tokenA, token);
+  });
+
+  const balanceDetails: Omit<
+    AllBalanceType,
+    "totalSupply" | "precision" | "curveType"
+  >[] = await contract.callStatic.getAllBalanceOf(wallet);
+
+  const filteredBalanceList = balanceDetails.filter(
+    (balances) => !balances.balance.isZero()
+  );
+
+  const allBalanceDetails: AllBalanceType[] = await Promise.all(
+    filteredBalanceList.map(async (balObj) => {
+      const manager = tokenMap.get(balObj.tokenAddress).tokenManager;
+      const currContract = bcContract.attach(manager);
+      const totalSupply: BigNumber = await currContract.totalSupply();
+      const curveType: BigNumber = await currContract.curveType();
+      const precision: BigNumber =
+        await currContract.callStatic.CURVE_PRECISION();
+      return { ...balObj, totalSupply, precision, curveType };
+    })
+  );
+  return allBalanceDetails;
+};
+
+export const getPortfolioBalance = (balList: AllBalanceType[]) => {
+  const claimable = balList.filter(
+    (value) => !value.unlockableBalance.isZero()
+  );
+  const portfolioBalance: BigNumber = balList.reduce((prev, curr) => {
+    if (!curr.balance.isZero()) {
+      const estimation = getEstimationByCurveType(
+        {
+          totalSupply: curr.totalSupply,
+          curveType: BigNumber.from(curr.curveType).toNumber(),
+          precision: curr.precision,
+        },
+        curr.balance,
+        false
+      );
+      return estimation ? prev.add(estimation) : prev;
+    }
+    return prev;
+  }, BigNumber.from(0));
+
+  return { claimable, portfolioBalance };
 };

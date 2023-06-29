@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Spin } from "antd";
 import { ethers } from "ethers";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
+  getBalanceList,
+  getPortfolioBalance,
   getTokenName,
   parseDeployedTokenList,
 } from "../../components/PriceCard/service";
@@ -33,10 +35,14 @@ import {
 } from "../../slice/wallet.selector";
 import { DeployedTokensList } from "./types";
 
+import { factoryContractAddress } from "../../../utils/constants";
+import { AllBalanceType } from "../../../utils/types";
 import "./index.scss";
 
 const UserDashBoard = () => {
   const [tokenDetails, setTokenDetails] = useState<DeployedTokensList[]>([]);
+  const [claimable, setClaimable] = useState<AllBalanceType[]>([]);
+  const [portFolioBal, setPortFolioBal] = useState<string>("--");
 
   const dispatch = useDispatch();
 
@@ -46,7 +52,11 @@ const UserDashBoard = () => {
   const factoryLoaded = useSelector(selectFactoryLoaded);
 
   const { getContractInstance } = useErc20();
-  const { deployedTokenList } = useFactory();
+  const {
+    deployedTokenList,
+    getContractInstance: getFactory,
+    getBondingCurveInstance,
+  } = useFactory();
 
   const getPairs = useCallback(async () => {
     const contract = await getContractInstance(ethers.constants.AddressZero);
@@ -59,17 +69,46 @@ const UserDashBoard = () => {
         const getErc20Name = getTokenName(contract);
         filteredDetails = await getErc20Name(parsedData);
       }
+
+      if (factoryContractAddress) {
+        const factory = await getFactory(factoryContractAddress, true);
+        const bcc = await getBondingCurveInstance(ethers.constants.AddressZero);
+        if (factory && bcc) {
+          const balanceList = await getBalanceList(
+            factory,
+            bcc,
+            deployedTokenList
+          );
+          const { claimable, portfolioBalance } =
+            getPortfolioBalance(balanceList);
+
+          setClaimable(claimable);
+
+          setPortFolioBal(
+            Number(
+              ethers.utils.formatEther(portfolioBalance.toString())
+            ).toString()
+          );
+        }
+      }
+
       setTokenDetails(filteredDetails);
     }
-  }, [deployedTokenList, getContractInstance, walletAddress]);
+  }, [
+    deployedTokenList,
+    getBondingCurveInstance,
+    getContractInstance,
+    getFactory,
+    walletAddress,
+  ]);
 
   useEffect(() => {
     if (walletConnected && factoryLoaded) getPairs();
   }, [factoryLoaded, getPairs, walletConnected]);
 
   useEffect(() => {
-    dispatch(resetFactory())
-  }, [dispatch])
+    dispatch(resetFactory());
+  }, [dispatch]);
 
   if (factoryLoading && walletConnected) {
     return (
@@ -105,7 +144,7 @@ const UserDashBoard = () => {
               <img className="wallet-icon" src={UsdBalance} alt="UsdBalance" />
               <div>
                 <p className="address">PORTFOLIO VALUE</p>
-                <p className="value">12.12</p>
+                <p className="value">{portFolioBal} USD</p>
               </div>
             </div>
           </div>
@@ -124,7 +163,7 @@ const UserDashBoard = () => {
           <div className="col-4">
             <p className="title">Claimable Tokens</p>
             <TableComponent
-              dataSource={[]}
+              dataSource={claimable}
               columns={claimableColumns}
               classname="claimable-token-table"
             />

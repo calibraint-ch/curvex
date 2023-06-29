@@ -29,10 +29,11 @@ import "./index.scss";
 
 type SectionProps = {
   section: string;
+  transactionLoading: boolean;
 };
 
 const PriceCard = (props: SectionProps) => {
-  const { section } = props;
+  const { section, transactionLoading } = props;
 
   const form = useFormInstance();
   const { deployedTokenList } = useFactory();
@@ -131,6 +132,7 @@ const PriceCard = (props: SectionProps) => {
               options={tokenListA}
               placeholder={tokenInputPlaceholders}
               loading={tokensLoading || !factoryLoaded || factoryLoading}
+              disabled={transactionLoading}
             />
             <p className="balance-text">
               BALANCE: <span>{formatBalance(balance?.toString())}</span>
@@ -141,7 +143,7 @@ const PriceCard = (props: SectionProps) => {
             <Input type="hidden"></Input>
           </Form.Item>
           <Form.Item name={priceCardItems.tokenAAmount}>
-            <PriceInput />
+            <PriceInput disabled={transactionLoading} />
           </Form.Item>
         </div>
       </div>
@@ -152,6 +154,7 @@ const PriceCard = (props: SectionProps) => {
             options={tokenListB}
             placeholder={tokenInputPlaceholders}
             loading={tokensLoading || !factoryLoaded || factoryLoading}
+            disabled={transactionLoading}
           />
           <p className="balance-text">
             BALANCE: <span>{formatBalance(tokenBBalance?.toString())}</span>
