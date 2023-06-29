@@ -10,7 +10,6 @@ import PriceCard from "../PriceCard";
 import useFactory from "../../customHooks/useFactory";
 import { sections, messages } from "../../../utils/constants";
 import { resetFactory } from "../../slice/factory/factory.slice";
-import "./index.scss";
 
 import "./index.scss";
 

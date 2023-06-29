@@ -2,7 +2,7 @@ import { Form, Input } from "antd";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   priceCardItems,
   sections,
@@ -16,6 +16,7 @@ import {
   selectFactoryLoading,
 } from "../../slice/factory/factory.selector";
 import { selectWallet } from "../../slice/wallet.selector";
+import { setCurrentTokenDetails, setAmountOfToken } from "../../slice/factory/factory.slice";
 import DropDown from "../Dropdown";
 import PriceInput from "../PriceInput";
 import {
@@ -47,6 +48,7 @@ const PriceCard = (props: SectionProps) => {
     new Map()
   );
 
+  const dispatch = useDispatch();
   const walletAddress = useSelector(selectWallet);
   const factoryLoaded = useSelector(selectFactoryLoaded);
   const factoryLoading = useSelector(selectFactoryLoading);
@@ -90,7 +92,13 @@ const PriceCard = (props: SectionProps) => {
       priceCardItems.bondingCurveContract,
       allTokensDetails.get(cardAToken)?.manager
     );
-  }, [allTokensDetails, cardAToken, cardBToken, form, tokenListA, tokenListB]);
+    dispatch(setAmountOfToken(cardATokenAmount));
+
+    const currentTokenDetails = allTokensDetails.get(cardAToken);
+    if (currentTokenDetails) {
+      dispatch(setCurrentTokenDetails(currentTokenDetails));
+    }
+  }, [allTokensDetails, cardAToken, cardBToken, form, tokenListA, tokenListB, cardATokenAmount, dispatch]);
 
   const balance = useMemo(
     () => allTokensDetails.get(cardAToken)?.balance,

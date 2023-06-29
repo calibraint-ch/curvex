@@ -15,3 +15,14 @@ export const selectFactoryLoaded = createSelector([stateValue], (state) => {
 export const selectFactoryTokenList = createSelector([stateValue], (state) => {
   return state.tokenList;
 });
+
+export const selectCurrentTokenDetails = createSelector(
+  [stateValue],
+  (state) => {
+    return state.currentTokenDetails;
+  }
+);
+
+export const selectTokenAmount = createSelector([stateValue], (state) => {
+  return state.TokenAmount;
+});
