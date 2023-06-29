@@ -1,4 +1,5 @@
 import type { ColumnsType } from "antd/es/table";
+import { AllBalanceType } from "../../../utils/types";
 import { DeployedTokensList } from "../../containers/UserDashboard/types";
 
 export interface Key {
@@ -21,8 +22,12 @@ export interface ClaimableDataProps extends Key {
 
 export interface TableComponentProps {
   columns: ColumnsType<
-    DeployedDataProps | ClaimableDataProps | DeployedTokensList
+    DeployedDataProps | ClaimableDataProps | DeployedTokensList | AllBalanceType
   >;
-  dataSource: DeployedDataProps[] | ClaimableDataProps[] | DeployedTokensList[];
+  dataSource:
+    | DeployedDataProps[]
+    | ClaimableDataProps[]
+    | DeployedTokensList[]
+    | AllBalanceType[];
   classname: string;
 }

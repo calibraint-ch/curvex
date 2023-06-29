@@ -7,9 +7,9 @@ import Charts from "../Charts/Charts";
 import ChipCard from "../ChipCards";
 import PriceCard from "../PriceCard";
 
-import "./index.scss";
 import { useDispatch } from "react-redux";
 import { resetFactory } from "../../slice/factory/factory.slice";
+import "./index.scss";
 
 type props = {
   tab: string;
@@ -26,6 +26,7 @@ type FormData = {
 const BuyWithdraw = (props: props) => {
   const [form] = Form.useForm();
   const [slippageValue, setSlippageValue] = useState<string | number>("0%");
+  const [loading, setLoading] = useState<boolean>(false);
   const { buyTokens, sellTokens } = useFactory();
 
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const BuyWithdraw = (props: props) => {
   const onBuyOrWithdraw = useCallback(
     async (formValues: FormData) => {
       if (validateFormValue(formValues)) return;
+      setLoading(true);
       const payload = {
         amount: ethers.utils.parseEther(formValues.tokenAAmount.toString()),
         estimatedPrice: ethers.utils.parseEther(
@@ -58,12 +60,16 @@ const BuyWithdraw = (props: props) => {
         tokenManager: formValues.bondingCurveContract,
       };
 
-      if (props.tab === sections.buy) {
-        await buyTokens(payload);
-      } else {
-        await sellTokens(payload);
+      try {
+        if (props.tab === sections.buy) {
+          await buyTokens(payload);
+        } else {
+          await sellTokens(payload);
+        }
+        dispatch(resetFactory());
+      } finally {
+        setLoading(false);
       }
-      dispatch(resetFactory());
     },
     [props.tab, dispatch, buyTokens, sellTokens]
   );
@@ -73,7 +79,7 @@ const BuyWithdraw = (props: props) => {
       <div className="main">
         <div className="buy d-flex justify-content-center">
           <div className="buy-column-1">
-            <PriceCard section={props.tab} />
+            <PriceCard section={props.tab} transactionLoading={loading} />
           </div>
           <div className="buy-column-2">
             <div className="d-flex justify-content-center align-items-center w-100 h-100 m-0">
@@ -82,16 +88,21 @@ const BuyWithdraw = (props: props) => {
           </div>
         </div>
         <div className="price-chips d-flex justify-content-center">
-          <ChipCard title="MINIMUM TOKENS" value="50" />
-          <ChipCard title="SLIPPAGE" value={slippageValue} />
+          <ChipCard title="MINIMUM TOKENS" value="1" />
+          <ChipCard title="SLIPPAGE" value="0.5%" />
           <ChipCard
             title="SLIPPAGE TOLERANCE"
-            value="0.0"
+            value={slippageValue}
             handleSlippageChange={handleSlippageChange}
           />
         </div>
         <div className="d-flex justify-content-center">
-          <Button className="buy-button" htmlType="submit">
+          <Button
+            className="buy-button"
+            htmlType="submit"
+            loading={loading}
+            disabled={loading}
+          >
             {props.tab === sections.buy ? "Buy Now" : "Withdraw"}
           </Button>
         </div>

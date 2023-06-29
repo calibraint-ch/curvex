@@ -12,8 +12,10 @@ export const formatWalletAddress = (
 
 export const formatBalance = (balance?: string) => {
   if (!balance) return "--";
-  return ethers.utils.formatEther(
-    ethers.utils.parseEther(Number(balance).toFixed(4))
+  return Number(
+    ethers.utils.formatEther(
+      ethers.utils.parseEther(Number(balance).toFixed(4))
+    )
   );
 };
 
@@ -21,5 +23,5 @@ export const formatEtherBalance = (
   balance: BigNumberish,
   units?: BigNumberish
 ) => {
-  return ethers.utils.formatUnits(BigNumber.from(balance), units);
+  return Number(ethers.utils.formatUnits(BigNumber.from(balance), units));
 };
