@@ -31,7 +31,7 @@ const ImageUploader = ({ formInstance }: { formInstance: FormInstance }) => {
           This image will be used as the Token Icon. Image should be in the
           format of png or jpg which is less than 5 MB
         </p>
-        <ImgCrop aspect={350 / 350}>
+        <ImgCrop aspect={350 / 350} fillColor="transparent">
           <Upload maxCount={1} showUploadList={false} onChange={editCoverImage}>
             <Button className="upload-btn" icon={<UploadOutlined />}>
               Upload

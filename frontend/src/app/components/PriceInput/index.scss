@@ -17,8 +17,9 @@
 .ant-input-number {
     .ant-input-number-input {
         height: 100% !important;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    }
+    &.ant-input-number-disabled{
+        background-color: transparent !important;
+        color: black;
     }
 }

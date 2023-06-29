@@ -9,7 +9,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
-import './index.scss'
+import "./index.scss";
 
 ChartJS.register([
   LineElement,
@@ -26,7 +26,7 @@ const Charts = () => {
     white: "#ffffff",
     primaryBlue: "#2f3ece",
     primaryYellow: "#f3f264",
-    pureYellow: "#d5ff00"
+    pureYellow: "#d5ff00",
   };
 
   //TODO: Bring in dynamic datasets
@@ -82,7 +82,9 @@ const Charts = () => {
     },
     scales: {
       y: {
-        type: "linear" as const, display: true, grid: {
+        type: "linear" as const,
+        display: true,
+        grid: {
           color: chartColors.white,
         },
         ticks: {
@@ -90,7 +92,9 @@ const Charts = () => {
         },
       },
       x: {
-        type: "linear" as const, display: true, grid: {
+        type: "linear" as const,
+        display: true,
+        grid: {
           color: chartColors.white,
         },
         ticks: {
@@ -99,7 +103,7 @@ const Charts = () => {
       },
     },
     responsive: true,
-    maintainAspectRatio: false
+    maintainAspectRatio: false,
   };
 
   return (

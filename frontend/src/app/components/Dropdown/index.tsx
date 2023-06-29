@@ -12,7 +12,7 @@ export type DropdownOptions = {
 };
 
 export type DropdownProps = {
-  name: string;
+  name?: string;
   placeholder?: string;
   options: DropdownOptions[];
   loading?: boolean;

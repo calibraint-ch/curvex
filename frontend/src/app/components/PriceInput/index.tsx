@@ -5,6 +5,7 @@ import "./index.scss";
 
 type PriceInputProps = {
   disabled?: boolean;
+  value?: number;
 };
 
 const PriceInput = (props: PriceInputProps) => {
