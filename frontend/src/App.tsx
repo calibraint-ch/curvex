@@ -30,7 +30,7 @@ function App() {
     dispatch(resetFactory());
 
     return removeListener;
-  }, [dispatch]);
+  }, [detectNetworkChange, dispatch]);
 
   return (
     <Router>

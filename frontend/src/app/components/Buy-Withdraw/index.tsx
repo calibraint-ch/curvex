@@ -1,14 +1,17 @@
+import { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Button, Form } from "antd";
 import { ethers } from "ethers";
-import { useCallback, useState } from "react";
-import { sections } from "../../../utils/constants";
-import useFactory from "../../customHooks/useFactory";
+
 import Charts from "../Charts/Charts";
 import ChipCard from "../ChipCards";
 import PriceCard from "../PriceCard";
 
-import { useDispatch } from "react-redux";
+import useFactory from "../../customHooks/useFactory";
+import { sections, messages } from "../../../utils/constants";
 import { resetFactory } from "../../slice/factory/factory.slice";
+import "./index.scss";
+
 import "./index.scss";
 
 type props = {
@@ -82,6 +85,11 @@ const BuyWithdraw = (props: props) => {
             <PriceCard section={props.tab} transactionLoading={loading} />
           </div>
           <div className="buy-column-2">
+            <label>
+              {props.tab === sections.buy
+                ? messages.buyGraph
+                : messages.withdrawGraph}
+            </label>
             <div className="d-flex justify-content-center align-items-center w-100 h-100 m-0">
               <Charts />
             </div>

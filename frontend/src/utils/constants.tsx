@@ -27,8 +27,8 @@ export const chainList = {
 
 export const explorerList = {
   mainnetUrl: "https://ftmscan.com/tx/",
-  testnetUrl: "https://testnet.ftmscan.com/tx/"
-}
+  testnetUrl: "https://testnet.ftmscan.com/tx/",
+};
 
 export const sections = {
   buy: "Buy",
@@ -40,6 +40,13 @@ export const responseMessages = {
   txnFailed: "Transaction Failed",
   txnRejected: "Transaction Rejected",
   txnUnsuccessful: "Transaction Unsuccessful, Try Again",
+};
+
+export const messages = {
+  buyGraph:
+    "The Graph will be changed with respect to the selected token for purchase.",
+  withdrawGraph:
+    "The Graph will be changed with respect to the selected token for withdrawal.",
 };
 
 export const priceCardItems = {
@@ -54,3 +61,5 @@ export const tokenInputPlaceholders = "Select Token";
 
 export const UsdtLogoUrl =
   "https://cloudflare-ipfs.com/ipfs/bafkreia54sis5pb6ntttq6zwkd5xs4si2uzt32wtsf7jkbadivnyclhyom";
+
+export const googleFormsLink = "https://forms.gle/x1epaYFko3PG7eiTA";
