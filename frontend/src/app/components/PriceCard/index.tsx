@@ -1,8 +1,8 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Form, Input } from "antd";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { ethers } from "ethers";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {
   priceCardItems,
   sections,
@@ -16,7 +16,10 @@ import {
   selectFactoryLoading,
 } from "../../slice/factory/factory.selector";
 import { selectWallet } from "../../slice/wallet.selector";
-import { setCurrentTokenDetails, setAmountOfToken } from "../../slice/factory/factory.slice";
+import {
+  setCurrentTokenDetails,
+  setAmountOfToken,
+} from "../../slice/factory/factory.slice";
 import DropDown from "../Dropdown";
 import PriceInput from "../PriceInput";
 import {
@@ -98,7 +101,16 @@ const PriceCard = (props: SectionProps) => {
     if (currentTokenDetails) {
       dispatch(setCurrentTokenDetails(currentTokenDetails));
     }
-  }, [allTokensDetails, cardAToken, cardBToken, form, tokenListA, tokenListB, cardATokenAmount, dispatch]);
+  }, [
+    allTokensDetails,
+    cardAToken,
+    cardBToken,
+    form,
+    tokenListA,
+    tokenListB,
+    cardATokenAmount,
+    dispatch,
+  ]);
 
   const balance = useMemo(
     () => allTokensDetails.get(cardAToken)?.balance,
@@ -121,7 +133,8 @@ const PriceCard = (props: SectionProps) => {
       ethers.utils.parseEther(cardATokenAmount.toString()),
       isBuy
     );
-    return value
+
+    return value && !value.isNegative()
       ? Number(formatEtherBalance(value, tokenADetails.decimals))
       : 0;
   }, [allTokensDetails, cardAToken, cardATokenAmount, isBuy]);

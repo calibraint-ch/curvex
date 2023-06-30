@@ -32,7 +32,8 @@
 .buy-column-2 label {
   color: var(--white);
   font-size: 12px;
-  margin-left: 30px;
+  display: flex;
+  justify-content: center;
 }
 
 .star {

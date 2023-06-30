@@ -1,3 +1,6 @@
+import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Line } from "react-chartjs-2";
 import { Spin, message } from "antd";
 import {
   CategoryScale,
@@ -9,9 +12,6 @@ import {
   Tooltip,
 } from "chart.js";
 import { BigNumber, ethers } from "ethers";
-import { useCallback, useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
-import { useSelector } from "react-redux";
 import {
   selectCurrentTokenDetails,
   selectTokenAmount,
@@ -52,7 +52,7 @@ const Charts = (props: props) => {
 
   const setChartData = useCallback(() => {
     if (tokenDetails) {
-      let cap = BigNumber.from(tokenDetails.cap).div(1);
+      let cap = BigNumber.from(tokenDetails.cap);
       let totalSupply = BigNumber.from(0);
       const precision = BigNumber.from(tokenDetails.precision);
       const curveType = tokenDetails.curveType;
@@ -91,6 +91,7 @@ const Charts = (props: props) => {
     setReferenceArea([]);
     if (tokenDetails && tokenAmount) {
       let currentSupply = BigNumber.from(tokenDetails.totalSupply);
+      const tokenBalance = BigNumber.from(tokenDetails.balance);
       const cap = BigNumber.from(tokenDetails.cap);
       const amountOfToken = BigNumber.from(tokenAmount).mul(
         BigNumber.from(10).pow(18)
@@ -120,7 +121,9 @@ const Charts = (props: props) => {
           });
         } else {
           data = [];
-          message.error("Withdrawal amount exceeds balance");
+          if (amountOfToken.div(BigNumber.from(10).pow(18)).gt(tokenBalance)) {
+            message.error("Withdrawal amount exceeds balance");
+          }
         }
       } else {
         data = [];
@@ -129,7 +132,6 @@ const Charts = (props: props) => {
     }
   }, [tokenAmount, tokenDetails, props.tab]);
 
-  //* TODO: Shade Reference Area
   useEffect(() => {
     if (tokenAmount) {
       getReferenceArea();
