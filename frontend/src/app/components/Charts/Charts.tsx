@@ -17,7 +17,7 @@ import {
   selectTokenAmount,
 } from "../../slice/factory/factory.selector";
 import { props } from "../Buy-Withdraw/index";
-import { sections } from "../../../utils/constants";
+import { errorMessages, sections } from "../../../utils/constants";
 
 import "./index.scss";
 
@@ -52,7 +52,7 @@ const Charts = (props: props) => {
 
   const setChartData = useCallback(() => {
     if (tokenDetails) {
-      let cap = BigNumber.from(tokenDetails.cap);
+      const cap = BigNumber.from(tokenDetails.cap);
       let totalSupply = BigNumber.from(0);
       const precision = BigNumber.from(tokenDetails.precision);
       const curveType = tokenDetails.curveType;
@@ -122,7 +122,7 @@ const Charts = (props: props) => {
         } else {
           data = [];
           if (amountOfToken.div(BigNumber.from(10).pow(18)).gt(tokenBalance)) {
-            message.error("Withdrawal amount exceeds balance");
+            message.error(errorMessages.exceedsBalance);
           }
         }
       } else {

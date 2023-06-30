@@ -8,6 +8,8 @@ export const errorMessages = {
 
   precisionZero: "Precision should be greater than 0",
   precisionRequired: "Please input Precision!",
+
+  exceedsBalance: "Withdrawal amount exceeds the balance",
 };
 
 export const NftStorageToken = process.env.REACT_APP_NFT_STORAGE_API_TOKEN;
