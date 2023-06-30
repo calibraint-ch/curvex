@@ -25,10 +25,18 @@
   }
 }
 
-.price-chips{
+.price-chips {
   margin-top: 10px;
 }
 
 .buy-column-2 label {
   color: var(--white);
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.star {
+  color: var(--primary-lemon);
+  font-size: 12px;
 }

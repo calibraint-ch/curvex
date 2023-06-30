@@ -43,7 +43,7 @@ const ChipCard = (props: Cardprops) => {
   };
 
   const showModal = () => {
-    setIsModalOpen(true);
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
@@ -66,7 +66,7 @@ const ChipCard = (props: Cardprops) => {
                 src={BuySetting}
                 alt="Settings"
                 onClick={showModal}
-                className="image-curser image-size"
+                className="image-size"
               />
             </div>
             <Modal
