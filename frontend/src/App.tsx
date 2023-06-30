@@ -30,7 +30,9 @@ function App() {
     dispatch(resetFactory());
 
     return removeListener;
-  }, [detectNetworkChange, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // For detectNetwork change
+  }, [dispatch]);
 
   return (
     <Router>

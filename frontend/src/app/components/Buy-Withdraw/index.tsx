@@ -13,7 +13,7 @@ import { resetFactory } from "../../slice/factory/factory.slice";
 
 import "./index.scss";
 
-type props = {
+export type props = {
   tab: string;
 };
 
@@ -84,14 +84,15 @@ const BuyWithdraw = (props: props) => {
             <PriceCard section={props.tab} transactionLoading={loading} />
           </div>
           <div className="buy-column-2">
+            <div className="d-flex justify-content-center align-items-center w-100 h-100 m-0">
+              <Charts tab={props.tab} />
+            </div>
             <label>
+              <span className="star">* </span>
               {props.tab === sections.buy
                 ? messages.buyGraph
                 : messages.withdrawGraph}
             </label>
-            <div className="d-flex justify-content-center align-items-center w-100 h-100 m-0">
-              <Charts />
-            </div>
           </div>
         </div>
         <div className="price-chips d-flex justify-content-center">

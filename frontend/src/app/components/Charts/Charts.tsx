@@ -1,4 +1,4 @@
-import { Spin } from 'antd';
+import { Spin, message } from "antd";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -6,13 +6,18 @@ import {
   LineElement,
   LinearScale,
   PointElement,
-  Tooltip
+  Tooltip,
 } from "chart.js";
 import { BigNumber, ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useSelector } from "react-redux";
-import { selectCurrentTokenDetails } from "../../slice/factory/factory.selector";
+import {
+  selectCurrentTokenDetails,
+  selectTokenAmount,
+} from "../../slice/factory/factory.selector";
+import { props } from "../Buy-Withdraw/index";
+import { sections } from "../../../utils/constants";
 
 import "./index.scss";
 
@@ -28,12 +33,11 @@ ChartJS.register([
 type chartData = {
   x: number;
   y: number;
-}
+};
 
-
-const Charts = () => {
+const Charts = (props: props) => {
   const [chartDataSet, setChartDataSet] = useState<chartData[]>([]);
-  const [referenceArea, /**setReferenceArea*/] = useState<chartData[]>([]);
+  const [referenceArea, setReferenceArea] = useState<chartData[]>([]);
 
   const chartColors = {
     grey: "#f7f7f7",
@@ -44,10 +48,11 @@ const Charts = () => {
   };
 
   const tokenDetails = useSelector(selectCurrentTokenDetails);
+  const tokenAmount = useSelector(selectTokenAmount);
 
   const setChartData = useCallback(() => {
     if (tokenDetails) {
-      const cap = BigNumber.from(tokenDetails.cap).div(1);
+      let cap = BigNumber.from(tokenDetails.cap).div(1);
       let totalSupply = BigNumber.from(0);
       const precision = BigNumber.from(tokenDetails.precision);
       const curveType = tokenDetails.curveType;
@@ -59,49 +64,77 @@ const Charts = () => {
         if (curveType === 1) {
           price = Number(ethers.utils.formatEther(totalSupply.div(precision)));
         } else if (curveType === 2) {
-          price = Number(ethers.utils.formatEther(totalSupply.pow(2).div(BigNumber.from(10).pow(18)).div(precision)));
+          price = Number(
+            ethers.utils.formatEther(
+              totalSupply.pow(2).div(BigNumber.from(10).pow(18)).div(precision)
+            )
+          );
         } else {
           price = 0;
         }
-        data.push({ x: Number(ethers.utils.formatEther(totalSupply)), y: price })
+        data.push({
+          x: Number(ethers.utils.formatEther(totalSupply)),
+          y: price,
+        });
 
         totalSupply = totalSupply.add(increment);
       }
-      console.log(data, curveType);
       setChartDataSet(data);
     }
-  }, [tokenDetails])
+  }, [tokenDetails]);
 
   useEffect(() => {
     setChartData();
-  }, [tokenDetails, setChartData])
+  }, [tokenDetails, setChartData]);
 
-  /**
-   *const getReferenceArea = useCallback(async () => {
-    let totalSupply = BigNumber.from(40);
-    const tokenAmount = BigNumber.from(tokenAAmount);
-    const data: chartData[] = [];
-    const x = 0;
+  const getReferenceArea = useCallback(async () => {
+    setReferenceArea([]);
+    if (tokenDetails && tokenAmount) {
+      let currentSupply = BigNumber.from(tokenDetails.totalSupply);
+      const cap = BigNumber.from(tokenDetails.cap);
+      const amountOfToken = BigNumber.from(tokenAmount).mul(
+        BigNumber.from(10).pow(18)
+      );
+      let data: chartData[] = [];
 
-    while (x < 2) {
-      data.push({ x: totalSupply.toNumber(), y: 0 })
-      totalSupply = totalSupply.add(tokenAmount);
+      data.push({
+        x: Number(currentSupply.div(BigNumber.from(10).pow(18))),
+        y: 0,
+      });
+      if (props.tab === sections.buy) {
+        currentSupply = currentSupply.add(amountOfToken);
+        if (currentSupply.lte(cap)) {
+          data.push({
+            x: Number(currentSupply.div(BigNumber.from(10).pow(18))),
+            y: 0,
+          });
+        } else {
+          data = [];
+        }
+      } else if (props.tab === sections.withdraw) {
+        if (currentSupply.gte(amountOfToken)) {
+          currentSupply = currentSupply.sub(amountOfToken);
+          data.push({
+            x: Number(currentSupply.div(BigNumber.from(10).pow(18))),
+            y: 0,
+          });
+        } else {
+          data = [];
+          message.error("Withdrawal amount exceeds balance");
+        }
+      } else {
+        data = [];
+      }
+      setReferenceArea(data);
     }
-    setReferenceArea(data);
-  }, [tokenAAmount])
-   */
+  }, [tokenAmount, tokenDetails, props.tab]);
 
-
-  /**
-   * TODO: Shade Reference Area
-   *  useEffect(() => {
-    if (tokenAAmount) {
+  //* TODO: Shade Reference Area
+  useEffect(() => {
+    if (tokenAmount) {
       getReferenceArea();
     }
-  }, [getReferenceArea, tokenAAmount])
-   */
-
-
+  }, [getReferenceArea, tokenAmount]);
 
   const chartData = {
     datasets: [
@@ -142,7 +175,7 @@ const Charts = () => {
         },
         title: {
           display: true,
-          text: 'Price',
+          text: "Price",
           color: chartColors.white,
         },
       },
@@ -157,7 +190,7 @@ const Charts = () => {
         },
         title: {
           display: true,
-          text: 'Total Supply',
+          text: "Total Supply",
           color: chartColors.white,
         },
       },
@@ -168,7 +201,13 @@ const Charts = () => {
 
   return (
     <div className="charts">
-      {chartDataSet.length === 0 ? <div className="d-flex justify-content-center align-items-center h-100"><Spin /></div> : <Line data={chartData} options={options} />}
+      {chartDataSet.length === 0 ? (
+        <div className="d-flex justify-content-center align-items-center h-100">
+          <Spin />
+        </div>
+      ) : (
+        <Line data={chartData} options={options} />
+      )}
     </div>
   );
 };

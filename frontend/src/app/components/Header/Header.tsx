@@ -14,7 +14,7 @@ import { chainList } from "../../../utils/constants";
 import { formatWalletAddress } from "../../../utils/methods";
 import { routes } from "../../../utils/routes";
 import useMetamaskProvider from "../../customHooks/useMetamaskProvider";
-import { selectNetwork, selectWallet } from "../../slice/wallet.selector";
+import { selectNetwork, selectWallet, selectWalletConnected } from "../../slice/wallet.selector";
 import { resetWallet } from "../../slice/wallet.slice";
 
 import "./index.scss";
@@ -34,6 +34,7 @@ const Header = () => {
 
   const networkId = useSelector(selectNetwork);
   const address = useSelector(selectWallet);
+  const walletConnected = useSelector(selectWalletConnected);
 
   const handleConnectWallet = async () => {
     connectWallet();
@@ -103,7 +104,7 @@ const Header = () => {
                 style={{ textDecoration: "none", color: "#ffffff" }}
                 to={portfolio}
               >
-                <div>{connected ? "Portfolio" : ""}</div>
+                <div>{walletConnected ? "Portfolio" : ""}</div>
               </Link>
             ) : (
               <Link
