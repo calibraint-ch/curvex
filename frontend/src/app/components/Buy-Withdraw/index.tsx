@@ -1,14 +1,15 @@
-import { useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Button, Form } from "antd";
 import { ethers } from "ethers";
+import { useCallback, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import Charts from "../Charts/Charts";
 import ChipCard from "../ChipCards";
 import PriceCard from "../PriceCard";
 
+import { messages, sections } from "../../../utils/constants";
 import useFactory from "../../customHooks/useFactory";
-import { sections, messages } from "../../../utils/constants";
+import { selectCurrentTokenDetails } from "../../slice/factory/factory.selector";
 import { resetFactory } from "../../slice/factory/factory.slice";
 
 import "./index.scss";
@@ -30,6 +31,8 @@ const BuyWithdraw = (props: props) => {
   const [slippageValue, setSlippageValue] = useState<string | number>("0%");
   const [loading, setLoading] = useState<boolean>(false);
   const { buyTokens, sellTokens } = useFactory();
+
+  const selectedTokenDetails = useSelector(selectCurrentTokenDetails);
 
   const dispatch = useDispatch();
 
@@ -76,6 +79,15 @@ const BuyWithdraw = (props: props) => {
     [props.tab, dispatch, buyTokens, sellTokens]
   );
 
+  const { totalSupply, vestingPeriod } = useMemo(() => {
+    return {
+      totalSupply: ethers.utils.formatEther(
+        selectedTokenDetails?.totalSupply ?? "0"
+      ),
+      vestingPeriod: (selectedTokenDetails?.vestingPeriod ?? "--") + " days",
+    };
+  }, [selectedTokenDetails?.totalSupply, selectedTokenDetails?.vestingPeriod]);
+
   return (
     <Form form={form} onFinish={onBuyOrWithdraw}>
       <div className="main">
@@ -96,8 +108,8 @@ const BuyWithdraw = (props: props) => {
           </div>
         </div>
         <div className="price-chips d-flex justify-content-center">
-          <ChipCard title="MINIMUM TOKENS" value="1" />
-          <ChipCard title="SLIPPAGE" value="0.5%" />
+          <ChipCard title="TOTAL SUPPLY" value={totalSupply} />
+          <ChipCard title="VESTING PERIOD" value={vestingPeriod} />
           <ChipCard
             title="SLIPPAGE TOLERANCE"
             value={slippageValue}

@@ -150,8 +150,8 @@ const UserDashBoard = () => {
           </div>
         </div>
       </div>
-      <div className="tables">
-        <div className="row">
+      <div className="tables w-100">
+        <div className="row justify-content-between d-flex">
           <div className="col-8">
             <p className="title">Deployed Tokens</p>
             <TableComponent
@@ -160,13 +160,15 @@ const UserDashBoard = () => {
               classname="deployed-token-table"
             />
           </div>
-          <div className="col-4">
-            <p className="title">Claimable Tokens</p>
-            <TableComponent
-              dataSource={claimable}
-              columns={claimableColumns}
-              classname="claimable-token-table"
-            />
+          <div className="col-4 justify-content-between d-flex">
+            <div>
+              <p className="title">Claimable Tokens</p>
+              <TableComponent
+                dataSource={claimable}
+                columns={claimableColumns}
+                classname="claimable-token-table"
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -30,8 +30,8 @@ function App() {
     dispatch(resetFactory());
 
     return removeListener;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     // For detectNetwork change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   return (

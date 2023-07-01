@@ -1,4 +1,4 @@
-import { Tag } from "antd";
+import { Button, Tag } from "antd";
 import { BigNumber, ethers } from "ethers";
 
 export const deployedColumns = [
@@ -62,5 +62,17 @@ export const claimableColumns = [
     key: "unlockableBalance",
     render: (text: BigNumber) =>
       Number(ethers.utils.formatEther(text.toString())),
+  },
+  {
+    title: "",
+    dataIndex: "unlockableBalance",
+    key: "unlockableBalance",
+    render: (text: BigNumber) => (
+      <div className="d-flex justify-content-center align-items-center">
+        <Button type="primary" style={{ background: "#4e5ad4" }}>
+          Claim
+        </Button>
+      </div>
+    ),
   },
 ];
