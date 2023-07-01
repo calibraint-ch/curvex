@@ -1,5 +1,5 @@
 import { message } from "antd";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { bondingCurve } from "../../contracts/bondingCurve";
@@ -88,17 +88,18 @@ function useFactory() {
       const contract = await getContractInstance(factoryContractAddress);
 
       if (contract) {
-        const deployTxnResponse = await contract.deployCurveX(
-          name,
-          symbol,
-          logoURL,
-          cap,
-          lockPeriod,
-          precision,
-          curveType,
-          pairToken,
-          salt
-        );
+        const deployTxnResponse: ContractTransaction =
+          await contract.deployCurveX(
+            name,
+            symbol,
+            logoURL,
+            cap,
+            lockPeriod,
+            precision,
+            curveType,
+            pairToken,
+            salt
+          );
         await deployTxnResponse.wait();
 
         return deployTxnResponse;
@@ -152,7 +153,9 @@ function useFactory() {
           await approve.wait();
         }
 
-        const buyTx = await contract.buy(amount, { gasLimit: 3000000 });
+        const buyTx: ContractTransaction = await contract.buy(amount, {
+          gasLimit: 3000000,
+        });
         await buyTx.wait();
 
         return buyTx.hash;
@@ -181,16 +184,21 @@ function useFactory() {
         );
         const lockedBalance: BigNumber = await erc20.lockedBalanceOf(wallet);
 
-        if (balance.sub(lockedBalance).lt(amount)) {
-          if (balance.add(unlockableBalance).sub(lockedBalance).lt(amount)) {
-            message.error(errorMessages.insufficientBalance);
+        if (balance.lt(amount)) {
+          message.error(errorMessages.insufficientBalance);
+          return "";
+        } else if (balance.sub(lockedBalance).lt(amount)) {
+          if (balance.sub(lockedBalance).add(unlockableBalance).lt(amount)) {
+            message.error(errorMessages.vestingPeriodNotEnded);
             return "";
           }
           const unlock = await erc20.unlock();
           await unlock.wait();
         }
 
-        const sellTx = await contract.sell(amount, { gasLimit: 3000000 });
+        const sellTx: ContractTransaction = await contract.sell(amount, {
+          gasLimit: 3000000,
+        });
         await sellTx.wait();
 
         return sellTx.hash;

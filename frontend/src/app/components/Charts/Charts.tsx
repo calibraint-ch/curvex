@@ -1,7 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Line } from "react-chartjs-2";
-import { Spin, message } from "antd";
+import { Spin } from "antd";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -12,12 +9,15 @@ import {
   Tooltip,
 } from "chart.js";
 import { BigNumber, ethers } from "ethers";
+import { useCallback, useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
+import { useSelector } from "react-redux";
+import { sections } from "../../../utils/constants";
 import {
   selectCurrentTokenDetails,
   selectTokenAmount,
 } from "../../slice/factory/factory.selector";
 import { props } from "../Buy-Withdraw/index";
-import { errorMessages, sections } from "../../../utils/constants";
 
 import "./index.scss";
 
@@ -91,7 +91,6 @@ const Charts = (props: props) => {
     setReferenceArea([]);
     if (tokenDetails && tokenAmount) {
       let currentSupply = BigNumber.from(tokenDetails.totalSupply);
-      const tokenBalance = BigNumber.from(tokenDetails.balance);
       const cap = BigNumber.from(tokenDetails.cap);
       const amountOfToken = BigNumber.from(tokenAmount).mul(
         BigNumber.from(10).pow(18)
@@ -121,9 +120,6 @@ const Charts = (props: props) => {
           });
         } else {
           data = [];
-          if (amountOfToken.div(BigNumber.from(10).pow(18)).gt(tokenBalance)) {
-            message.error(errorMessages.exceedsBalance);
-          }
         }
       } else {
         data = [];

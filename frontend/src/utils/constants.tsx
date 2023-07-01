@@ -4,6 +4,7 @@ export const errorMessages = {
     "Unsupported Network, Kindly Connect To Supported Network",
   walletConnectionRequired: "Please connect wallet",
   insufficientBalance: "Insufficient balance to make transaction",
+  vestingPeriodNotEnded: "Vesting Period Not Ended, Please Try Less Amount",
   transferTransfer: "Transaction failed with unknown error",
 
   precisionZero: "Precision should be greater than 0",

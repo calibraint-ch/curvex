@@ -67,7 +67,7 @@ export const getCurvXDetails = (
       precision: tokenPair.precision,
       curveType: tokenPair.curveType,
       manager: tokenPair.tokenManager,
-      vestingPeriod: Number(tokenPair.lockPeriod.toNumber() / (3600 * 12)),
+      vestingPeriod: Number(tokenPair.lockPeriod.toNumber() / (3600 * 24)),
     };
   };
 };
