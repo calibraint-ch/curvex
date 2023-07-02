@@ -41,7 +41,7 @@ function TransactionModal({
 
   return (
     <Modal
-      title="Unlock Token"
+      title="Approve Transaction"
       className="approve-modal"
       open={isModalOpen}
       closable={isClosable}
