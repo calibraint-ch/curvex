@@ -103,14 +103,19 @@ const BuyWithdraw = (props: props) => {
     [walletConnected, validateFormValue, isBuy, dispatch, buyTokens, sellTokens]
   );
 
-  const { totalSupply, vestingPeriod } = useMemo(() => {
+  const { totalSupply, vestingPeriod, currentSupply } = useMemo(() => {
     return {
-      totalSupply: ethers.utils.formatEther(
+      currentSupply: ethers.utils.formatEther(
         selectedTokenDetails?.totalSupply ?? "0"
       ),
       vestingPeriod: (selectedTokenDetails?.vestingPeriod ?? "--") + " days",
+      totalSupply: ethers.utils.formatEther(selectedTokenDetails?.cap ?? 0),
     };
-  }, [selectedTokenDetails?.totalSupply, selectedTokenDetails?.vestingPeriod]);
+  }, [
+    selectedTokenDetails?.cap,
+    selectedTokenDetails?.totalSupply,
+    selectedTokenDetails?.vestingPeriod,
+  ]);
 
   const handleCancel = useCallback(() => {
     setIsModalOpen(false);
@@ -138,13 +143,14 @@ const BuyWithdraw = (props: props) => {
           </div>
         </div>
         <div className="price-chips d-flex justify-content-center">
-          <ChipCard title="TOTAL SUPPLY" value={totalSupply} />
+          <ChipCard title="CURRENT SUPPLY" value={currentSupply} />
+          <ChipCard title="CAP" value={totalSupply} />
           <ChipCard title="VESTING PERIOD" value={vestingPeriod} />
-          <ChipCard
+          {/* <ChipCard
             title="SLIPPAGE TOLERANCE"
             value={slippageValue}
             handleSlippageChange={handleSlippageChange}
-          />
+          /> */}
         </div>
         <div className="d-flex justify-content-center">
           <Button

@@ -229,16 +229,16 @@ const LaunchPad = () => {
               <p className="details-title">Other Details</p>
               <div className="form-fields">
                 <Form.Item
-                  label="Total Supply"
+                  label="Cap"
                   name="totalSupply"
                   rules={[
-                    { required: true, message: "Please enter Total Supply" },
+                    { required: true, message: "Please enter Total Supply!" },
                   ]}
                 >
                   <Input
                     className="input-box"
                     type="number"
-                    placeholder="Total Supply"
+                    placeholder="Eg., 1000000"
                   />
                 </Form.Item>
                 <Form.Item
@@ -254,7 +254,7 @@ const LaunchPad = () => {
                   <Input
                     className="input-box"
                     type="number"
-                    placeholder="Precision"
+                    placeholder="Eg., 100"
                   />
                 </Form.Item>
                 <Form.Item
