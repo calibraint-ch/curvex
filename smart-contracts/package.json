@@ -4,7 +4,8 @@
   "description": "An open source token vesting contracts developed using the bonding curve technique",
   "scripts": {
     "deploy:testnet": "hardhat run scripts/deploy.ts --network tfantom",
-    "deploy-token:testnet": "hardhat run scripts/deployToken.ts --network fantom",
+    "deploy-token:testnet": "hardhat run scripts/deployToken.ts --network tfantom",
+    "deploy:fantom": "hardhat run scripts/deploy.ts --network fantom",
     "compile": "hardhat compile",
     "test": "hardhat test",
     "test:coverage": "hardhat coverage",

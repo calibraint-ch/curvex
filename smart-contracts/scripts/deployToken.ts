@@ -3,7 +3,6 @@ import { ethers, run } from "hardhat";
 async function main() {
   const CBTFactory = await ethers.getContractFactory("CurveXFactory");
   const fManager = await ethers.getContractFactory("BondingCurve");
-  const fErc20 = await ethers.getContractFactory("ERC20PresetMinterPauser");
   const fCurvx = await ethers.getContractFactory("CurveX_ERC20");
 
   const factory = CBTFactory.attach(
@@ -37,12 +36,12 @@ async function main() {
   const tokenBAddress = tokenList[tokenList.length - 1].tokenB;
 
   const tokenA = fCurvx.attach(tokenAAddress);
-  const tokenB = fErc20.attach(tokenBAddress);
   const manager = fManager.attach(tokenManager);
 
   await run("verify:verify", {
     address: tokenA.address,
     constructorArguments: ["cx", "cx", ethers.utils.parseEther("1000000"), 1],
+    noCompile: true,
   });
 
   await run("verify:verify", {
@@ -50,11 +49,11 @@ async function main() {
     constructorArguments: [
       100,
       1,
-      tokenA,
+      tokenA.address,
       "0x12f60A7880a458c101FdfA84117e49B1Ce3B4C1F",
     ],
+    noCompile: true,
   });
-
 }
 
 // We recommend this pattern to be able to use async/await everywhere

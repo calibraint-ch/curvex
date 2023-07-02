@@ -10,6 +10,7 @@ async function main() {
 
   await run("verify:verify", {
     address: CBTDeployed.address,
+    noCompile: true,
   });
 
   console.log("Deployed address: ", CBTDeployed.address);

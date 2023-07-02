@@ -9,11 +9,8 @@ import {
   defaultPublicRpc,
   defaultPublicRpcTestnet,
   errorMessages,
-  factoryContractAddress,
-  factoryContractAddressTestnet,
 } from "../../utils/constants";
 import { selectNetwork } from "../slice/wallet.selector";
-import { DeployParams } from "./constants";
 import useMetamaskProvider from "./useMetamaskProvider";
 
 function useErc20() {
@@ -44,48 +41,8 @@ function useErc20() {
     [chainId, metaState.web3]
   );
 
-  const deployBondingToken = async ({
-    name,
-    symbol,
-    cap,
-    lockPeriod,
-    precision,
-    curveType,
-    pairToken,
-    logoURL,
-    salt,
-  }: DeployParams) => {
-    const network = chainId || defaultChainId;
-    const factoryAdd =
-      network === chainList.mainnet
-        ? factoryContractAddress
-        : factoryContractAddressTestnet;
-    if (factoryAdd) {
-      const contract = await getContractInstance(factoryAdd);
-
-      if (contract) {
-        const deployTxnResponse = await contract.deployCurveX(
-          name,
-          symbol,
-          logoURL,
-          cap,
-          lockPeriod,
-          precision,
-          curveType,
-          pairToken,
-          salt
-        );
-
-        return deployTxnResponse;
-      }
-
-      return "";
-    }
-  };
-
   return {
     metaState,
-    deployBondingToken,
     getContractInstance,
   };
 }

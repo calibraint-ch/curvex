@@ -63,7 +63,7 @@ const Charts = (props: props) => {
       while (totalSupply.lte(cap)) {
         if (curveType === 1) {
           price = Number(ethers.utils.formatEther(totalSupply.div(precision)));
-        } else if (curveType === 2) {
+        } else if (curveType === 4) {
           price = Number(
             ethers.utils.formatEther(
               totalSupply.pow(2).div(BigNumber.from(10).pow(18)).div(precision)

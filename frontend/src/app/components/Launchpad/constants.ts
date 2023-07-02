@@ -3,9 +3,9 @@ import { CurveTypes } from "../Graphs/constants";
 
 export const curveOptions = [
   { value: "1", label: "Linear" },
-  { value: "2", label: "Polynomial" },
-  { value: "3", label: "Sub-Linear", disabled: true },
-  { value: "4", label: "S-Curve", disabled: true },
+  { value: "4", label: "Polynomial" },
+  { value: "2", label: "Sub-Linear", disabled: true },
+  { value: "3", label: "S-Curve", disabled: true },
 ];
 
 export const vestingPeriodOptions = [

@@ -170,7 +170,7 @@ const getCurveType = (type: number): CurveTypes | string => {
   switch (type) {
     case 1:
       return CurveTypes.linear;
-    case 2:
+    case 4:
       return CurveTypes.polynomial;
     default:
       return "--";
