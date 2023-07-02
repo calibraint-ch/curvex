@@ -3,13 +3,19 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  chainList,
+  defaultChainId,
   errorMessages,
   pairTokenAddress,
+  pairTokenAddressTestnet,
   responseMessages,
 } from "../../../utils/constants";
 import useFactory from "../../customHooks/useFactory";
 import { resetFactory } from "../../slice/factory/factory.slice";
-import { selectWalletConnected } from "../../slice/wallet.selector";
+import {
+  selectNetwork,
+  selectWalletConnected,
+} from "../../slice/wallet.selector";
 
 import Graph from "../Graphs/Graph";
 import ImageUploader from "../ImageUploader";
@@ -47,6 +53,7 @@ const LaunchPad = () => {
 
   const successMessage = useSelector(selectTokenSuccess);
   const errorMessage = useSelector(selectTokenError);
+  const networkId = useSelector(selectNetwork);
 
   useEffect(() => {
     if (successMessage.message === responseMessages.txnSuccess) {
@@ -91,11 +98,18 @@ const LaunchPad = () => {
       return;
     }
 
+    const network = networkId || defaultChainId;
+
+    const pair =
+      network === chainList.mainnet
+        ? pairTokenAddress
+        : pairTokenAddressTestnet;
+
     showModal();
     const launchParams: LaunchFormData = {
       tokenName: values.tokenName,
       tokenSymbol: values.tokenSymbol,
-      pairToken: pairTokenAddress,
+      pairToken: pair,
       curveType: Number(values.curveType),
       logoImage: values.logoImage,
       curveParams: {

@@ -92,9 +92,7 @@ const Charts = (props: props) => {
     if (tokenDetails && tokenAmount) {
       let currentSupply = BigNumber.from(tokenDetails.totalSupply);
       const cap = BigNumber.from(tokenDetails.cap);
-      const amountOfToken = BigNumber.from(tokenAmount).mul(
-        BigNumber.from(10).pow(18)
-      );
+      const amountOfToken = ethers.utils.parseEther(tokenAmount.toString());
       let data: chartData[] = [];
 
       data.push({

@@ -30,12 +30,18 @@ import {
 } from "../../slice/factory/factory.selector";
 import { resetFactory } from "../../slice/factory/factory.slice";
 import {
+  selectNetwork,
   selectWallet,
   selectWalletConnected,
 } from "../../slice/wallet.selector";
 import { DeployedTokensList } from "./types";
 
-import { factoryContractAddress } from "../../../utils/constants";
+import {
+  chainList,
+  defaultChainId,
+  factoryContractAddress,
+  factoryContractAddressTestnet,
+} from "../../../utils/constants";
 import { AllBalanceType } from "../../../utils/types";
 import "./index.scss";
 
@@ -50,6 +56,7 @@ const UserDashBoard = () => {
   const walletConnected = useSelector(selectWalletConnected);
   const factoryLoading = useSelector(selectFactoryLoading);
   const factoryLoaded = useSelector(selectFactoryLoaded);
+  const chainId = useSelector(selectNetwork);
 
   const { getContractInstance } = useErc20();
   const {
@@ -70,8 +77,14 @@ const UserDashBoard = () => {
         filteredDetails = await getErc20Name(parsedData);
       }
 
-      if (factoryContractAddress) {
-        const factory = await getFactory(factoryContractAddress, true);
+      const network = chainId || defaultChainId;
+      const factoryAdd =
+        network === chainList.mainnet
+          ? factoryContractAddress
+          : factoryContractAddressTestnet;
+
+      if (factoryAdd) {
+        const factory = await getFactory(factoryAdd, true);
         const bcc = await getBondingCurveInstance(ethers.constants.AddressZero);
         if (factory && bcc) {
           const balanceList = await getBalanceList(
@@ -95,6 +108,7 @@ const UserDashBoard = () => {
       setTokenDetails(filteredDetails);
     }
   }, [
+    chainId,
     deployedTokenList,
     getBondingCurveInstance,
     getContractInstance,

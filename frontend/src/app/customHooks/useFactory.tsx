@@ -5,9 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { bondingCurve } from "../../contracts/bondingCurve";
 import { factoryContract } from "../../contracts/factoryContract";
 import {
+  chainList,
+  defaultChainId,
   defaultPublicRpc,
+  defaultPublicRpcTestnet,
   errorMessages,
   factoryContractAddress,
+  factoryContractAddressTestnet,
   responseMessages,
 } from "../../utils/constants";
 import { TokenPairStruct } from "../../utils/types";
@@ -16,7 +20,12 @@ import {
   selectFactoryLoading,
   selectFactoryTokenList,
 } from "../slice/factory/factory.selector";
-import { setLoadingList, setTokenList } from "../slice/factory/factory.slice";
+import {
+  resetFactory,
+  setLoadingList,
+  setTokenList,
+} from "../slice/factory/factory.slice";
+import { selectNetwork } from "../slice/wallet.selector";
 import { BuyTokens, DeployParams, SellTokens } from "./constants";
 import useErc20 from "./useErc20";
 import useMetamaskProvider from "./useMetamaskProvider";
@@ -26,13 +35,19 @@ function useFactory() {
   const factoryLoaded = useSelector(selectFactoryLoaded);
   const factoryLoading = useSelector(selectFactoryLoading);
   const deployedTokenList = useSelector(selectFactoryTokenList);
+  const chainId = useSelector(selectNetwork);
   const dispatch = useDispatch();
   const { getContractInstance: getErc20 } = useErc20();
 
   const getContractInstance = useCallback(
     async (contractAddress: string, readOnly?: boolean) => {
       if (readOnly && !metaState.web3) {
-        const provider = new ethers.providers.JsonRpcProvider(defaultPublicRpc);
+        const network = chainId || defaultChainId;
+        const rpc =
+          network === chainList.mainnet
+            ? defaultPublicRpc
+            : defaultPublicRpcTestnet;
+        const provider = new ethers.providers.JsonRpcProvider(rpc);
         return new ethers.Contract(
           contractAddress,
           factoryContract.abi,
@@ -50,13 +65,18 @@ function useFactory() {
         message.error(errorMessages.walletConnectionRequired);
       }
     },
-    [metaState.web3]
+    [chainId, metaState.web3]
   );
 
   const getBondingCurveInstance = useCallback(
     async (contractAddress: string, readOnly?: boolean) => {
       if (readOnly && !metaState.web3) {
-        const provider = new ethers.providers.JsonRpcProvider(defaultPublicRpc);
+        const network = chainId || defaultChainId;
+        const rpc =
+          network === chainList.mainnet
+            ? defaultPublicRpc
+            : defaultPublicRpcTestnet;
+        const provider = new ethers.providers.JsonRpcProvider(rpc);
         return new ethers.Contract(contractAddress, bondingCurve.abi, provider);
       }
 
@@ -70,7 +90,7 @@ function useFactory() {
         message.error(errorMessages.walletConnectionRequired);
       }
     },
-    [metaState.web3]
+    [chainId, metaState.web3]
   );
 
   const deployBondingToken = async ({
@@ -84,8 +104,13 @@ function useFactory() {
     logoURL,
     salt,
   }: DeployParams) => {
-    if (factoryContractAddress) {
-      const contract = await getContractInstance(factoryContractAddress);
+    const network = chainId || defaultChainId;
+    const factoryAdd =
+      network === chainList.mainnet
+        ? factoryContractAddress
+        : factoryContractAddressTestnet;
+    if (factoryAdd) {
+      const contract = await getContractInstance(factoryAdd);
 
       if (contract) {
         const deployTxnResponse: ContractTransaction =
@@ -110,14 +135,19 @@ function useFactory() {
   };
 
   const getTokenPairList = useCallback(async () => {
-    if (factoryContractAddress) {
-      const contract = await getContractInstance(factoryContractAddress, true);
+    const network = chainId || defaultChainId;
+    const factoryAdd =
+      network === chainList.mainnet
+        ? factoryContractAddress
+        : factoryContractAddressTestnet;
+    if (factoryAdd) {
+      const contract = await getContractInstance(factoryAdd, true);
       if (!contract) return [];
       const tokenPairs: TokenPairStruct[] = await contract.getTokenPairList();
       return tokenPairs ?? [];
     }
     return [];
-  }, [getContractInstance]);
+  }, [chainId, getContractInstance]);
 
   const updateFactorySlice = useCallback(async () => {
     const tokenPair = await getTokenPairList();
@@ -130,7 +160,13 @@ function useFactory() {
       dispatch(setLoadingList());
       updateFactorySlice();
     }
-  }, [dispatch, factoryLoaded, factoryLoading, updateFactorySlice]);
+  }, [dispatch, factoryLoaded, chainId, factoryLoading, updateFactorySlice]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetFactory());
+    };
+  }, [chainId, dispatch]);
 
   const buyTokens = async ({
     tokenManager,
