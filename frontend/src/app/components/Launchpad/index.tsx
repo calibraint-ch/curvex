@@ -1,13 +1,13 @@
+import { Button, Form, Input, Select, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input, Modal, Select, Spin, message } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
 
 import {
   chainList,
+  defaultChainId,
   errorMessages,
-  explorerList,
   pairTokenAddress,
+  pairTokenAddressTestnet,
   responseMessages,
 } from "../../../utils/constants";
 import useFactory from "../../customHooks/useFactory";
@@ -21,6 +21,7 @@ import Graph from "../Graphs/Graph";
 import ImageUploader from "../ImageUploader";
 import { getLaunchpadPriceEstimate } from "../PriceCard/service";
 
+import TransactionModal from "../TransactionModal/TransactionModal";
 import {
   LaunchFormData,
   LaunchPadInitialValues,
@@ -41,9 +42,6 @@ const LaunchPad = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosable, setIsClosable] = useState(false);
   const [hash, setHash] = useState("");
-
-  const { mainnet, testnet } = chainList;
-  const { mainnetUrl, testnetUrl } = explorerList;
 
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -88,20 +86,6 @@ const LaunchPad = () => {
     setIsClosable(false);
   };
 
-  const url =
-    networkId === mainnet
-      ? `${mainnetUrl}${hash}`
-      : networkId === testnet
-      ? `${testnetUrl}${hash}`
-      : "";
-
-  const loader = (
-    <LoadingOutlined
-      style={{ fontSize: 22, marginLeft: 15, marginTop: 32 }}
-      spin
-    />
-  );
-
   const getVestingPeriod = (value: string) => {
     return Number(value) * 24 * 60 * 60;
   };
@@ -114,11 +98,18 @@ const LaunchPad = () => {
       return;
     }
 
+    const network = networkId || defaultChainId;
+
+    const pair =
+      network === chainList.mainnet
+        ? pairTokenAddress
+        : pairTokenAddressTestnet;
+
     showModal();
     const launchParams: LaunchFormData = {
       tokenName: values.tokenName,
       tokenSymbol: values.tokenSymbol,
-      pairToken: pairTokenAddress,
+      pairToken: pair,
       curveType: Number(values.curveType),
       logoImage: values.logoImage,
       curveParams: {
@@ -238,16 +229,16 @@ const LaunchPad = () => {
               <p className="details-title">Other Details</p>
               <div className="form-fields">
                 <Form.Item
-                  label="Total Supply"
+                  label="Cap"
                   name="totalSupply"
                   rules={[
-                    { required: true, message: "Please enter Total Supply" },
+                    { required: true, message: "Please enter Total Supply!" },
                   ]}
                 >
                   <Input
                     className="input-box"
                     type="number"
-                    placeholder="Total Supply"
+                    placeholder="Eg., 1000000"
                   />
                 </Form.Item>
                 <Form.Item
@@ -263,7 +254,7 @@ const LaunchPad = () => {
                   <Input
                     className="input-box"
                     type="number"
-                    placeholder="Precision"
+                    placeholder="Eg., 100"
                   />
                 </Form.Item>
                 <Form.Item
@@ -287,43 +278,13 @@ const LaunchPad = () => {
                 <Button htmlType="submit" className="mint-button">
                   Mint Token
                 </Button>
-                <Modal
-                  title="Unlock Token"
-                  className="approve-modal"
-                  open={isModalOpen}
-                  closable={isClosable}
-                  maskClosable={false}
-                  onCancel={handleCancel}
-                  footer={null}
-                >
-                  <div className="modal-content">
-                    {!hash ? (
-                      <>
-                        <div className="d-flex">
-                          <p className="modal-title">Go to your Wallet</p>
-                          <Spin indicator={loader} />
-                        </div>
-                        <p className="modal-title modal-description">
-                          You’ll be asked to approve this transaction from your
-                          wallet. You only need to sign each transaction once to
-                          deploy your tokens
-                        </p>
-                      </>
-                    ) : (
-                      <div>
-                        <p className="modal-title">
-                          Transaction Completed Successfully!
-                        </p>
-                        <p className="modal-title modal-description">
-                          Transaction Hash
-                        </p>
-                        <a href={url} target="_blank" rel="noreferrer">
-                          <p className="hash">{hash}</p>
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                </Modal>
+                <TransactionModal
+                  handleCancel={handleCancel}
+                  isClosable={isClosable}
+                  isModalOpen={isModalOpen}
+                  transactionType="Deploy"
+                  hash={hash}
+                />
               </div>
             </div>
           </Form>

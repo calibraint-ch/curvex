@@ -7,6 +7,8 @@ import { DropdownOptions } from "../Dropdown";
 import { CurveTypes } from "../Graphs/constants";
 import { curveOptions } from "../Launchpad/constants";
 
+// TODO - refactor this file
+
 export type TokenDetails = {
   name: string;
   symbol: string;
@@ -18,6 +20,7 @@ export type TokenDetails = {
   cap?: BigNumberish;
   precision?: BigNumber;
   manager?: string;
+  vestingPeriod?: number;
 };
 
 export type TokenPairDropdown = {
@@ -26,6 +29,10 @@ export type TokenPairDropdown = {
 };
 
 export type AllTokenDetails = Map<string, TokenDetails>;
+
+export type ParseDeployedTokenListResult = Omit<DeployedTokensList, "token"> & {
+  tokenAddress: string;
+};
 
 export const getCurvXDetails = (
   contract: ethers.Contract,
@@ -60,6 +67,7 @@ export const getCurvXDetails = (
       precision: tokenPair.precision,
       curveType: tokenPair.curveType,
       manager: tokenPair.tokenManager,
+      vestingPeriod: Number(tokenPair.lockPeriod.toNumber() / (3600 * 24)),
     };
   };
 };
@@ -163,14 +171,14 @@ const getCurveType = (type: number): CurveTypes | string => {
     case 1:
       return CurveTypes.linear;
     case 2:
+      return CurveTypes.subLinear;
+    case 3:
+      return CurveTypes.sCurve;
+    case 4:
       return CurveTypes.polynomial;
     default:
       return "--";
   }
-};
-
-export type ParseDeployedTokenListResult = Omit<DeployedTokensList, "token"> & {
-  tokenAddress: string;
 };
 
 export const parseDeployedTokenList = (
@@ -214,18 +222,6 @@ export const getLaunchpadPriceEstimate = (
     }
   }
   return 0;
-};
-export type TokenDetail = {
-  name: string;
-  symbol: string;
-  decimals: BigNumberish;
-  balance: BigNumberish;
-  address: string;
-  totalSupply: BigNumberish;
-  curveType?: number;
-  cap?: BigNumberish;
-  precision?: BigNumber;
-  manager?: string;
 };
 
 export const getEstimationByCurveType = (

@@ -4,6 +4,7 @@ export const errorMessages = {
     "Unsupported Network, Kindly Connect To Supported Network",
   walletConnectionRequired: "Please connect wallet",
   insufficientBalance: "Insufficient balance to make transaction",
+  vestingPeriodNotEnded: "Vesting Period Not Ended, Please Try Less Amount",
   transferTransfer: "Transaction failed with unknown error",
 
   precisionZero: "Precision should be greater than 0",
@@ -13,12 +14,27 @@ export const errorMessages = {
 };
 
 export const NftStorageToken = process.env.REACT_APP_NFT_STORAGE_API_TOKEN;
+
 export const factoryContractAddress = process.env.REACT_APP_FACTORY_CONTRACT;
-export const defaultPublicRpc = process.env.REACT_APP_DEFAULT_PUBLIC_RPC;
 
-export const pairTokenAddress = "0x12f60a7880a458c101fdfa84117e49b1ce3b4c1f";
+export const factoryContractAddressTestnet =
+  process.env.REACT_APP_FACTORY_CONTRACT_TESTNET;
 
-export const defaultTokenDetails = { name: "", symbol: "", decimals: "" };
+export const defaultPublicRpc =
+  process.env.REACT_APP_DEFAULT_PUBLIC_RPC_MAINNET;
+
+export const defaultPublicRpcTestnet =
+  process.env.REACT_APP_DEFAULT_PUBLIC_RPC_TESTNET;
+
+export const pairTokenAddress =
+  process.env.REACT_APP_PAIR_TOKEN_MAINNET_ADDRESS ?? "";
+
+export const pairTokenAddressTestnet =
+  process.env.REACT_APP_PAIR_TOKEN_TESTNET_ADDRESS ?? "";
+
+export const defaultChainId = process.env.REACT_APP_DEFAULT_CHAIN_ID;
+
+export const UsdtLogoUrl = process.env.REACT_APP_PAIR_TOKEN_LOGO_URL ?? "";
 
 export const supportedChains = ["250", "4002"];
 
@@ -60,8 +76,5 @@ export const priceCardItems = {
 };
 
 export const tokenInputPlaceholders = "Select Token";
-
-export const UsdtLogoUrl =
-  "https://cloudflare-ipfs.com/ipfs/bafkreia54sis5pb6ntttq6zwkd5xs4si2uzt32wtsf7jkbadivnyclhyom";
 
 export const googleFormsLink = "https://forms.gle/x1epaYFko3PG7eiTA";

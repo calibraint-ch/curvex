@@ -60,7 +60,7 @@ const PriceCard = (props: SectionProps) => {
   const cardBToken = Form.useWatch(priceCardItems.tokenB);
   const cardATokenAmount = Form.useWatch(priceCardItems.tokenAAmount);
 
-  const isBuy = section === sections.buy;
+  const isBuy = useMemo(() => section === sections.buy, [section]);
 
   const fetchTokens = useCallback(async () => {
     setTokensLoading(true);

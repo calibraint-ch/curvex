@@ -1,17 +1,20 @@
-import { useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Button, Form } from "antd";
+import { Button, Form, message } from "antd";
 import { ethers } from "ethers";
+import { useCallback, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import Charts from "../Charts/Charts";
 import ChipCard from "../ChipCards";
 import PriceCard from "../PriceCard";
 
+import { errorMessages, messages, sections } from "../../../utils/constants";
 import useFactory from "../../customHooks/useFactory";
-import { sections, messages } from "../../../utils/constants";
+import { selectCurrentTokenDetails } from "../../slice/factory/factory.selector";
 import { resetFactory } from "../../slice/factory/factory.slice";
+import TransactionModal from "../TransactionModal/TransactionModal";
 
 import "./index.scss";
+import { selectWalletConnected } from "../../slice/wallet.selector";
 
 export type props = {
   tab: string;
@@ -26,10 +29,17 @@ type FormData = {
 };
 
 const BuyWithdraw = (props: props) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClosable, setIsClosable] = useState(false);
+  const [hash, setHash] = useState("");
+
   const [form] = Form.useForm();
   const [slippageValue, setSlippageValue] = useState<string | number>("0%");
   const [loading, setLoading] = useState<boolean>(false);
   const { buyTokens, sellTokens } = useFactory();
+
+  const selectedTokenDetails = useSelector(selectCurrentTokenDetails);
+  const walletConnected = useSelector(selectWalletConnected);
 
   const dispatch = useDispatch();
 
@@ -38,7 +48,7 @@ const BuyWithdraw = (props: props) => {
     setSlippageValue(formattedValue);
   }, []);
 
-  const validateFormValue = (formValues: FormData) => {
+  const validateFormValue = useCallback((formValues: FormData) => {
     return (
       !formValues.bondingCurveContract ||
       !formValues.tokenA ||
@@ -46,12 +56,24 @@ const BuyWithdraw = (props: props) => {
       !formValues.tokenB ||
       !formValues.tokenBAmount
     );
+  }, []);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+    setIsClosable(false);
   };
+
+  const isBuy = useMemo(() => props.tab === sections.buy, [props.tab]);
 
   const onBuyOrWithdraw = useCallback(
     async (formValues: FormData) => {
+      if (!walletConnected) {
+        message.error(errorMessages.walletConnectionRequired);
+        return;
+      }
       if (validateFormValue(formValues)) return;
       setLoading(true);
+      showModal();
       const payload = {
         amount: ethers.utils.parseEther(formValues.tokenAAmount.toString()),
         estimatedPrice: ethers.utils.parseEther(
@@ -63,18 +85,43 @@ const BuyWithdraw = (props: props) => {
       };
 
       try {
-        if (props.tab === sections.buy) {
-          await buyTokens(payload);
+        let hash: string | undefined = "";
+        if (isBuy) {
+          hash = await buyTokens(payload);
         } else {
-          await sellTokens(payload);
+          hash = await sellTokens(payload);
         }
+        if (hash) setHash(hash);
+        else setIsModalOpen(false);
         dispatch(resetFactory());
+      } catch {
       } finally {
+        setIsClosable(true);
         setLoading(false);
       }
     },
-    [props.tab, dispatch, buyTokens, sellTokens]
+    [walletConnected, validateFormValue, isBuy, dispatch, buyTokens, sellTokens]
   );
+
+  const { totalSupply, vestingPeriod, currentSupply } = useMemo(() => {
+    return {
+      currentSupply: ethers.utils.formatEther(
+        selectedTokenDetails?.totalSupply ?? "0"
+      ),
+      vestingPeriod: (selectedTokenDetails?.vestingPeriod ?? "--") + " days",
+      totalSupply: ethers.utils.formatEther(selectedTokenDetails?.cap ?? 0),
+    };
+  }, [
+    selectedTokenDetails?.cap,
+    selectedTokenDetails?.totalSupply,
+    selectedTokenDetails?.vestingPeriod,
+  ]);
+
+  const handleCancel = useCallback(() => {
+    setIsModalOpen(false);
+    setHash("");
+    setIsClosable(false);
+  }, []);
 
   return (
     <Form form={form} onFinish={onBuyOrWithdraw}>
@@ -96,13 +143,14 @@ const BuyWithdraw = (props: props) => {
           </div>
         </div>
         <div className="price-chips d-flex justify-content-center">
-          <ChipCard title="MINIMUM TOKENS" value="1" />
-          <ChipCard title="SLIPPAGE" value="0.5%" />
-          <ChipCard
+          <ChipCard title="CURRENT SUPPLY" value={currentSupply} />
+          <ChipCard title="CAP" value={totalSupply} />
+          <ChipCard title="VESTING PERIOD" value={vestingPeriod} />
+          {/* <ChipCard
             title="SLIPPAGE TOLERANCE"
             value={slippageValue}
             handleSlippageChange={handleSlippageChange}
-          />
+          /> */}
         </div>
         <div className="d-flex justify-content-center">
           <Button
@@ -111,9 +159,16 @@ const BuyWithdraw = (props: props) => {
             loading={loading}
             disabled={loading}
           >
-            {props.tab === sections.buy ? "Buy Now" : "Withdraw"}
+            {isBuy ? "Buy Now" : "Withdraw"}
           </Button>
         </div>
+        <TransactionModal
+          handleCancel={handleCancel}
+          isClosable={isClosable}
+          isModalOpen={isModalOpen}
+          transactionType={isBuy ? "Buy" : "Withdraw"}
+          hash={hash}
+        />
       </div>
     </Form>
   );

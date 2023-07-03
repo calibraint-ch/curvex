@@ -13,7 +13,7 @@ const PriceInput = (props: PriceInputProps) => {
     <InputNumber
       className="price-input"
       controls={false}
-      defaultValue={0}
+      placeholder="0"
       type="number"
       {...props}
     />
