@@ -1,14 +1,16 @@
 import {
   FooterLogo,
   Twitter,
-  Facebook,
   LinkedIn,
+  Discard,
 } from "../../../assets/images/imageAssets";
-import { googleFormsLink } from "../../../utils/constants";
+import { googleFormsLink, socialLinks } from "../../../utils/constants";
 
 import "./index.scss";
 
 const Footer = () => {
+  const { discard, twitter, linkedIn } = socialLinks;
+
   return (
     <div className="footer">
       <div className="container1">
@@ -20,9 +22,15 @@ const Footer = () => {
             technology.
           </div>
           <div className="social-icons">
-            <img src={Twitter} alt="TwitterLogo" />
-            <img src={Facebook} alt="FacebookLogo" />
-            <img src={LinkedIn} alt="LinkedInLogo" />
+            <a href={discard} target="_blank" rel="noopener noreferrer">
+              <img src={Discard} alt="DiscardLogo" />
+            </a>
+            <a href={twitter} target="_blank" rel="noopener noreferrer">
+              <img src={Twitter} alt="TwitterLogo" />
+            </a>
+            <a href={linkedIn} target="_blank" rel="noopener noreferrer">
+              <img src={LinkedIn} alt="LinkedInLogo" />
+            </a>
           </div>
           <div className="copy-right">
             Copyright © 2023 <span style={{ color: "#000000" }}>CurvX</span>
@@ -35,11 +43,7 @@ const Footer = () => {
             <li>Terms Of Use</li>
             <li>Privacy Policy</li>
             <li>
-              <a
-                rel="noreferrer"
-                href={googleFormsLink}
-                target="_blank"
-              >
+              <a rel="noreferrer" href={googleFormsLink} target="_blank">
                 Contact us
               </a>
             </li>

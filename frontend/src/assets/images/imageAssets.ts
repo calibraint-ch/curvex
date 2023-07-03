@@ -24,3 +24,4 @@ export { default as Unlock } from "./Unlock.svg";
 export { default as HeroImage } from "./Hero3x.png";
 export { default as Greek } from "./Greek2x.png";
 export { default as TokenLogo } from "./TokenLogo.svg";
+export { default as Discard } from "./Discard.svg";
