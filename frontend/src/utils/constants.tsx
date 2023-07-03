@@ -78,3 +78,9 @@ export const priceCardItems = {
 export const tokenInputPlaceholders = "Select Token";
 
 export const googleFormsLink = "https://forms.gle/x1epaYFko3PG7eiTA";
+
+export const socialLinks = {
+  twitter: "https://twitter.com/curvxsocial/",
+  discard: "https://discord.com/invite/9ykRzXHy",
+  linkedIn: "https://www.linkedin.com/in/curvx-social/",
+};
