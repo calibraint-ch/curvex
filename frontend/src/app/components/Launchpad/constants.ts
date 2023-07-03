@@ -42,17 +42,17 @@ export const curveData = {
     intercept: 15,
   },
   "2": {
-    type: CurveTypes.polynomial,
-    a: 1,
-    n: 2,
-  },
-  "3": {
     type: CurveTypes.subLinear,
     n: 0.7,
   },
-  "4": {
+  "3": {
     type: CurveTypes.sCurve,
     c1: 0.2,
     c2: 10,
+  },
+  "4": {
+    type: CurveTypes.polynomial,
+    a: 1,
+    n: 2,
   },
 };
