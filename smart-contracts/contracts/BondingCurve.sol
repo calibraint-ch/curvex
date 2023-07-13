@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./Interface/ICurvXErc20.sol";
@@ -16,6 +17,7 @@ import "hardhat/console.sol";
 contract BondingCurve is Context {
     error InvalidCurveType();
     error InvalidAmount();
+    error ThresholdExceeded();
 
     using SafeMath for uint256;
 
@@ -79,6 +81,15 @@ contract BondingCurve is Context {
                     .div(scalingFactor)
                     .sub(reserveBalance)
                     .div(CURVE_PRECISION);
+        } else if (curveType == 2) {
+            //Sub-linear curve
+            uint256 newTotal = totalSupply.add(_investment);
+            uint256 reserveBalanceNew = scalingFactor
+                .mul(newTotal)
+                .div(CURVE_PRECISION)
+                .mul(Math.log2(newTotal))
+                .div(scalingFactor);
+            return reserveBalanceNew.sub(reserveBalance);
         } else {
             revert InvalidCurveType();
         }
@@ -114,8 +125,18 @@ contract BondingCurve is Context {
         }
     }
 
-    function _buy(uint256 amount) internal returns (uint256 priceForToken) {
+    function _buy(
+        uint256 amount,
+        uint256 slippageTolerance,
+        uint256 price
+    ) internal returns (uint256 priceForToken) {
         priceForToken = calculatePurchaseReturn(amount);
+
+        uint256 estimatedPrice = (priceForToken * 100) / price;
+
+        if (estimatedPrice > slippageTolerance) {
+            revert ThresholdExceeded();
+        }
 
         ICurvXErc20(tokenA).mintAndLock(_msgSender(), amount);
         totalSupply += amount;
@@ -123,10 +144,14 @@ contract BondingCurve is Context {
         emit Purchase(msg.sender, amount, priceForToken);
     }
 
-    function buy(uint256 amount) external {
+    function buy(
+        uint256 amount,
+        uint256 slippageTolerance,
+        uint256 price
+    ) external {
         if (amount == 0) revert InvalidAmount();
 
-        uint256 priceOfPurchase = _buy(amount);
+        uint256 priceOfPurchase = _buy(amount, slippageTolerance, price);
 
         IERC20(tokenB).transferFrom(
             _msgSender(),
