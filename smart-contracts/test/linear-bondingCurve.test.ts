@@ -77,6 +77,8 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
     const { tokenA, tokenB, tokenManager, addr1, DECIMALS, PRECISION } =
       await loadFixture(deployTokenFixture);
 
+    const slippageTolerance = 0;
+    const price = DECIMALS;
     const buyAmount = DECIMALS;
     const spendAmount = buyAmount.pow(2).div(2).div(DECIMALS).div(PRECISION);
 
@@ -84,7 +86,9 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
       tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(buyAmount))
+    await expect(
+      tokenManager.connect(addr1).buy(buyAmount, slippageTolerance, price)
+    )
       .to.emit(tokenA, "Transfer")
       .withArgs(AddZero, addr1.address, buyAmount)
       .to.emit(tokenB, "Transfer")
@@ -96,13 +100,17 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
       await loadFixture(deployTokenFixture);
 
     const buyAmount = DECIMALS;
+    const slippageTolerance = 0;
+    const price = DECIMALS;
     const spendAmount = buyAmount.pow(2).div(2).div(DECIMALS).div(PRECISION);
 
     await expect(
       tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(buyAmount)).not.to.be.reverted;
+    await expect(
+      tokenManager.connect(addr1).buy(buyAmount, slippageTolerance, price)
+    ).not.to.be.reverted;
 
     await time.increase(factoryMock.lockPeriod + 10);
 
@@ -129,15 +137,15 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
       tokenB.connect(addr1).approve(tokenManager.address, tokensToSpend)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(tokensToSpend)).not.to.be
-      .reverted;
+    await expect(tokenManager.connect(addr1).buy(tokensToSpend, 0, 200)).not.to
+      .be.reverted;
 
     await expect(
       tokenB.connect(addr1).approve(tokenManager.address, tokensToSpend)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(tokensToSpend)).not.to.be
-      .reverted;
+    await expect(tokenManager.connect(addr1).buy(tokensToSpend, 0, 200)).not.to
+      .be.reverted;
   });
 
   it("should be able sell tokens immediately after selling", async () => {
@@ -146,15 +154,23 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
 
     const buyAmount = DECIMALS;
     const spendAmount = buyAmount.pow(2).div(2).div(DECIMALS).div(PRECISION);
+    const slippageTolerance = 0;
+    const price = DECIMALS;
 
     await expect(
       tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(buyAmount.div(2))).not.to.be
-      .reverted;
-    await expect(tokenManager.connect(addr1).buy(buyAmount.div(2))).not.to.be
-      .reverted;
+    await expect(
+      tokenManager
+        .connect(addr1)
+        .buy(buyAmount.div(2), slippageTolerance, price)
+    ).not.to.be.reverted;
+    await expect(
+      tokenManager
+        .connect(addr1)
+        .buy(buyAmount.div(2), slippageTolerance, price)
+    ).not.to.be.reverted;
 
     await time.increase(factoryMock.lockPeriod + 10);
 
@@ -168,5 +184,36 @@ describe("Linear curve - Token Manager - BondingCurve.sol", function () {
       .withArgs(tokenManager.address, addr1.address, expectedTokenReturns)
       .to.emit(tokenA, "Transfer")
       .withArgs(addr1.address, AddZero, tokenToSell);
+  });
+
+  it("should revert if the estimated price exceeds the slippage tolerance", async () => {
+    const { tokenB, tokenManager, DECIMALS } = await loadFixture(
+      deployTokenFixture
+    );
+
+    const buyAmount = DECIMALS.mul(30);
+    const slippageTolerance = 1; //0.01 % slippage
+    const price = DECIMALS;
+
+    // await tokenB.approve(tokenManager.address, buyAmount);
+
+    await expect(
+      tokenManager.buy(buyAmount, slippageTolerance, price)
+    ).to.be.revertedWithCustomError(tokenManager, "ThresholdExceeded");
+  });
+
+  it("should revert if amount is 0", async () => {
+    const { tokenB, addr1, tokenManager, DECIMALS, PRECISION } =
+      await loadFixture(deployTokenFixture);
+
+    const buyAmount = 0;
+    const slippageTolerance = 0;
+    const price = DECIMALS;
+
+    await tokenB.approve(tokenManager.address, buyAmount);
+
+    await expect(
+      tokenManager.buy(buyAmount, slippageTolerance, price)
+    ).to.be.revertedWithCustomError(tokenManager, "InvalidAmount");
   });
 });

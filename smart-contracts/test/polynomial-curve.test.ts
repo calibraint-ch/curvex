@@ -77,7 +77,9 @@ describe("Polynomial - Token Manager - BondingCurve.sol", function () {
     const { tokenA, tokenB, tokenManager, addr1, DECIMALS, PRECISION } =
       await loadFixture(deployTokenFixture);
 
-    const buyAmount = DECIMALS.mul(10000000);
+    const buyAmount = DECIMALS;
+    const slippageTolerance = 0;
+    const price = DECIMALS;
     const spendAmount = buyAmount
       .pow(3)
       .div(3)
@@ -88,7 +90,9 @@ describe("Polynomial - Token Manager - BondingCurve.sol", function () {
       tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(buyAmount))
+    await expect(
+      tokenManager.connect(addr1).buy(buyAmount, slippageTolerance, price)
+    )
       .to.emit(tokenA, "Transfer")
       .withArgs(AddZero, addr1.address, buyAmount)
       .to.emit(tokenB, "Transfer")
@@ -100,6 +104,9 @@ describe("Polynomial - Token Manager - BondingCurve.sol", function () {
       await loadFixture(deployTokenFixture);
 
     const buyAmount = DECIMALS;
+    const slippageTolerance = 0;
+    const price = DECIMALS;
+
     const spendAmount = buyAmount
       .pow(3)
       .div(3)
@@ -110,7 +117,9 @@ describe("Polynomial - Token Manager - BondingCurve.sol", function () {
       tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(buyAmount)).not.to.be.reverted;
+    await expect(
+      tokenManager.connect(addr1).buy(buyAmount, slippageTolerance, price)
+    ).not.to.be.reverted;
 
     await time.increase(mock.lockPeriod + 10);
 
@@ -127,25 +136,29 @@ describe("Polynomial - Token Manager - BondingCurve.sol", function () {
   });
 
   it("should be able mint tokens immediately after minting", async () => {
-    const { tokenB, tokenManager, addr1 } = await loadFixture(
+    const { tokenB, tokenManager, addr1, DECIMALS } = await loadFixture(
       deployTokenFixture
     );
 
     const tokensToSpend = 10;
+    const slippageTolerance = 0;
+    const price = DECIMALS;
 
     await expect(
       tokenB.connect(addr1).approve(tokenManager.address, tokensToSpend)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(tokensToSpend)).not.to.be
-      .reverted;
+    await expect(
+      tokenManager.connect(addr1).buy(tokensToSpend, slippageTolerance, price)
+    ).not.to.be.reverted;
 
     await expect(
       tokenB.connect(addr1).approve(tokenManager.address, tokensToSpend)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(tokensToSpend)).not.to.be
-      .reverted;
+    await expect(
+      tokenManager.connect(addr1).buy(tokensToSpend, slippageTolerance, price)
+    ).not.to.be.reverted;
   });
 
   it("should be able sell tokens immediately after selling", async () => {
@@ -153,6 +166,8 @@ describe("Polynomial - Token Manager - BondingCurve.sol", function () {
       await loadFixture(deployTokenFixture);
 
     const buyAmount = DECIMALS;
+    const slippageTolerance = 0;
+    const price = DECIMALS;
     const spendAmount = buyAmount
       .pow(3)
       .div(3)
@@ -163,7 +178,9 @@ describe("Polynomial - Token Manager - BondingCurve.sol", function () {
       tokenB.connect(addr1).approve(tokenManager.address, spendAmount)
     ).not.to.be.reverted;
 
-    await expect(tokenManager.connect(addr1).buy(buyAmount)).not.to.be.reverted;
+    await expect(
+      tokenManager.connect(addr1).buy(buyAmount, slippageTolerance, price)
+    ).not.to.be.reverted;
 
     await time.increase(mock.lockPeriod + 10);
 
